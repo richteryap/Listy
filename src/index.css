@@ -1,0 +1,50 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --bg-color: white;
+  --text-color: #202124;
+  --search-bar-color: rgb(245, 245, 245);
+  --search-bar-text-color: #202124;
+  --button-hover-color: rgb(245, 245, 245);
+  --tooltip-color: rgb(65, 65, 65);
+  --tooltip-text-color: white;
+  --border-color: rgb(214, 216, 222);
+  --search-m-glass-hover: rgb(230, 230, 230);
+  --box-shadow: rgb(160, 160, 160);
+  --d-menu-li: rgb(240, 240, 240);
+}
+
+html.dark-mode {
+  --bg-color: rgb(38, 39, 40);
+  --text-color: white;
+  --search-bar-color: rgb(85, 85, 90);
+  --search-bar-text-color: white;
+  --button-hover-color: rgb(65, 65, 65);
+  --tooltip-color: rgb(65, 65, 65);
+  --tooltip-text-color: white;
+  --border-color: rgb(85, 85, 90);
+  --search-m-glass-hover: rgb(95, 95, 100);
+  --box-shadow: rgb(0, 0, 0, 0.5);
+  --d-menu-li: rgb(50, 50, 50);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}

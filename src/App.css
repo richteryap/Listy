@@ -1,0 +1,13 @@
+#root {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.app-body {
+  padding-top: 60px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin: 0 auto;
+}
