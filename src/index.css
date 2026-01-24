@@ -9,12 +9,14 @@
   -moz-osx-font-smoothing: grayscale;
 
   --bg-color: white;
+  --r-bg-color: rgb(38, 39, 40);
   --text-color: #202124;
+  --r-text-color: white;
   --border-color: rgb(214, 216, 222);
   --box-shadow: rgb(160, 160, 160);
 
-  --search-bar-color: rgb(245, 245, 245);
-  --search-bar-text-color: #202124;
+  --input-color: rgb(245, 245, 245);
+  --input-text-color: #202124;
   --input-btn-hover: rgb(230, 230, 230);
   
   --button-hover-color: rgb(245, 245, 245);
@@ -26,12 +28,14 @@
 
 html.dark-mode {
   --bg-color: rgb(38, 39, 40);
+  --r-bg-color: white;
   --text-color: white;
+  --r-text-color: #202124;
   --border-color: rgb(85, 85, 90);
   --box-shadow: rgb(0, 0, 0, 0.5);
 
-  --search-bar-color: rgb(85, 85, 90);
-  --search-bar-text-color: white;
+  --input-color: rgb(85, 85, 90);
+  --input-text-color: white;
   --input-btn-hover: rgb(95, 95, 100);
 
   --button-hover-color: rgb(65, 65, 65);
