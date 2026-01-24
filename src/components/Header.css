@@ -25,7 +25,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .web-title {
@@ -150,12 +150,56 @@
     background-color: var(--input-btn-hover);
 }
 
-.settings {
+.add-item {
     position: relative; 
     display: inline-block;
 }
 
-.setting-btn {
+.add-item button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: inherit;
+
+    padding: 11px 10px 10px 10px;
+    border-radius: 10px;
+}
+
+.add-item button:hover {
+    background: var(--button-hover-color);
+}
+
+.add-item i {
+    padding-right: 6px;
+}
+
+.add-item span {
+    font-size: 15px;
+}
+
+.h-r-center-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+}
+
+.h-r-center-content .view {
+    position: relative; 
+    display: inline-block;
+}
+
+.h-r-center-content .settings {
+    position: relative; 
+    display: inline-block;
+}
+
+.h-r-center-content button {
     position: relative;
     background: none;
     border: none;
@@ -166,11 +210,11 @@
     border-radius: 50%;
 }
 
-.setting-btn:hover {
+.h-r-center-content button:hover {
     background: var(--button-hover-color);
 }
 
-.setting-btn::after {
+.header-right-content button::after {
     content: attr(data-tooltip-text);
     
     position: absolute;
@@ -196,7 +240,7 @@
     transition: opacity 0.2s 0s, visibility 0s 0.2s; 
 }
 
-.setting-btn:hover::after {
+.header-right-content button:hover::after {
     opacity: 1;
     visibility: visible;
     
