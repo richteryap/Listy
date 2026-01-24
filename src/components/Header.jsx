@@ -3,6 +3,7 @@ import './Header.css'
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [query, setQuery] = useState('');
     
     const toggleDropdown = () => { setIsOpen(!isOpen); };
 
@@ -28,7 +29,10 @@ const Header = () => {
                     <span className='listy'>Listy</span>
                 </div>
                 <div className='search-bar'>
-                    <input type='text' placeholder='Search'/>
+                    <input type='text' placeholder='Search' value={query} onChange={(e) => setQuery(e.target.value)}/>
+                    {query && (
+                        <i className="fa-solid fa-xmark" onClick={() => setQuery('')} aria-label="Clear search" role="button"></i>
+                    )}
                     <i className="fa-solid fa-magnifying-glass"></i>
                 </div>
             </div>
