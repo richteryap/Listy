@@ -78,9 +78,10 @@
 }
 
 .l-r-container input {
+  position: relative;
   background: var(--input-color);
   color: var(--input-text-color);
-  padding: 12px 15px;
+  padding: 12px 35px 12px 15px;
   margin: 8px 0;
   width: 100%;
 
@@ -93,7 +94,27 @@
   color: rgb(181, 181, 181);
 }
 
-.l-r-container button {
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: shake 0.3s ease-in-out;
+}
+
+.sign-up-btn,
+.sign-in-btn,
+.ghost-btn {
   color: var(--r-text-color);
   background: var(--r-bg-color);
   font-size: 12px;
@@ -212,4 +233,29 @@
 .overlay button.ghost-btn {
   background-color: transparent;
   border: 1px solid var(--border-color);
+}
+
+.see-unsee {
+  position: absolute;
+  right: 5px;
+  top: 25%;
+  
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 8px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: auto !important; 
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.see-unsee:hover {
+  opacity: 1;
+  background: transparent;
 }

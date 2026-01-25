@@ -42,6 +42,12 @@
     cursor: pointer;
 }
 
+.account-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
 .web-title::after {
     content: attr(data-tooltip-text);
     
@@ -296,7 +302,7 @@
     transition-delay: 0.4s; 
 }
 
-.dropdown-menu {
+.setting-dropdown {
     position: absolute;
     top: 100%;
     left: 0;
@@ -312,7 +318,7 @@
     z-index: 1000;
 }
 
-.dropdown-menu li {
+.setting-dropdown li {
     padding: 10px 15px;
     cursor: pointer;
     display: flex;
@@ -322,12 +328,12 @@
     color: var(--text-color);
 }
 
-.dropdown-menu li:hover {
+.setting-dropdown li:hover {
     background-color: var(--d-menu-li);
 }
 
 .profile {
-    position: relative; 
+    position: relative;
     display: inline-block;
 }
 
@@ -378,4 +384,34 @@
     visibility: visible;
     
     transition-delay: 0.4s; 
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+
+    background-color: var(--bg-color);
+    border-radius: 5px;
+    box-shadow: 0 1px 4px var(--box-shadow);
+
+    list-style: none;
+    padding: 5px 0;
+    margin: 5px 0 0 0;
+    width: 130px;
+    z-index: 1000;
+}
+
+.profile-dropdown li {
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.profile-dropdown li:hover {
+    background-color: var(--d-menu-li);
 }
