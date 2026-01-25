@@ -2,54 +2,34 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useClickOutside } from '../hooks/useClickOutside';
 import { auth } from '../firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import './Header.css'
 
 const Header = () => {
     const location = useLocation();
     const isAccountPage = location.pathname.startsWith('/account');
-    const [query, setQuery] = useState('');
 
-    const [user, setUser] = useState(null);
+    const [user] = useAuthState(auth);
+
+    const [query, setQuery] = useState('');
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-    const settingsRef = useClickOutside(() => {
-        setIsSettingsOpen(false);
-    });
-
-    const profileRef = useClickOutside(() => {
-        setIsProfileOpen(false);
-    });
+    const settingsRef = useClickOutside(() => { setIsSettingsOpen(false); });
+    const profileRef = useClickOutside(() => { setIsProfileOpen(false); });
 
     const [isGridView, setIsGridView] = useState(() => {
         return localStorage.getItem('viewMode') === 'grid';
     });
 
     const [isDarkMode, setIsDarkMode] = useState(() => {
-        return document.documentElement.classList.contains('dark-mode');
+        return localStorage.getItem('theme') === 'dark';
     })
 
     useEffect(() => {
         localStorage.setItem('viewMode', isGridView ? 'grid' : 'list');
     }, [isGridView]);
-
-    const handleLogout = async () => {
-        try {
-            await signOut(auth);
-            setIsProfileOpen(false);
-            window.location.reload();
-        } catch (error) {
-            console.error("Error logging out: ", error);
-        }
-    };
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-        })
-        return () => unsubscribe();
-    }, [])
 
     useEffect(() => {
         if (isDarkMode) {
@@ -60,6 +40,15 @@ const Header = () => {
             localStorage.setItem('theme', 'light');
         }
     }, [isDarkMode]);
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            setIsProfileOpen(false);
+        } catch (error) {
+            console.error("Error logging out: ", error);
+        }
+    };
 
     return (
         <div className='header-body'>
@@ -111,32 +100,19 @@ const Header = () => {
                     </div>
                     <div className='profile' ref={profileRef}>
                         <button className='profile-button' onClick={() => setIsProfileOpen(!isProfileOpen)} aria-label='Profile' data-tooltip-text='Profile'>
-                            <i className='fa-solid fa-user'></i>
+                            {user?.photoURL ? <img src={user.photoURL} alt="Profile" /> : <i className='fa-solid fa-user'></i>}
                         </button>
-                        {isProfileOpen && (
+                        {isProfileOpen && user && (
                             <div className='profile-content'>
                                 <ul className='profile-dropdown'>
-                                    {user ? (
-                                        <>
-                                            <li>
-                                                <i className='fa-solid fa-user'></i>
-                                                {user.displayName || 'User'}
-                                            </li>
-                                            <Link to='/account' className='account-link'>
-                                                <li onClick={() => {handleLogout(); setIsProfileOpen(false);}}>
-                                                    <i className='fa-solid fa-sign-out'></i>
-                                                    Logout
-                                                </li>
-                                            </Link>
-                                        </>
-                                    ) : (
-                                        <Link to='/account' className='account-link'>
-                                            <li onClick={() => {setIsProfileOpen(false);}}>
-                                                <i className='fa-solid fa-sign-in'></i>
-                                                Sign In
-                                            </li>
-                                        </Link>
-                                    )}
+                                    <li>
+                                        <i className='fa-solid fa-user'></i>
+                                        {user.displayName || 'User'}
+                                    </li>
+                                    <li onClick={handleLogout}>
+                                        <i className='fa-solid fa-right-from-bracket'></i>
+                                        Logout
+                                    </li>
                                 </ul>
                             </div>
                         )}

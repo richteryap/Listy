@@ -6,7 +6,11 @@ const ProtectedRoute = ({ children }) => {
     const [user, loading] = useAuthState(auth); 
 
     if (loading) {
-        return <div className="loading-screen">Loading...</div>; 
+        return (
+            <div className="loading-screen">
+                <i className="fa-solid fa-spinner fa-spin"></i>
+            </div>
+        );
     }
 
     if (!user) {

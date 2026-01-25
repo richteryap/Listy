@@ -225,7 +225,7 @@
 
 .add-item button:hover {
     background: var(--button-hover-color);
-    box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 6px var(--box-shadow);
 }
 
 .add-item i {
