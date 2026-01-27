@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { auth } from '../firebase.js';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { getFriendlyErrorMessage } from '../utils/authErrors.js';
 import useAuthRedirect from '../hooks/useAuthRedirect.js';
 import './Login_Register.css';
@@ -18,8 +18,6 @@ const Login_Register = () => {
     const navigate = useNavigate();
     const [siShowPassword, setsiShowPassword] = useState(false);
     const [suShowPassword, setsuShowPassword] = useState(false);
-
-    
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -54,6 +52,21 @@ const Login_Register = () => {
         } catch (error) {
             console.log("Full Error:", error.code);
             setError(getFriendlyErrorMessage(error.code));
+        }
+    };
+
+    const handleResetPassword = async () => {
+        if (!email) {
+            alert("Please enter your email address first!");
+            return;
+        }
+        
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert("Password reset email sent! Check your inbox.");
+        } catch (error) {
+            console.error("Reset Error:", error.code);
+            alert(error.message); 
         }
     };
 
@@ -94,7 +107,7 @@ const Login_Register = () => {
                                 <i className="fa-solid fa-circle-exclamation"></i> {error}
                             </div>
                         )}
-                        <a href='#'>Forgot Password</a>
+                        <button type="button" className="forgot-pass-btn" onClick={handleResetPassword}>Forgot Password?</button>
                         <button className='sign-in-btn'>Sign In</button>
                     </form>
                 </div>

@@ -259,3 +259,18 @@
   opacity: 1;
   background: transparent;
 }
+
+.forgot-pass-btn {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 15px 0;
+  cursor: pointer;
+  padding: 0;
+}
+
+.forgot-pass-btn:hover {
+  text-decoration: underline;
+}
