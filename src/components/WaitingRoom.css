@@ -1,0 +1,73 @@
+.verify-container {
+    height: calc(100vh - 65px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+}
+
+.verify-box {
+    background-color: var(--bg-color);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 1px solid var(--border-color);
+}
+
+.verify-icon {
+    font-size: 50px;
+    color: var(--r-bg-color);
+    margin-bottom: 20px;
+}
+
+.user-email-display {
+    display: block;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+.verify-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.refresh-btn {
+    background-color: var(--r-bg-color);
+    color: var(--r-text-color);
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.resend-btn {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.verify-footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.logout-link {
+    background: none;
+    border: none;
+    color: var(--r-bg-color);
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: bold;
+}
