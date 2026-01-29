@@ -4,6 +4,7 @@ import { useClickOutside } from '../hooks/useClickOutside';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import AddNote from './AddNote/AddNote.jsx';
 import './Header.css'
 
 const Header = () => {
@@ -13,9 +14,12 @@ const Header = () => {
     const [user] = useAuthState(auth);
 
     const [query, setQuery] = useState('');
+    const [isAddItemOpen, setIsAddItemOpen] = useState(false);
+    const [isAddNoteModalOpen, setIsAddNoteModalOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+    const addItemRef = useClickOutside(() => { setIsAddItemOpen(false); });
     const settingsRef = useClickOutside(() => { setIsSettingsOpen(false); });
     const profileRef = useClickOutside(() => { setIsProfileOpen(false); });
 
@@ -71,12 +75,27 @@ const Header = () => {
             </div>
             {!isAccountPage && (
                 <div className='header-right-content'>
-                    <div className='add-item'>
-                        <button className="add-btn" aria-label="Add Item" data-tooltip-text='Add Item'>
+                    <div className='add-item' ref={addItemRef}>
+                        <button className="add-btn" onClick={() => setIsAddItemOpen(!isAddItemOpen)} aria-label="Add Item" data-tooltip-text='Add Item'>
                             <span><i className="fa-solid fa-plus"></i>Add Item</span>
                         </button>
+                        {isAddItemOpen && (
+                            <div className='add-item-content'>
+                                <ul className='add-item-dropdown'>
+                                    <li onClick={() => {setIsAddItemOpen(false); setIsAddNoteModalOpen(true);}}>
+                                        <i className="fa-solid fa-sticky-note"></i>
+                                        Add Note
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
                     </div>
                     <div className='h-r-center-content'>
+                        <div className='trash-bin'>
+                            <button className="trash-btn" aria-label="Trash Bin" data-tooltip-text='Trash Bin'>
+                                <i className="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
                         <div className='view'>
                             <button className="view-btn" onClick={() => setIsGridView(!isGridView)} aria-label="View" data-tooltip-text='View'>
                                 <i className={`fa-solid ${isGridView ? 'fa-list' : 'fa-th-large'}`}></i> 
@@ -118,6 +137,10 @@ const Header = () => {
                         )}
                     </div>
                 </div>
+            )}
+
+            {isAddNoteModalOpen && (
+                <AddNote onClose={() => setIsAddNoteModalOpen(false)} />
             )}
         </div>
     )

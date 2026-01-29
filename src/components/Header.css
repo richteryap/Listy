@@ -236,17 +236,42 @@
     font-size: 15px;
 }
 
+.add-item-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+
+    background-color: var(--bg-color);
+    border-radius: 5px;
+    box-shadow: 0 1px 4px var(--box-shadow);
+
+    list-style: none;
+    padding: 5px 0;
+    margin: 5px 0 0 0;
+    width: 130px;
+    z-index: 1000;
+}
+
+.add-item-dropdown li {
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.add-item-dropdown li:hover {
+    background-color: var(--d-menu-li);
+}
+
 .h-r-center-content {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 2px;
     padding-right: 20px;
-}
-
-.view {
-    position: relative; 
-    display: inline-block;
 }
 
 .settings {
