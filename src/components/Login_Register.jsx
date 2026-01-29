@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { auth } from '../firebase.js';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, sendEmailVerification } from "firebase/auth";
 import { getFriendlyErrorMessage } from '../utils/authErrors.js';
 import useAuthRedirect from '../hooks/useAuthRedirect.js';
 import './Login_Register.css';
@@ -25,12 +25,13 @@ const Login_Register = () => {
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
 
-            try {
-                await updateProfile(userCredential.user, { displayName: username });
-            } catch (ProfileError) {
-                console.error("User created, but name failed to save:", ProfileError);
-            }
+            await updateProfile(user, { displayName: username });
+
+            await sendEmailVerification(user);
+
+            alert("Account created! We sent you a verification email. Please check your inbox.");
             
             console.log("Success!");
             navigate('/');

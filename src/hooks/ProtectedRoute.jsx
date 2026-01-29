@@ -17,6 +17,18 @@ const ProtectedRoute = ({ children }) => {
         return <Navigate to="/account" replace />;
     }
 
+    if (!user.emailVerified) {
+        return (
+            <div className="verify-screen">
+                <h1>Please Verify Your Email</h1>
+                <p>We sent a link to {user.email}. Check your spam folder!</p>
+                <button onClick={() => window.location.reload()}>
+                    I have verified it (Refresh)
+                </button>
+            </div>
+        );
+    }
+
     return children;
 };
 
