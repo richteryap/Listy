@@ -2,76 +2,82 @@
   padding: 40px;
   max-width: 1400px;
   margin: 0 auto;
-
-  overflow-x: hidden;
 }
 
-.dashb-grid {
-  column-count: 5;
-  column-gap: 15px;
+.db-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
 }
 
-.note-card {
+.db-note-card {
   background-color: var(--bg-color);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px; 
-  break-inside: avoid;
+  width: 250px;
+
   box-shadow: 0 1px 3px var(--box-shadow);
   transition: box-shadow 0.2s, transform 0.2s;
-  position: relative; /* Needed for positioning the delete button */
+  position: relative;
+  white-space: pre-wrap;
 }
 
-.note-card h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
+.db-note-card h1 {
+  margin: 0;
+  font-weight: 400;
   font-size: 1.1rem;
+  padding: 10px 15px 0 15px;
 }
 
-.note-card:hover {
+.db-note-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  padding: 10px 15px 20px 15px;
+}
+
+.db-note-card:hover {
   box-shadow: 0 4px 8px var(--box-shadow);
 }
 
-.note-card:hover .note-actions {
-  opacity: 1; /* Show it! */
+.db-note-card:hover .db-note-buttons {
+  opacity: 1;
 }
 
-.note-actions {
-  opacity: 0; /* Hidden by default */
+.db-note-buttons {
+  opacity: 0;
   transition: opacity 0.2s;
+  padding: 5px;
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+  justify-content: space-between;
 }
 
-
-
-
-.note-card button {
+.db-note-card button {
   background: transparent;
   border: none;
   color: var(--text-color);
   cursor: pointer;
-  padding: 8px;
-  border-radius: 50%; /* Circle shape */
+  padding: 8px 10px;
+  border-radius: 50%;
   font-size: 0.9rem;
 }
 
-.note-card button:hover {
-  background-color: var(--button-hover-color); /* Light gray circle on hover */
+.db-note-card button:hover {
+  background-color: var(--button-hover-color);
 }
 
+.db-loading-screen {
+  text-align: center;
+  color: var(--text-color);
+  font-size: 2.5rem;
+  margin-top: 243px;
+}
 
-
-
-
-/* Empty State Styling */
 .empty-state {
   text-align: center;
-  color: #888;
-  margin-top: 50px;
-  /* Span across all columns */
+  color: var(--text-color);
+  margin-top: 243px;
   column-span: all; 
 }
 

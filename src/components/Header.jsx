@@ -100,13 +100,17 @@ const Header = () => {
                             {isMoreOpen && (
                                 <div className='more-content'>
                                     <ul className='more-dropdown'>
-                                        <li onClick={()=> {setIsMoreOpen(false);}}>
-                                            <i className="fa-solid fa-box-archive"></i>
-                                            Archive
+                                        <li>
+                                            <Link to="/archive" className='archive-link' onClick={()=> {setIsMoreOpen(false);}}>
+                                                <i className="fa-solid fa-box-archive"></i>
+                                                Archive
+                                            </Link>
                                         </li>
-                                        <li onClick={()=> {setIsMoreOpen(false);}}>
-                                            <i className="fa-solid fa-trash"></i>
-                                            Trash
+                                        <li>
+                                            <Link to="/trash" className='trash-link' onClick={()=> {setIsMoreOpen(false);}}>
+                                                <i className="fa-solid fa-trash"></i>
+                                                Trash
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>

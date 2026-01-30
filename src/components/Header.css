@@ -42,12 +42,6 @@
     cursor: pointer;
 }
 
-.account-link {
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-}
-
 .web-title::after {
     content: attr(data-tooltip-text);
     
@@ -295,12 +289,22 @@
     z-index: 1000;
 }
 
-.more-dropdown li {
-    padding: 10px 15px;
-    cursor: pointer;
+.archive-link, 
+.trash-link {
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 100%;
+    padding: 10px 15px;
+    
+    text-decoration: none;
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
+.more-dropdown li {
+    padding: 0;
+    cursor: pointer;
     font-size: 14px;
     color: var(--text-color);
 }

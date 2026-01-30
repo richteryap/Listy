@@ -35,7 +35,7 @@
     border: none;
     background: transparent;
     color: var(--text-color);
-    padding: 16px 13px 13px 13px;
+    padding: 16px 13px 3px 13px;
     outline: none;
 }
 
@@ -45,7 +45,7 @@
     border: none;
     background: transparent;
     color: var(--text-color);
-    padding: 0 13px;
+    padding: 10px 13px 0 13px;
     outline: none;
     resize: none;
     min-height: 150px;

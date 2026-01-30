@@ -47,34 +47,34 @@ const Dashboard = () => {
     return (
         <div className ='dashboard-body'>
             {loading ? (
-                <div className="dashb-loading-screen">
+                <div className="db-loading-screen">
                     <i className="fa-solid fa-spinner fa-spin"></i>
                 </div>
             ) : (
-                <div className="dashb-grid">
+                <div className="db-grid">
                     {notes.map(note => (
-                        <div key={note.id} className="note-card" onClick={(e) => {e.stopPropagation(); setSelectedNote(note);}}>
+                        <div key={note.id} className="db-note-card" onClick={(e) => {e.stopPropagation(); setSelectedNote(note);}}>
                             <div className="note-content">
-                                {note.title && <h3>{note.title}</h3>}
+                                {note.title && <h1>{note.title}</h1>}
                                 <p>{note.content}</p>
                             </div>
-                            <div className="note-actions">
-                                <button className='pin-btn'>
+                            <div className="db-note-buttons">
+                                <button className='db-pin-btn'>
                                     <i className="fa-solid fa-thumbtack"></i>
                                 </button>
-                                <button className='checkbox-btn'>
+                                <button className='db-checkbox-btn'>
                                     <i className="fa-solid fa-check-square"></i>
                                 </button>
-                                <button className='image-btn'>
+                                <button className='db-image-btn'>
                                     <i className="fa-regular fa-image"></i>
                                 </button>
-                                <button className='tags-btn'>
+                                <button className='db-tags-btn'>
                                     <i className="fa-solid fa-tags"></i>
                                 </button>
-                                <button className='archive-btn'>
+                                <button className='db-archive-btn'>
                                     <i className="fa-solid fa-box-archive"></i>
                                 </button>
-                                <button className="delete-btn" onClick={(e) => handleDelete(e, note.id)}>
+                                <button className="db-delete-btn" onClick={(e) => handleDelete(e, note.id)}>
                                     <i className="fa-solid fa-trash"></i>
                                 </button>
                             </div>
