@@ -1,15 +1,14 @@
 .dashboard-body {
   padding: 40px;
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
 
   overflow-x: hidden;
 }
 
-.notes-grid {
-  /* Magic CSS for Masonry Layout */
-  column-count: 4; /* How many columns you want */
-  column-gap: 20px;
+.dashb-grid {
+  column-count: 5;
+  column-gap: 15px;
 }
 
 .note-card {
@@ -19,7 +18,7 @@
   padding: 15px;
   margin-bottom: 20px; 
   break-inside: avoid;
-  box-shadow: 0 1px 3px var(--box-shadow-color);
+  box-shadow: 0 1px 3px var(--box-shadow);
   transition: box-shadow 0.2s, transform 0.2s;
   position: relative; /* Needed for positioning the delete button */
 }
@@ -31,7 +30,7 @@
 }
 
 .note-card:hover {
-  box-shadow: 0 4px 8px var(--box-shadow-color);
+  box-shadow: 0 4px 8px var(--box-shadow);
 }
 
 .note-card:hover .note-actions {
@@ -80,15 +79,4 @@
   font-size: 5rem;
   margin-bottom: 20px;
   opacity: 0.2;
-}
-
-/* Responsive: fewer columns on smaller screens */
-@media (max-width: 1000px) {
-  .notes-grid { column-count: 3; }
-}
-@media (max-width: 768px) {
-  .notes-grid { column-count: 2; }
-}
-@media (max-width: 500px) {
-  .notes-grid { column-count: 1; }
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { db, auth } from '../firebase';
 import { collection, query, where, onSnapshot, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import EditNoteModal from './AddNote/EditNoteModal';
+import EditNote from './AddNote/EditNote.jsx';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -32,14 +32,26 @@ const Dashboard = () => {
         return () => unsubscribe();
     }, [user]);
 
+    const handleDelete = async (e, noteId) => {
+        e.stopPropagation();
+        const confirmDelete = window.confirm("Delete this note?");
+        if (confirmDelete) {
+            try {
+                await deleteDoc(doc(db, "notes", noteId));
+            } catch (error) {
+                console.error("Error deleting note:", error);
+            }
+        }
+    };
+
     return (
         <div className ='dashboard-body'>
             {loading ? (
-                <div className="dashboard-loading-screen">
+                <div className="dashb-loading-screen">
                     <i className="fa-solid fa-spinner fa-spin"></i>
                 </div>
             ) : (
-                <div className="notes-grid">
+                <div className="dashb-grid">
                     {notes.map(note => (
                         <div key={note.id} className="note-card" onClick={(e) => {e.stopPropagation(); setSelectedNote(note);}}>
                             <div className="note-content">
@@ -50,8 +62,14 @@ const Dashboard = () => {
                                 <button className='pin-btn'>
                                     <i className="fa-solid fa-thumbtack"></i>
                                 </button>
+                                <button className='checkbox-btn'>
+                                    <i className="fa-solid fa-check-square"></i>
+                                </button>
                                 <button className='image-btn'>
                                     <i className="fa-regular fa-image"></i>
+                                </button>
+                                <button className='tags-btn'>
+                                    <i className="fa-solid fa-tags"></i>
                                 </button>
                                 <button className='archive-btn'>
                                     <i className="fa-solid fa-box-archive"></i>
@@ -73,7 +91,7 @@ const Dashboard = () => {
             )}
 
             {selectedNote && (
-                <EditNoteModal 
+                <EditNote
                     note={selectedNote} 
                     onClose={() => setSelectedNote(null)} 
                 />

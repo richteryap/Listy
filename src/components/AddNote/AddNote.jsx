@@ -40,25 +40,50 @@ const AddNote = ({ onClose }) => {
     };
 
     return (
-        <div className="modal-overlay">
-            <div className="add-note-modal" ref={addNoteRef}>
-                <input
-                    type='text'
-                    className='note-title-input'
-                    placeholder='Title'
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    autoFocus
-                />
-                <textarea
-                    className='note-content-input'
-                    placeholder='Take a note...'
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    rows={5}
-                />
-                <div className='add-note-footer'>
-                    <button className='close-note-btn' onClick={handleClose}>
+        <div className="add-note-overlay">
+            <div className="add-note-container" ref={addNoteRef}>
+                <div className='an-text-area'>
+                    <input
+                        type='text'
+                        className='an-title'
+                        placeholder='Title'
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        autoFocus
+                    />
+                    <textarea
+                        className='an-content'
+                        placeholder='Take a note...'
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        rows={5}
+                    />
+                </div>
+                <div className='an-footer'>
+                    <div className='an-footer-buttons'>
+                        <button className='an-pin-btn'>
+                            <i className="fa-solid fa-thumbtack"></i>
+                        </button>
+                        <button className='an-checkbox-btn'>
+                            <i className="fa-solid fa-check-square"></i>
+                        </button>
+                        <button className='an-image-btn'>
+                            <i className="fa-regular fa-image"></i>
+                        </button>
+                        <button className='an-tags-btn'>
+                            <i className="fa-solid fa-tags"></i>
+                        </button>
+                        <button className='an-archive-btn'>
+                            <i className="fa-solid fa-box-archive"></i>
+                        </button>
+                        <button className='an-undo-btn'>
+                            <i className="fa-solid fa-rotate-left"></i>
+                        </button>
+                        <button className='an-redo-btn'>
+                            <i className="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                    <button className='an-close-btn' onClick={handleClose}>
                         Close
                     </button>
                 </div>

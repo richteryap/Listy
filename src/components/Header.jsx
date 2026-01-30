@@ -15,7 +15,7 @@ const Header = () => {
 
     const [query, setQuery] = useState('');
     const [isAddItemOpen, setIsAddItemOpen] = useState(false);
-    const [isAddNoteModalOpen, setIsAddNoteModalOpen] = useState(false);
+    const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
     const [isMoreOpen, setIsMoreOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -84,7 +84,7 @@ const Header = () => {
                         {isAddItemOpen && (
                             <div className='add-item-content'>
                                 <ul className='add-item-dropdown'>
-                                    <li onClick={() => {setIsAddItemOpen(false); setIsAddNoteModalOpen(true);}}>
+                                    <li onClick={() => {setIsAddItemOpen(false); setIsAddNoteOpen(true);}}>
                                         <i className="fa-solid fa-sticky-note"></i>
                                         Add Note
                                     </li>
@@ -155,8 +155,8 @@ const Header = () => {
                 </div>
             )}
 
-            {isAddNoteModalOpen && (
-                <AddNote onClose={() => setIsAddNoteModalOpen(false)} />
+            {isAddNoteOpen && (
+                <AddNote onClose={() => setIsAddNoteOpen(false)} />
             )}
         </div>
     )

@@ -1,0 +1,89 @@
+import { useState, useEffect } from 'react';
+import { db } from '../../firebase';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { useClickOutside } from '../../hooks/useClickOutside';
+import './EditNote.css';
+
+const EditNote = ({ note, onClose }) => {
+    const [title, setTitle] = useState(note.title);
+    const [content, setContent] = useState(note.content);
+
+    const editNoteRef = useClickOutside(async () => {
+        await handleSave();
+        onClose();
+    });
+
+    const handleSave = async () => {
+        if (title === note.title && content === note.content) return;
+
+        try {
+            const noteRef = doc(db, "notes", note.id);
+            await updateDoc(noteRef, {
+                title: title,
+                content: content,
+                updatedAt: serverTimestamp()
+            });
+        } catch (error) {
+            console.error("Error updating note:", error);
+        }
+    };
+
+    const handleClose = async () => {
+        await handleSave();
+        onClose();
+    };
+
+    return (
+        <div className="edit-note-overlay">
+            <div className="edit-note-container" ref={editNoteRef}>
+                <div className='en-text-area'>
+                    <input 
+                        type="text"
+                        className="en-title" 
+                        placeholder="Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        autoFocus
+                    />
+                    <textarea 
+                        className="en-content"
+                        placeholder="Take a note..."
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        rows={5}
+                    />
+                </div>
+                <div className="en-footer">
+                    <div className='en-footer-buttons'>
+                        <button className='en-pin-btn'>
+                            <i className="fa-solid fa-thumbtack"></i>
+                        </button>
+                        <button className='en-checkbox-btn'>
+                            <i className="fa-solid fa-check-square"></i>
+                        </button>
+                        <button className='en-image-btn'>
+                            <i className="fa-regular fa-image"></i>
+                        </button>
+                        <button className='en-tags-btn'>
+                            <i className="fa-solid fa-tags"></i>
+                        </button>
+                        <button className='en-archive-btn'>
+                            <i className="fa-solid fa-box-archive"></i>
+                        </button>
+                        <button className='en-undo-btn'>
+                            <i className="fa-solid fa-rotate-left"></i>
+                        </button>
+                        <button className='en-redo-btn'>
+                            <i className="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                    <button className="en-close-btn" onClick={handleClose}>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default EditNote;
