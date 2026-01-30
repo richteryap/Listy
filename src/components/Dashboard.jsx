@@ -47,6 +47,15 @@ const Dashboard = () => {
                                 <p>{note.content}</p>
                             </div>
                             <div className="note-actions">
+                                <button className='pin-btn'>
+                                    <i className="fa-solid fa-thumbtack"></i>
+                                </button>
+                                <button className='image-btn'>
+                                    <i className="fa-regular fa-image"></i>
+                                </button>
+                                <button className='archive-btn'>
+                                    <i className="fa-solid fa-box-archive"></i>
+                                </button>
                                 <button className="delete-btn" onClick={(e) => handleDelete(e, note.id)}>
                                     <i className="fa-solid fa-trash"></i>
                                 </button>

@@ -39,7 +39,7 @@ const EditNoteModal = ({ note, onClose }) => {
         <div className="modal-overlay">
             <div className="modal-content" ref={modalRef}>
                 <input 
-                    type="text" 
+                    type="text"
                     className="modal-title" 
                     placeholder="Title"
                     value={title}

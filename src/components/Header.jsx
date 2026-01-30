@@ -16,10 +16,12 @@ const Header = () => {
     const [query, setQuery] = useState('');
     const [isAddItemOpen, setIsAddItemOpen] = useState(false);
     const [isAddNoteModalOpen, setIsAddNoteModalOpen] = useState(false);
+    const [isMoreOpen, setIsMoreOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     const addItemRef = useClickOutside(() => { setIsAddItemOpen(false); });
+    const moreRef = useClickOutside(() => { setIsMoreOpen(false); });
     const settingsRef = useClickOutside(() => { setIsSettingsOpen(false); });
     const profileRef = useClickOutside(() => { setIsProfileOpen(false); });
 
@@ -91,10 +93,24 @@ const Header = () => {
                         )}
                     </div>
                     <div className='h-r-center-content'>
-                        <div className='trash-bin'>
-                            <button className="trash-btn" aria-label="Trash Bin" data-tooltip-text='Trash Bin'>
-                                <i className="fa-solid fa-trash"></i>
+                        <div className='more' ref={moreRef}>
+                            <button className="more-btn" onClick={() => setIsMoreOpen(!isMoreOpen)} aria-label="More" data-tooltip-text='More'>
+                                <i className="fa-solid fa-ellipsis"></i>
                             </button>
+                            {isMoreOpen && (
+                                <div className='more-content'>
+                                    <ul className='more-dropdown'>
+                                        <li onClick={()=> {setIsMoreOpen(false);}}>
+                                            <i className="fa-solid fa-box-archive"></i>
+                                            Archive
+                                        </li>
+                                        <li onClick={()=> {setIsMoreOpen(false);}}>
+                                            <i className="fa-solid fa-trash"></i>
+                                            Trash
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
                         </div>
                         <div className='view'>
                             <button className="view-btn" onClick={() => setIsGridView(!isGridView)} aria-label="View" data-tooltip-text='View'>

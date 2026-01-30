@@ -1,6 +1,6 @@
 .dashboard-body {
   padding: 40px;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
 
   overflow-x: hidden;
@@ -19,7 +19,7 @@
   padding: 15px;
   margin-bottom: 20px; 
   break-inside: avoid;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px var(--box-shadow-color);
   transition: box-shadow 0.2s, transform 0.2s;
   position: relative; /* Needed for positioning the delete button */
 }
@@ -31,7 +31,7 @@
 }
 
 .note-card:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px var(--box-shadow-color);
 }
 
 .note-card:hover .note-actions {
@@ -46,27 +46,26 @@
   margin-top: 10px;
 }
 
-.delete-btn {
+
+
+
+.note-card button {
   background: transparent;
   border: none;
-  color: #5f6368;
+  color: var(--text-color);
   cursor: pointer;
   padding: 8px;
   border-radius: 50%; /* Circle shape */
   font-size: 0.9rem;
-  transition: background 0.2s;
 }
 
-.delete-btn:hover {
-  background-color: rgba(0,0,0,0.05); /* Light gray circle on hover */
-  color: #333;
+.note-card button:hover {
+  background-color: var(--button-hover-color); /* Light gray circle on hover */
 }
 
-/* Dark mode adjustment for hover */
-.dark-mode .delete-btn:hover {
-  background-color: rgba(255,255,255,0.1);
-  color: #fff;
-}
+
+
+
 
 /* Empty State Styling */
 .empty-state {

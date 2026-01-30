@@ -239,7 +239,7 @@
 .add-item-dropdown {
     position: absolute;
     top: 100%;
-    right: 0;
+    left: 0;
 
     background-color: var(--bg-color);
     border-radius: 5px;
@@ -272,6 +272,41 @@
     align-items: center;
     gap: 2px;
     padding-right: 20px;
+}
+
+.more {
+    position: relative; 
+    display: inline-block;
+}
+
+.more-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+
+    background-color: var(--bg-color);
+    border-radius: 5px;
+    box-shadow: 0 1px 4px var(--box-shadow);
+
+    list-style: none;
+    padding: 5px 0;
+    margin: 5px 0 0 0;
+    width: 130px;
+    z-index: 1000;
+}
+
+.more-dropdown li {
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.more-dropdown li:hover {
+    background-color: var(--d-menu-li);
 }
 
 .settings {
