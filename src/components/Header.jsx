@@ -7,7 +7,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import AddNote from './AddNote/AddNote.jsx';
 import './Header.css'
 
-const Header = ({ isGridView, setIsGridView }) => {
+const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode }) => {
     const location = useLocation();
     const isAccountPage = location.pathname.startsWith('/account');
     const isTrashPage = location.pathname.startsWith('/trash');
@@ -26,20 +26,6 @@ const Header = ({ isGridView, setIsGridView }) => {
     const moreRef = useClickOutside(() => { setIsMoreOpen(false); });
     const settingsRef = useClickOutside(() => { setIsSettingsOpen(false); });
     const profileRef = useClickOutside(() => { setIsProfileOpen(false); });
-
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        return localStorage.getItem('theme') === 'dark';
-    });
-
-    useEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light');
-        }
-    }, [isDarkMode]);
 
     const handleLogout = async () => {
         try {

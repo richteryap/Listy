@@ -21,35 +21,51 @@ function App() {
     localStorage.setItem('viewMode', isGridView ? 'grid' : 'list');
   }, [isGridView]);
 
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+      return localStorage.getItem('theme') === 'dark';
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
   return (
     <>
       {!noHeaderPaths.includes(location.pathname) && (
         <Header 
           isGridView={isGridView} 
           setIsGridView={setIsGridView}
+          isDarkMode={isDarkMode}
+          setIsDarkMode={setIsDarkMode}
         />
       )}
       <Routes>
         <Route path='/' element={
           <ProtectedRoute>
             <div className='app-body'>
-              <Dashboard isGridView={isGridView} />
+              <Dashboard isGridView={isGridView} isDarkMode={isDarkMode} />
             </div>
           </ProtectedRoute>
         }/>
         <Route path='/archive' element={
           <ProtectedRoute>
-            <Archive isGridView={isGridView} />
+            <Archive isGridView={isGridView} isDarkMode={isDarkMode} />
           </ProtectedRoute>
         }/>
         <Route path='/trash' element={
           <ProtectedRoute>
-            <Trash isGridView={isGridView} />
+            <Trash isGridView={isGridView} isDarkMode={isDarkMode}/>
           </ProtectedRoute>
         }/>
-        <Route path='/verify-email' element={<WaitingRoom />}/>
-        <Route path='/account' element={<Login_Register />}/>
-        <Route path='*' element={<Navigate to='/' replace/>}/>
+        <Route path='/verify-email' element={<WaitingRoom isDarkMode={isDarkMode} />}/>
+        <Route path='/account' element={<Login_Register  isDarkMode={isDarkMode}/>}/>
+        <Route path='*' element={<Navigate to='/' replace />}/>
       </Routes>
     </>
   )
