@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import './App.css'
 import Header from './components/Header.jsx'
@@ -10,28 +11,40 @@ import Trash from './components/OtherComps/Trash.jsx';
 
 function App() {
   const location = useLocation();
-
   const noHeaderPaths = ['/verify-email'];
+
+  const [isGridView, setIsGridView] = useState(() => {
+    return localStorage.getItem('viewMode') === 'grid';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('viewMode', isGridView ? 'grid' : 'list');
+  }, [isGridView]);
 
   return (
     <>
-      {!noHeaderPaths.includes(location.pathname) && <Header />}
+      {!noHeaderPaths.includes(location.pathname) && (
+        <Header 
+          isGridView={isGridView} 
+          setIsGridView={setIsGridView}
+        />
+      )}
       <Routes>
         <Route path='/' element={
           <ProtectedRoute>
             <div className='app-body'>
-              <Dashboard />
+              <Dashboard isGridView={isGridView} />
             </div>
           </ProtectedRoute>
         }/>
         <Route path='/archive' element={
           <ProtectedRoute>
-            <Archive />
+            <Archive isGridView={isGridView} />
           </ProtectedRoute>
         }/>
         <Route path='/trash' element={
           <ProtectedRoute>
-            <Trash />
+            <Trash isGridView={isGridView} />
           </ProtectedRoute>
         }/>
         <Route path='/verify-email' element={<WaitingRoom />}/>

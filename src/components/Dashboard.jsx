@@ -5,7 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import EditNote from './AddNote/EditNote.jsx';
 import './Dashboard.css';
 
-const Dashboard = () => {
+const Dashboard = ({ isGridView }) => {
     const [user] = useAuthState(auth);
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -60,7 +60,7 @@ const Dashboard = () => {
                     <i className="fa-solid fa-spinner fa-spin"></i>
                 </div>
             ) : (
-                <div className="db-grid">
+                <div className={`db-grid ${isGridView ? '' : 'list-view'}`}>
                     {notes.map(note => (
                         <div key={note.id} className={`db-note-card ${selectedNote?.id === note.id ? 'selected' : ''}`}>
                             <div className="note-content" onClick={(e) => {e.stopPropagation(); setSelectedNote(note);}}>

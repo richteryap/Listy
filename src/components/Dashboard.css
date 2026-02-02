@@ -10,6 +10,18 @@
   justify-content: center;
   align-items: center;
   gap: 15px;
+
+  transition: all 0.3s ease;
+}
+
+.db-grid.list-view {
+  flex-direction: column;
+  align-items: center;
+}
+
+.db-grid.list-view .db-note-card {
+  width: 600px;
+  max-width: 100%;
 }
 
 .db-note-card {

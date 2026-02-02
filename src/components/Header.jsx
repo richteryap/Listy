@@ -7,7 +7,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import AddNote from './AddNote/AddNote.jsx';
 import './Header.css'
 
-const Header = () => {
+const Header = ({ isGridView, setIsGridView }) => {
     const location = useLocation();
     const isAccountPage = location.pathname.startsWith('/account');
     const isTrashPage = location.pathname.startsWith('/trash');
@@ -27,17 +27,9 @@ const Header = () => {
     const settingsRef = useClickOutside(() => { setIsSettingsOpen(false); });
     const profileRef = useClickOutside(() => { setIsProfileOpen(false); });
 
-    const [isGridView, setIsGridView] = useState(() => {
-        return localStorage.getItem('viewMode') === 'grid';
-    });
-
     const [isDarkMode, setIsDarkMode] = useState(() => {
         return localStorage.getItem('theme') === 'dark';
-    })
-
-    useEffect(() => {
-        localStorage.setItem('viewMode', isGridView ? 'grid' : 'list');
-    }, [isGridView]);
+    });
 
     useEffect(() => {
         if (isDarkMode) {
@@ -121,7 +113,7 @@ const Header = () => {
                             )}
                         </div>
                         <div className='view'>
-                            <button className="view-btn" onClick={() => setIsGridView(!isGridView)} aria-label="View" data-tooltip-text='View'>
+                            <button className="view-btn" onClick={() => setIsGridView(!isGridView)} aria-label="View" data-tooltip-text={isGridView ? 'List View' : 'Grid View'}>
                                 <i className={`fa-solid ${isGridView ? 'fa-list' : 'fa-th-large'}`}></i> 
                             </button>
                         </div>
