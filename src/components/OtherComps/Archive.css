@@ -1,10 +1,433 @@
 .archive-body {
-  min-height: calc(100vh - 65px); 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 100px 30px 0 30px;
+  max-width: 1400px;
+  margin:  0 auto;
+}
 
-  background: var(--bg-color);
+.archive-loading-screen {
+  text-align: center;
+  color: var(--text-color);
+  font-size: 2.5rem;
+  margin-top: 240px;
+}
+
+.archive-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 15px;
+
+  transition: all 0.3s ease;
+}
+
+.archive-grid.list-view {
+  flex-direction: column;
+  align-items: center;
+}
+
+.archive-grid.list-view .archive-note-card {
+  width: 600px;
+  max-width: 100%;
+}
+
+.archive-grid.list-view .archive-note-buttons {
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.archive-grid.list-view .archive-note-card.selected {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(5px) scale(1.05);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s 0.2s ease-in-out;
+}
+
+.archive-note-card {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 250px;
+
+  box-shadow: 0 1px 3px var(--box-shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  white-space: pre-wrap;
+}
+
+.archive-note-card.selected {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(20px) scale(1.25);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s 0.2s ease-in-out;
+}
+
+.archive-note-card h1 {
   margin: 0;
+  font-weight: 400;
+  font-size: 1.1rem;
+  padding: 10px 15px 0 15px;
+}
+
+.archive-note-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  padding: 10px 15px 20px 15px;
+}
+
+.archive-note-card:hover {
+  box-shadow: 0 4px 8px var(--box-shadow);
+}
+
+.archive-note-card:hover .archive-pin-btn {
+  opacity: 1;
+}
+
+.archive-note-card:hover .archive-checkbox-btn {
+  opacity: 1;
+}
+
+.archive-note-card:hover .archive-image-btn {
+  opacity: 1;
+}
+
+.archive-note-card:hover .archive-tags-btn {
+  opacity: 1;
+}
+
+.archive-note-card:hover .archive-unarchive-btn {
+  opacity: 1;
+}
+
+.archive-note-card:hover .archive-delete-btn {
+  opacity: 1;
+}
+
+.archive-note-buttons {
+  transition: opacity 0.2s;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+
+  z-index: 10;
+  position: relative;
+}
+
+.archive-pin-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.archive-pin-btn.active {
+  color: var(--card-btn-active);
+  opacity: 1;
+}
+
+.archive-pin-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.archive-pin-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.archive-checkbox-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.archive-checkbox-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.archive-checkbox-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.archive-image-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.archive-image-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.archive-image-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.archive-tags-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.archive-tags-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.archive-tags-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.archive-unarchive-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.archive-unarchive-btn.active {
+  color: var(--card-btn-active);
+  opacity: 1;
+}
+
+.archive-unarchive-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.archive-unarchive-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.archive-delete-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.archive-delete-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.archive-delete-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.archive-note-card button:hover {
+  background-color: var(--button-hover-color);
+}
+
+.archive-empty-state {
+  text-align: center;
+  color: var(--text-color);
+  margin-top: 243px;
+  column-span: all; 
+}
+
+.archive-empty-state i {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  opacity: 0.2;
 }

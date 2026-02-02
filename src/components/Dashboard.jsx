@@ -24,10 +24,7 @@ const Dashboard = ({ isGridView }) => {
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const notesData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            const notesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setNotes(notesData);
             setLoading(false);
         });
@@ -91,7 +88,7 @@ const Dashboard = ({ isGridView }) => {
                     ))}
 
                     {!loading && notes.length === 0 && (
-                        <div className="empty-state">
+                        <div className="db-empty-state">
                             <i className="fa-regular fa-lightbulb"></i>
                             <p>Your notes will appear here</p>
                         </div>

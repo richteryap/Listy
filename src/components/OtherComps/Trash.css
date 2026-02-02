@@ -1,10 +1,198 @@
 .trash-body {
-  min-height: calc(100vh - 65px); 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 100px 30px 0 30px;
+  max-width: 1400px;
+  margin:  0 auto;
+}
 
-  background: var(--bg-color);
+.trash-loading-screen {
+  text-align: center;
+  color: var(--text-color);
+  font-size: 2.5rem;
+  margin-top: 240px;
+}
+
+.trash-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 15px;
+
+  transition: all 0.3s ease;
+}
+
+.trash-grid.list-view {
+  flex-direction: column;
+  align-items: center;
+}
+
+.trash-grid.list-view .trash-note-card {
+  width: 600px;
+  max-width: 100%;
+}
+
+.trash-grid.list-view .trash-note-buttons {
+  justify-content: flex-start;
+  gap: 15px;
+}
+
+.trash-note-card {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 250px;
+
+  box-shadow: 0 1px 3px var(--box-shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  white-space: pre-wrap;
+}
+
+.trash-note-card h1 {
   margin: 0;
+  font-weight: 400;
+  font-size: 1.1rem;
+  padding: 10px 15px 0 15px;
+}
+
+.trash-note-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  padding: 10px 15px 20px 15px;
+}
+
+.trash-note-card:hover {
+  box-shadow: 0 4px 8px var(--box-shadow);
+}
+
+.trash-note-card:hover .trash-restore-btn {
+  opacity: 1;
+}
+
+.trash-note-card:hover .trash-delete-btn {
+  opacity: 1;
+}
+
+.trash-note-buttons {
+  transition: opacity 0.2s;
+  padding: 5px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+
+  z-index: 10;
+  position: relative;
+}
+
+.trash-restore-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.trash-restore-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.trash-restore-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.trash-delete-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.trash-delete-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.trash-delete-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.trash-note-card button:hover {
+  background-color: var(--button-hover-color);
+}
+
+.trash-empty-state {
+  text-align: center;
+  color: var(--text-color);
+  margin-top: 243px;
+  column-span: all; 
+}
+
+.trash-empty-state i {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  opacity: 0.2;
 }
