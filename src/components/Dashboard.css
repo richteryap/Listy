@@ -35,7 +35,7 @@
   pointer-events: none;
 
   transform: translateY(5px) scale(1.05);
-  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s 0.2s ease-in-out;
+  transition: opacity 0.1s ease, transform 0.1s ease, visibility 0s 0.1s ease-in-out;
 }
 
 .db-note-card {

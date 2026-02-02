@@ -10,6 +10,7 @@ const Archive = ({ isGridView }) => {
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedNote, setSelectedNote] = useState(null);
+    const [animate, setAnimate] = useState(null);
 
     useEffect(() => {
         if (!user) return;
@@ -31,6 +32,15 @@ const Archive = ({ isGridView }) => {
         return () => unsubscribe();
     }, [user]);
 
+    const handleAnimate = (note) => {
+        setAnimate(note.id);
+
+        setTimeout(() => {
+            setSelectedNote(note);
+            setAnimate(null);
+        }, 100);
+    }
+
     const handlePin = async (noteId, isPinned) => {
         await updateDoc(doc(db, "notes", noteId), {
             isPinned: !isPinned
@@ -46,7 +56,6 @@ const Archive = ({ isGridView }) => {
     const handleTrash = async (noteId) => {
         await updateDoc(doc(db, "notes", noteId), {
             isTrashed: true,
-            isArchived: false
         });
     }
 
@@ -59,8 +68,8 @@ const Archive = ({ isGridView }) => {
             ) : (
                 <div className={`archive-grid ${isGridView ? '' : 'list-view'}`}>
                     {notes.map(note => (
-                        <div key={note.id} className={`archive-note-card ${selectedNote?.id === note.id ? 'selected' : ''}`}>
-                            <div className="archive-note-content" onClick={(e) => {e.stopPropagation(); setSelectedNote(note);}}>
+                        <div key={note.id} className={`archive-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
+                            <div className="archive-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
                                 {note.title && <h1>{note.title}</h1>}
                                 <p>{note.content}</p>
                             </div>

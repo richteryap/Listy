@@ -10,6 +10,7 @@ const Dashboard = ({ isGridView }) => {
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedNote, setSelectedNote] = useState(null);
+    const [animate, setAnimate] = useState(null);
 
     useEffect(() => {
         if (!user) return;
@@ -31,6 +32,15 @@ const Dashboard = ({ isGridView }) => {
 
         return () => unsubscribe();
     }, [user]);
+
+    const handleAnimate = (note) => {
+        setAnimate(note.id);
+
+        setTimeout(() => {
+            setSelectedNote(note);
+            setAnimate(null);
+        }, 100);
+    }
 
     const handlePin = async (noteId, isPinned) => {
         await updateDoc(doc(db, "notes", noteId), {
@@ -59,8 +69,8 @@ const Dashboard = ({ isGridView }) => {
             ) : (
                 <div className={`db-grid ${isGridView ? '' : 'list-view'}`}>
                     {notes.map(note => (
-                        <div key={note.id} className={`db-note-card ${selectedNote?.id === note.id ? 'selected' : ''}`}>
-                            <div className="note-content" onClick={(e) => {e.stopPropagation(); setSelectedNote(note);}}>
+                        <div key={note.id} className={`db-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
+                            <div className="note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
                                 {note.title && <h1>{note.title}</h1>}
                                 <p>{note.content}</p>
                             </div>
