@@ -9,6 +9,8 @@ const AddNote = ({ onClose }) => {
     const [user] = useAuthState(auth);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [isPinned, setIsPinned] = useState(false);
+    const [isArchived, setIsArchived] = useState(false);
 
     const addNoteRef = useClickOutside(async () => {
         await handleAddNote();
@@ -25,10 +27,15 @@ const AddNote = ({ onClose }) => {
                 title: title,
                 content: content,
                 userId: user.uid,
+                isTrashed: false,
+                isArchived: isArchived,
+                isPinned: isPinned,
                 createdAt: serverTimestamp()
             });
             setTitle('');
             setContent('');
+            setIsPinned(false);
+            setIsArchived(false);
         } catch (error) {
             console.error("Error adding note: ", error);
         }
@@ -61,7 +68,7 @@ const AddNote = ({ onClose }) => {
                 </div>
                 <div className='an-footer'>
                     <div className='an-footer-buttons'>
-                        <button className='an-pin-btn'>
+                        <button className={`an-pin-btn ${isPinned ? 'active' : ''}`} onClick={() => setIsPinned(!isPinned)}>
                             <i className="fa-solid fa-thumbtack"></i>
                         </button>
                         <button className='an-checkbox-btn'>
@@ -73,7 +80,7 @@ const AddNote = ({ onClose }) => {
                         <button className='an-tags-btn'>
                             <i className="fa-solid fa-tags"></i>
                         </button>
-                        <button className='an-archive-btn'>
+                        <button className={`an-archive-btn ${isArchived ? 'active' : ''}`} onClick={() => setIsArchived(!isArchived)}>
                             <i className="fa-solid fa-box-archive"></i>
                         </button>
                         <button className='an-undo-btn'>

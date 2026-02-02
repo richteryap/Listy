@@ -18,7 +18,9 @@
   --input-color: rgb(245, 245, 245);
   --input-text-color: #202124;
   --input-btn-hover: rgb(230, 230, 230);
-  
+  --card-btn: #505156;
+  --card-btn-active: black;
+    
   --button-hover-color: rgb(245, 245, 245);
   --d-menu-li: rgb(240, 240, 240);
 
@@ -37,6 +39,8 @@ html.dark-mode {
   --input-color: rgb(85, 85, 90);
   --input-text-color: white;
   --input-btn-hover: rgb(95, 95, 100);
+  --card-btn: #dadce0;
+  --card-btn-active: white;
 
   --button-hover-color: rgb(65, 65, 65);
   --d-menu-li: rgb(50, 50, 50);

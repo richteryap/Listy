@@ -24,6 +24,15 @@
   white-space: pre-wrap;
 }
 
+.db-note-card.selected {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(20px) scale(1.25);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s 0.2s ease-in-out;
+}
+
 .db-note-card h1 {
   margin: 0;
   font-weight: 400;
@@ -41,26 +50,336 @@
   box-shadow: 0 4px 8px var(--box-shadow);
 }
 
-.db-note-card:hover .db-note-buttons {
+.db-note-card:hover .db-pin-btn {
+  opacity: 1;
+}
+
+.db-note-card:hover .db-checkbox-btn {
+  opacity: 1;
+}
+
+.db-note-card:hover .db-image-btn {
+  opacity: 1;
+}
+
+.db-note-card:hover .db-tags-btn {
+  opacity: 1;
+}
+
+.db-note-card:hover .db-archive-btn {
+  opacity: 1;
+}
+
+.db-note-card:hover .db-delete-btn {
   opacity: 1;
 }
 
 .db-note-buttons {
-  opacity: 0;
   transition: opacity 0.2s;
   padding: 5px;
   display: flex;
   justify-content: space-between;
+
+  z-index: 10;
+  position: relative;
 }
 
-.db-note-card button {
+.db-pin-btn {
+  opacity: 0;
   background: transparent;
   border: none;
-  color: var(--text-color);
+  color: var(--card-btn);
   cursor: pointer;
   padding: 8px 10px;
   border-radius: 50%;
   font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.db-pin-btn.active {
+  color: var(--card-btn-active);
+  opacity: 1;
+}
+
+.db-pin-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.db-pin-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.db-checkbox-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.db-checkbox-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.db-checkbox-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.db-image-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.db-image-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.db-image-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.db-tags-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.db-tags-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.db-tags-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.db-archive-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.db-archive-btn.active {
+  color: var(--card-btn-active);
+  opacity: 1;
+}
+
+.db-archive-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.db-archive-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
+}
+
+.db-delete-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--card-btn);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+
+  z-index: 2;
+
+  position: relative;
+}
+
+.db-delete-btn::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.db-delete-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
 }
 
 .db-note-card button:hover {

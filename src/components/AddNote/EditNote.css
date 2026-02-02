@@ -80,10 +80,16 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: inherit;
+    color: grey;
 
     padding: 12px 13px;
     border-radius: 50px;
+
+    transition: color 0.2s, background 0.2s;
+}
+
+.en-footer-buttons button.active {
+    color: var(--card-btn-active);
 }
 
 .en-footer-buttons button:hover {

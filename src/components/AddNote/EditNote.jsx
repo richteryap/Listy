@@ -7,6 +7,8 @@ import './EditNote.css';
 const EditNote = ({ note, onClose }) => {
     const [title, setTitle] = useState(note.title);
     const [content, setContent] = useState(note.content);
+    const [isPinned, setIsPinned] = useState(note.isPinned || false); 
+    const [isArchived, setIsArchived] = useState(note.isArchived || false);
 
     const editNoteRef = useClickOutside(async () => {
         await handleSave();
@@ -14,15 +16,24 @@ const EditNote = ({ note, onClose }) => {
     });
 
     const handleSave = async () => {
-        if (title === note.title && content === note.content) return;
+        if (
+            title === note.title &&
+            content === note.content &&
+            isPinned === note.isPinned &&
+            isArchived === note.isArchived
+        ) return;
 
         try {
             const noteRef = doc(db, "notes", note.id);
             await updateDoc(noteRef, {
                 title: title,
                 content: content,
+                isPinned: isPinned,
+                isArchived: isArchived,
                 updatedAt: serverTimestamp()
             });
+            setIsPinned(false);
+            setIsArchived(false);
         } catch (error) {
             console.error("Error updating note:", error);
         }
@@ -55,7 +66,7 @@ const EditNote = ({ note, onClose }) => {
                 </div>
                 <div className="en-footer">
                     <div className='en-footer-buttons'>
-                        <button className='en-pin-btn'>
+                        <button className={`en-pin-btn ${isPinned ? 'active' : ''}`} onClick={() => setIsPinned(!isPinned)}>
                             <i className="fa-solid fa-thumbtack"></i>
                         </button>
                         <button className='en-checkbox-btn'>
@@ -67,7 +78,7 @@ const EditNote = ({ note, onClose }) => {
                         <button className='en-tags-btn'>
                             <i className="fa-solid fa-tags"></i>
                         </button>
-                        <button className='en-archive-btn'>
+                        <button className={`en-archive-btn ${isArchived ? 'active' : ''}`} onClick={() => setIsArchived(!isArchived)}>
                             <i className="fa-solid fa-box-archive"></i>
                         </button>
                         <button className='en-undo-btn'>

@@ -10,6 +10,8 @@ import './Header.css'
 const Header = () => {
     const location = useLocation();
     const isAccountPage = location.pathname.startsWith('/account');
+    const isTrashPage = location.pathname.startsWith('/trash');
+    const isArchivePage = location.pathname.startsWith('/archive');
 
     const [user] = useAuthState(auth);
 
@@ -77,21 +79,23 @@ const Header = () => {
             </div>
             {!isAccountPage && (
                 <div className='header-right-content'>
-                    <div className='add-item' ref={addItemRef}>
-                        <button className="add-btn" onClick={() => setIsAddItemOpen(!isAddItemOpen)} aria-label="Add Item" data-tooltip-text='Add Item'>
-                            <span><i className="fa-solid fa-plus"></i>Add Item</span>
-                        </button>
-                        {isAddItemOpen && (
-                            <div className='add-item-content'>
-                                <ul className='add-item-dropdown'>
-                                    <li onClick={() => {setIsAddItemOpen(false); setIsAddNoteOpen(true);}}>
-                                        <i className="fa-solid fa-sticky-note"></i>
-                                        Add Note
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                    </div>
+                    {!isTrashPage && !isArchivePage && (
+                        <div className='add-item' ref={addItemRef}>
+                            <button className="add-btn" onClick={() => setIsAddItemOpen(!isAddItemOpen)} aria-label="Add Item" data-tooltip-text='Add Item'>
+                                <span><i className="fa-solid fa-plus"></i>Add Item</span>
+                            </button>
+                            {isAddItemOpen && (
+                                <div className='add-item-content'>
+                                    <ul className='add-item-dropdown'>
+                                        <li onClick={() => {setIsAddItemOpen(false); setIsAddNoteOpen(true);}}>
+                                            <i className="fa-solid fa-sticky-note"></i>
+                                            Add Note
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    )}
                     <div className='h-r-center-content'>
                         <div className='more' ref={moreRef}>
                             <button className="more-btn" onClick={() => setIsMoreOpen(!isMoreOpen)} aria-label="More" data-tooltip-text='More'>
