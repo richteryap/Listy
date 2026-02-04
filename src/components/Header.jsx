@@ -57,6 +57,12 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode }) => {
             </div>
             {!isAccountPage && (
                 <div className='header-right-content'>
+                    {(isTrashPage || isArchivePage) && (
+                        <div className='page-title' data-tooltip-text={isTrashPage ? 'Trash' : 'Archive'}>
+                            <i className={`fa-solid ${isTrashPage ? 'fa-trash-can' : 'fa-box-archive'}`}></i>
+                            <h1>{isTrashPage ? 'Trash' : 'Archive'}</h1>
+                        </div>
+                    )}
                     {!isTrashPage && !isArchivePage && (
                         <div className='add-item' ref={addItemRef}>
                             <button className="add-btn" onClick={() => setIsAddItemOpen(!isAddItemOpen)} aria-label="Add Item" data-tooltip-text='Add Item'>
