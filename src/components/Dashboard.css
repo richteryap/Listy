@@ -43,11 +43,13 @@
   border: 1px solid var(--border-color);
   border-radius: 8px;
   width: 250px;
+  max-height: 600px;
 
   box-shadow: 0 1px 3px var(--box-shadow);
   transition: box-shadow 0.2s, transform 0.2s;
   position: relative;
   white-space: pre-wrap;
+  overflow: hidden;
 }
 
 .db-note-card.selected {
@@ -67,6 +69,10 @@
 }
 
 .db-note-card p {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
   margin: 0;
   font-size: 0.95rem;
   padding: 10px 15px 20px 15px;
@@ -110,7 +116,7 @@
   flex-wrap: wrap;
   gap: 3px;
   
-  max-width: 50%;
+  max-width: 25%;
   z-index: 2;
   pointer-events: none;
 }
@@ -121,14 +127,14 @@
   padding: 2px 8px;
   border-radius: 12px;
   
-  background-color: rgba(128, 128, 128, 0.2); 
+  background-color: rgba(128, 128, 128, 0.1); 
   color: var(--text-color);
   
   font-family: sans-serif;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(1px);
 }
 
 .db-note-buttons {
