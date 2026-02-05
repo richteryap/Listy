@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { db } from '../../firebase';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useClickOutside } from '../../hooks/useClickOutside';
@@ -9,6 +9,22 @@ const EditNote = ({ note, onClose }) => {
     const [content, setContent] = useState(note.content);
     const [isPinned, setIsPinned] = useState(note.isPinned || false); 
     const [isArchived, setIsArchived] = useState(note.isArchived || false);
+    
+    const textareaRef = useRef(null);
+
+    const handleInput = (e) => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+        }
+    };
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+        }
+    }, [note])
 
     const editNoteRef = useClickOutside(async () => {
         await handleSave();
@@ -60,8 +76,9 @@ const EditNote = ({ note, onClose }) => {
                         className="en-content"
                         placeholder="Take a note..."
                         value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        rows={5}
+                        onChange={(e) => {setContent(e.target.value); handleInput();}}
+                        ref={textareaRef}
+                        rows={1}
                     />
                 </div>
                 <div className="en-footer">
