@@ -23,16 +23,38 @@
     display: flex;
     flex-direction: column;
 
+    overflow: hidden;
     transition: all 0.3s ease-in-out;
 }
 
 .an-text-area {
-    display: flex;
-    flex-direction: column;
+    display: block;
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+}
+
+.an-text-area::-webkit-scrollbar {
+    width: 10px;
+}
+.an-text-area::-webkit-scrollbar-track {
     background: transparent;
+}
+.an-text-area::-webkit-scrollbar-thumb {
+    background-color: rgba(128, 128, 128, 0.5);
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+.an-text-area::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(128, 128, 128, 0.8);
 }
 
 .an-title {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+
     font-size: 1.3rem;
     border: none;
     background: transparent;
@@ -42,17 +64,20 @@
 }
 
 .an-content {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+
     font-family: inherit;
     font-size: 1rem;
     border: none;
     background: transparent;
     color: var(--text-color);
-    padding: 10px 13px 0 13px;
+    padding: 10px 13px 50px 13px;
     outline: none;
     resize: none;
     min-height: 150px;
-    max-height: 300px;
-    overflow-y: auto;
+    height: auto;
 }
 
 .an-footer {
@@ -62,6 +87,10 @@
     text-align: center;
     padding: 5px 10px;
     box-shadow: 0 -2px 5px var(--box-shadow);
+
+    background-color: var(--bg-color); 
+    z-index: 2;
+    flex-shrink: 0;
 }
 
 .an-footer-buttons {

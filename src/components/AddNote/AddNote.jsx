@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { auth, db } from '../../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -11,6 +11,15 @@ const AddNote = ({ onClose }) => {
     const [content, setContent] = useState('');
     const [isPinned, setIsPinned] = useState(false);
     const [isArchived, setIsArchived] = useState(false);
+
+    const textareaRef = useRef(null);
+
+    const handleInput = (e) => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+            textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+        }
+    };    
 
     const addNoteRef = useClickOutside(async () => {
         await handleAddNote();
@@ -62,8 +71,9 @@ const AddNote = ({ onClose }) => {
                         className='an-content'
                         placeholder='Take a note...'
                         value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        rows={5}
+                        onChange={(e) => {setContent(e.target.value); handleInput();}}
+                        ref={textareaRef}
+                        rows={1}
                     />
                 </div>
                 <div className='an-footer'>

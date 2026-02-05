@@ -17,6 +17,7 @@ const EditNote = ({ note, onClose }) => {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
         }
+        setContent(e.target.value);
     };
 
     useEffect(() => {

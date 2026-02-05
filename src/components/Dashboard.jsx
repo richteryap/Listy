@@ -79,7 +79,7 @@ const Dashboard = ({ isGridView }) => {
                                     <span key={index} className="db-tag-pill">{tag}</span>
                                 ))}
                             </div>
-                            <div className="note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
+                            <div className="db-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
                                 {note.title && <h1>{note.title}</h1>}
                                 <p>{note.content}</p>
                             </div>
