@@ -83,9 +83,6 @@ const Archive = ({ isGridView }) => {
                                 <button className='archive-image-btn' onClick={(e) => {e.stopPropagation();}} data-tooltip-text='Add Image'>
                                     <i className="fa-regular fa-image"></i>
                                 </button>
-                                <button className='archive-tags-btn' onClick={(e) => {e.stopPropagation();}} data-tooltip-text='Add Tags'>
-                                    <i className="fa-solid fa-tags"></i>
-                                </button>
                                 <button className='archive-unarchive-btn' onClick={(e) => {e.stopPropagation(); handleUnarchive(note.id);}} data-tooltip-text='Unarchive Note'>
                                     <i className="fa-solid fa-box-open"></i>
                                 </button>

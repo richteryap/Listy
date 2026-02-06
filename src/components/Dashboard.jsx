@@ -3,7 +3,6 @@ import { db, auth } from '../firebase';
 import { collection, query, where, onSnapshot, orderBy, doc, updateDoc } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import EditNote from './AddNote/EditNote.jsx';
-import Tags from './AddNote/Tags.jsx';
 import './Dashboard.css';
 
 const Dashboard = ({ isGridView }) => {
@@ -12,9 +11,6 @@ const Dashboard = ({ isGridView }) => {
     const [loading, setLoading] = useState(true);
     const [selectedNote, setSelectedNote] = useState(null);
     const [animate, setAnimate] = useState(null);
-    const [tagEditingId, setTagEditingId] = useState(null);
-
-    const editingNote = notes.find(n => n.id === tagEditingId);
 
     useEffect(() => {
         if (!user) return;
@@ -74,11 +70,6 @@ const Dashboard = ({ isGridView }) => {
                 <div className={`db-grid ${isGridView ? '' : 'list-view'}`}>
                     {notes.map(note => (
                         <div key={note.id} className={`db-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
-                            <div className="db-note-tags">
-                                {note.tags?.map((tag, index) => (
-                                    <span key={index} className="db-tag-pill">{tag}</span>
-                                ))}
-                            </div>
                             <div className="db-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
                                 {note.title && <h1>{note.title}</h1>}
                                 <p>{note.content}</p>
@@ -92,9 +83,6 @@ const Dashboard = ({ isGridView }) => {
                                 </button>
                                 <button className='db-image-btn' onClick={(e) => {e.stopPropagation();}} data-tooltip-text='Add Image'>
                                     <i className="fa-regular fa-image"></i>
-                                </button>
-                                <button className='db-tags-btn' onClick={(e) => {e.stopPropagation(); setTagEditingId(note.id);}} data-tooltip-text={note.tags && note.tags.length > 0 ? 'Edit Tags' : 'Add Tags'}>
-                                    <i className="fa-solid fa-tags"></i>
                                 </button>
                                 <button className='db-archive-btn' onClick={(e) => {e.stopPropagation(); handleArchive(note.id);}} data-tooltip-text='Archive Note'>
                                     <i className="fa-solid fa-box-archive"></i>
@@ -113,13 +101,6 @@ const Dashboard = ({ isGridView }) => {
                         </div>
                     )}
                 </div>
-            )}
-
-            {tagEditingId && editingNote && (
-                <Tags 
-                    note={editingNote} 
-                    onClose={() => setTagEditingId(null)} 
-                />
             )}
 
             {selectedNote && (

@@ -1,7 +1,7 @@
 .trash-body {
   padding: 100px 30px 0 30px;
-  max-width: 1400px;
-  margin:  0 auto;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .trash-loading-screen {
@@ -12,23 +12,31 @@
 }
 
 .trash-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 15px;
+  display: block;
+  column-count: 4; 
+  column-gap: 15px;
+
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
 
   transition: all 0.3s ease;
 }
 
 .trash-grid.list-view {
+  display: flex;
   flex-direction: column;
   align-items: center;
+
+  column-count: auto;
+  column-gap: normal;
+  gap: 15px;
 }
 
 .trash-grid.list-view .trash-note-card {
   width: 600px;
   max-width: 100%;
+  margin-bottom: 0;
 }
 
 .trash-grid.list-view .trash-note-buttons {
@@ -40,12 +48,22 @@
   background-color: var(--bg-color);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  width: 250px;
+
+  width: 100%;
+  max-height: 600px;
 
   box-shadow: 0 1px 3px var(--box-shadow);
   transition: box-shadow 0.2s, transform 0.2s;
   position: relative;
-  white-space: pre-wrap;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  break-inside: avoid; 
+  -webkit-column-break-inside: avoid;
+
+  margin-bottom: 15px;
 }
 
 .trash-note-card h1 {
@@ -56,9 +74,20 @@
 }
 
 .trash-note-card p {
+  white-space: pre-wrap;
+  word-break: break-word;
+
   margin: 0;
   font-size: 0.95rem;
+  line-height: 1.4;
   padding: 10px 15px 20px 15px;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 23;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .trash-note-card:hover {
@@ -71,6 +100,16 @@
 
 .trash-note-card:hover .trash-delete-btn {
   opacity: 1;
+}
+
+.trash-note-content {
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .trash-note-buttons {

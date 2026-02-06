@@ -8,6 +8,7 @@ const EditNote = ({ note, onClose }) => {
     const [title, setTitle] = useState(note.title);
     const [content, setContent] = useState(note.content);
     const [isPinned, setIsPinned] = useState(note.isPinned || false); 
+    const [isTrashed, setIsTrashed] = useState(note.isTrashed || false);
     const [isArchived, setIsArchived] = useState(note.isArchived || false);
     
     const textareaRef = useRef(null);
@@ -21,6 +22,14 @@ const EditNote = ({ note, onClose }) => {
     };
 
     useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
+
+    useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
@@ -32,11 +41,49 @@ const EditNote = ({ note, onClose }) => {
         onClose();
     });
 
+    const handleArchiveNow = async () => {
+        try {
+            const newStatus = !isArchived;
+            const noteRef = doc(db, "notes", note.id);
+            
+            await updateDoc(noteRef, {
+                title: title,
+                content: content,
+                isArchived: newStatus,
+                isPinned: false,
+                updatedAt: serverTimestamp()
+            });
+            onClose();
+        } catch (error) {
+            console.error("Error archiving note:", error);
+        }
+    };
+
+    const handleTrashNow = async () => {
+        try {
+            const newStatus = !isTrashed;
+            const noteRef = doc(db, "notes", note.id);
+
+            await updateDoc(noteRef, {
+                title: title,
+                content: content,
+                isTrashed: newStatus,
+                isPinned: isPinned,
+                isArchived: isArchived,
+                updatedAt: serverTimestamp()
+            });
+            onClose();
+        } catch (error) {
+            console.error("Error trashing note:", error);
+        }
+    };
+
     const handleSave = async () => {
         if (
             title === note.title &&
             content === note.content &&
             isPinned === note.isPinned &&
+            isTrashed === note.isTrashed &&
             isArchived === note.isArchived
         ) return;
 
@@ -46,11 +93,10 @@ const EditNote = ({ note, onClose }) => {
                 title: title,
                 content: content,
                 isPinned: isPinned,
+                isTrashed: isTrashed,
                 isArchived: isArchived,
                 updatedAt: serverTimestamp()
             });
-            setIsPinned(false);
-            setIsArchived(false);
         } catch (error) {
             console.error("Error updating note:", error);
         }
@@ -93,11 +139,11 @@ const EditNote = ({ note, onClose }) => {
                         <button className='en-image-btn'>
                             <i className="fa-regular fa-image"></i>
                         </button>
-                        <button className='en-tags-btn'>
-                            <i className="fa-solid fa-tags"></i>
-                        </button>
-                        <button className={`en-archive-btn ${isArchived ? 'active' : ''}`} onClick={() => setIsArchived(!isArchived)}>
+                        <button className={`en-archive-btn ${isArchived ? 'active' : ''}`} onClick={handleArchiveNow}>
                             <i className="fa-solid fa-box-archive"></i>
+                        </button>
+                        <button className={`en-delete-btn ${isTrashed ? 'active' : ''}`} onClick={handleTrashNow}>
+                            <i className="fa-solid fa-trash"></i>
                         </button>
                         <button className='en-undo-btn'>
                             <i className="fa-solid fa-rotate-left"></i>

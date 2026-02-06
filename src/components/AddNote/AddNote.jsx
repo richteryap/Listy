@@ -19,7 +19,16 @@ const AddNote = ({ onClose }) => {
             textareaRef.current.style.height = "auto";
             textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
         }
-    };    
+        setContent(e.target.value);
+    };
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
 
     const addNoteRef = useClickOutside(async () => {
         await handleAddNote();
@@ -86,9 +95,6 @@ const AddNote = ({ onClose }) => {
                         </button>
                         <button className='an-image-btn'>
                             <i className="fa-regular fa-image"></i>
-                        </button>
-                        <button className='an-tags-btn'>
-                            <i className="fa-solid fa-tags"></i>
                         </button>
                         <button className={`an-archive-btn ${isArchived ? 'active' : ''}`} onClick={() => setIsArchived(!isArchived)}>
                             <i className="fa-solid fa-box-archive"></i>
