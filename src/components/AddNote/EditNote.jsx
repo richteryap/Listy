@@ -169,13 +169,13 @@ const EditNote = ({ note, onClose }) => {
                 </div>
                 <div className="en-footer">
                     <div className='en-footer-buttons'>
-                        <button className={`en-pin-btn ${isPinned ? 'active' : ''}`} onClick={() => setIsPinned(!isPinned)}>
+                        <button className={`en-pin-btn ${isPinned ? 'active' : ''}`} onClick={() => setIsPinned(!isPinned)} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
                             <i className="fa-solid fa-thumbtack"></i>
                         </button>
-                        <button className='en-checkbox-btn'>
+                        <button className='en-checkbox-btn' data-tooltip-text='Show Tick Boxes'>
                             <i className="fa-solid fa-check-square"></i>
                         </button>
-                        <button className='en-image-btn' onClick={() => fileInputRef.current.click()}>
+                        <button className='en-image-btn' onClick={() => fileInputRef.current.click()} data-tooltip-text='Add Image'>
                             <i className="fa-regular fa-image"></i>
                         </button>
                         <input 
@@ -185,16 +185,16 @@ const EditNote = ({ note, onClose }) => {
                             accept="image/*"
                             onChange={handleImageSelect}
                         />
-                        <button className={`en-archive-btn ${isArchived ? 'active' : ''}`} onClick={handleArchiveNow}>
+                        <button className={`en-archive-btn ${isArchived ? 'active' : ''}`} onClick={handleArchiveNow} data-tooltip-text='Archive Note'>
                             <i className="fa-solid fa-box-archive"></i>
                         </button>
-                        <button className={`en-delete-btn ${isTrashed ? 'active' : ''}`} onClick={handleTrashNow}>
+                        <button className={`en-delete-btn ${isTrashed ? 'active' : ''}`} onClick={handleTrashNow} data-tooltip-text='Move to Trash'>
                             <i className="fa-solid fa-trash"></i>
                         </button>
-                        <button className='en-undo-btn'>
+                        <button className='en-undo-btn' data-tooltip-text='Undo'>
                             <i className="fa-solid fa-rotate-left"></i>
                         </button>
-                        <button className='en-redo-btn'>
+                        <button className='en-redo-btn' data-tooltip-text='Redo'>
                             <i className="fa-solid fa-rotate-right"></i>
                         </button>
                     </div>

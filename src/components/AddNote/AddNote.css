@@ -23,7 +23,6 @@
     display: flex;
     flex-direction: column;
 
-    overflow: hidden;
     transition: all 0.3s ease-in-out;
 }
 
@@ -143,6 +142,7 @@
 }
 
 .an-footer-buttons button {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,6 +164,39 @@
 
 .an-footer-buttons button:hover {
     background: var(--button-hover-color);
+}
+
+.an-footer-buttons button::after {
+  content: attr(data-tooltip-text);
+    
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background-color: var(--tooltip-color);
+  color: var(--tooltip-text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2000;
+
+  opacity: 0;
+  visibility: hidden;
+    
+  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
+}
+
+.an-footer-buttons button:hover::after {
+  opacity: 1;
+  visibility: visible;
+  
+  transition-delay: 0.4s; 
 }
 
 .an-close-btn {

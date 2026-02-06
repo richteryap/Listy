@@ -124,13 +124,13 @@ const AddNote = ({ onClose }) => {
                 </div>
                 <div className='an-footer'>
                     <div className='an-footer-buttons'>
-                        <button className={`an-pin-btn ${isPinned ? 'active' : ''}`} onClick={() => setIsPinned(!isPinned)}>
+                        <button className={`an-pin-btn ${isPinned ? 'active' : ''}`} onClick={() => setIsPinned(!isPinned)} data-tooltip-text={isPinned ? 'Unpin Note' : 'Pin Note'}>
                             <i className="fa-solid fa-thumbtack"></i>
                         </button>
-                        <button className='an-checkbox-btn'>
+                        <button className='an-checkbox-btn' data-tooltip-text='Show Tick Boxes'>
                             <i className="fa-solid fa-check-square"></i>
                         </button>
-                        <button className='an-image-btn' onClick={() => fileInputRef.current.click()}>
+                        <button className='an-image-btn' onClick={() => fileInputRef.current.click()} data-tooltip-text='Add Image'>
                             <i className="fa-regular fa-image"></i>
                         </button>
                         <input 
@@ -140,13 +140,13 @@ const AddNote = ({ onClose }) => {
                             accept="image/*"
                             onChange={handleImageSelect}
                         />
-                        <button className={`an-archive-btn ${isArchived ? 'active' : ''}`} onClick={() => setIsArchived(!isArchived)}>
+                        <button className={`an-archive-btn ${isArchived ? 'active' : ''}`} onClick={() => setIsArchived(!isArchived)} data-tooltip-text='Archive Note'>
                             <i className="fa-solid fa-box-archive"></i>
                         </button>
-                        <button className='an-undo-btn'>
+                        <button className='an-undo-btn' data-tooltip-text='Undo'>
                             <i className="fa-solid fa-rotate-left"></i>
                         </button>
-                        <button className='an-redo-btn'>
+                        <button className='an-redo-btn' data-tooltip-text='Redo'>
                             <i className="fa-solid fa-rotate-right"></i>
                         </button>
                     </div>
