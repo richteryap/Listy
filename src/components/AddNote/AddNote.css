@@ -27,6 +27,45 @@
     transition: all 0.3s ease-in-out;
 }
 
+.an-image-preview {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.an-image-preview:hover button {
+    opacity: 1;
+}
+
+.an-image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.an-image-preview button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0;
+    
+    background-color: rgba(0, 0, 0, 0.5);
+    color: var(--r-text-color);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.an-image-preview button:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
 .an-text-area {
     display: block;
     flex: 1;

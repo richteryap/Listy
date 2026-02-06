@@ -43,7 +43,8 @@ const Archive = ({ isGridView }) => {
 
     const handlePin = async (noteId, isPinned) => {
         await updateDoc(doc(db, "notes", noteId), {
-            isPinned: !isPinned
+            isPinned: !isPinned,
+            isArchived: false
         });
     }
 

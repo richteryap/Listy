@@ -11,8 +11,35 @@ const AddNote = ({ onClose }) => {
     const [content, setContent] = useState('');
     const [isPinned, setIsPinned] = useState(false);
     const [isArchived, setIsArchived] = useState(false);
+    const [imageFile, setImageFile] = useState(null);
 
     const textareaRef = useRef(null);
+    const fileInputRef = useRef(null);
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    const handleImageSelect = async (e) => {
+        if (e.target.files[0]) {
+            const file = e.target.files[0];
+            
+            if (file.size > 500000) {
+                alert("File is too big! Please select an image under 500KB.");
+                e.target.value = null;
+                return;
+            }
+            const base64 = await convertToBase64(file);
+            setImageFile(base64);
+
+            e.target.value = null;
+        }
+    };
 
     const handleInput = (e) => {
         if (textareaRef.current) {
@@ -38,12 +65,13 @@ const AddNote = ({ onClose }) => {
     const handleAddNote = async (e) => {
         if (e) e.preventDefault();
         
-        if (!title.trim() && !content.trim()) return;
+        if (!title.trim() && !content.trim() && !imageFile) return;
     
         try {
             await addDoc(collection(db, 'notes'), {
                 title: title,
                 content: content,
+                imageUrl: imageFile,
                 userId: user.uid,
                 isTrashed: false,
                 isArchived: isArchived,
@@ -52,6 +80,7 @@ const AddNote = ({ onClose }) => {
             });
             setTitle('');
             setContent('');
+            setImageFile(null);
             setIsPinned(false);
             setIsArchived(false);
         } catch (error) {
@@ -67,6 +96,14 @@ const AddNote = ({ onClose }) => {
     return (
         <div className="add-note-overlay">
             <div className="add-note-container" ref={addNoteRef}>
+                {imageFile && (
+                    <div className="an-image-preview">
+                        <img src={imageFile} alt="Preview" />
+                        <button onClick={() => setImageFile(null)}>
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                )}
                 <div className='an-text-area'>
                     <input
                         type='text'
@@ -93,9 +130,16 @@ const AddNote = ({ onClose }) => {
                         <button className='an-checkbox-btn'>
                             <i className="fa-solid fa-check-square"></i>
                         </button>
-                        <button className='an-image-btn'>
+                        <button className='an-image-btn' onClick={() => fileInputRef.current.click()}>
                             <i className="fa-regular fa-image"></i>
                         </button>
+                        <input 
+                            type="file" 
+                            ref={fileInputRef} 
+                            style={{ display: 'none' }} 
+                            accept="image/*"
+                            onChange={handleImageSelect}
+                        />
                         <button className={`an-archive-btn ${isArchived ? 'active' : ''}`} onClick={() => setIsArchived(!isArchived)}>
                             <i className="fa-solid fa-box-archive"></i>
                         </button>

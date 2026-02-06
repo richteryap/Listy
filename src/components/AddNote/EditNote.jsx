@@ -10,8 +10,35 @@ const EditNote = ({ note, onClose }) => {
     const [isPinned, setIsPinned] = useState(note.isPinned || false); 
     const [isTrashed, setIsTrashed] = useState(note.isTrashed || false);
     const [isArchived, setIsArchived] = useState(note.isArchived || false);
+    const [imageFile, setImageFile] = useState(note.imageUrl || null);
     
     const textareaRef = useRef(null);
+    const fileInputRef = useRef(null);
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    const handleImageSelect = async (e) => {
+        if (e.target.files[0]) {
+            const file = e.target.files[0];
+            
+            if (file.size > 500000) {
+                alert("File is too big! Please select an image under 500KB.");
+                e.target.value = null;
+                return;
+            }
+            const base64 = await convertToBase64(file);
+            setImageFile(base64);
+
+            e.target.value = null;
+        }
+    };
 
     const handleInput = (e) => {
         if (textareaRef.current) {
@@ -49,6 +76,7 @@ const EditNote = ({ note, onClose }) => {
             await updateDoc(noteRef, {
                 title: title,
                 content: content,
+                imageUrl: imageFile,
                 isArchived: newStatus,
                 isPinned: false,
                 updatedAt: serverTimestamp()
@@ -67,6 +95,7 @@ const EditNote = ({ note, onClose }) => {
             await updateDoc(noteRef, {
                 title: title,
                 content: content,
+                imageUrl: imageFile,
                 isTrashed: newStatus,
                 isPinned: isPinned,
                 isArchived: isArchived,
@@ -82,6 +111,7 @@ const EditNote = ({ note, onClose }) => {
         if (
             title === note.title &&
             content === note.content &&
+            imageFile === note.imageUrl &&
             isPinned === note.isPinned &&
             isTrashed === note.isTrashed &&
             isArchived === note.isArchived
@@ -92,6 +122,7 @@ const EditNote = ({ note, onClose }) => {
             await updateDoc(noteRef, {
                 title: title,
                 content: content,
+                imageUrl: imageFile,
                 isPinned: isPinned,
                 isTrashed: isTrashed,
                 isArchived: isArchived,
@@ -111,6 +142,14 @@ const EditNote = ({ note, onClose }) => {
         <div className="edit-note-overlay">
             <div className="edit-note-container" ref={editNoteRef}>
                 <div className='en-text-area'>
+                    {imageFile && (
+                        <div className="en-image-preview">
+                            <img src={imageFile} alt="Preview" />
+                            <button onClick={() => setImageFile(null)}>
+                                <i className="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    )}
                     <input 
                         type="text"
                         className="en-title" 
@@ -136,9 +175,16 @@ const EditNote = ({ note, onClose }) => {
                         <button className='en-checkbox-btn'>
                             <i className="fa-solid fa-check-square"></i>
                         </button>
-                        <button className='en-image-btn'>
+                        <button className='en-image-btn' onClick={() => fileInputRef.current.click()}>
                             <i className="fa-regular fa-image"></i>
                         </button>
+                        <input 
+                            type="file" 
+                            ref={fileInputRef} 
+                            style={{ display: 'none' }} 
+                            accept="image/*"
+                            onChange={handleImageSelect}
+                        />
                         <button className={`en-archive-btn ${isArchived ? 'active' : ''}`} onClick={handleArchiveNow}>
                             <i className="fa-solid fa-box-archive"></i>
                         </button>
