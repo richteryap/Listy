@@ -3,7 +3,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { SnackbarProvider } from './components/context/SnackbarContext.jsx';
 import './App.css'
 import Header from './components/Header/Header.jsx'
-import Dashboard from './components/dashboard.jsx'
+import Dashboard from './components/Dashboard.jsx'
 import Login_Register from './components/Account/Login_Register.jsx';
 import ProtectedRoute from './hooks/ProtectedRoute.jsx'
 import WaitingRoom from './components/Account/WaitingRoom.jsx';
