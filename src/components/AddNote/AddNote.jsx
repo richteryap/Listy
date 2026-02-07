@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { auth, db } from '../../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, deleteDoc } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useClickOutside } from '../../hooks/useClickOutside';
+import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
+import { useSnackbar } from '../context/SnackbarContext.jsx';
 import './AddNote.css';
 
 const AddNote = ({ onClose }) => {
@@ -16,27 +18,22 @@ const AddNote = ({ onClose }) => {
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
 
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
-    };
+    const { showSnackbar } = useSnackbar();
 
     const handleImageSelect = async (e) => {
-        if (e.target.files[0]) {
-            const file = e.target.files[0];
-            
-            if (file.size > 500000) {
-                alert("File is too big! Please select an image under 500KB.");
-                e.target.value = null;
-                return;
-            }
+        const file = e.target.files[0];
+        
+        if (!validateImage(file)) {
+            e.target.value = null;
+            return; 
+        }
+
+        try {
             const base64 = await convertToBase64(file);
             setImageFile(base64);
-
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        } finally {
             e.target.value = null;
         }
     };
@@ -64,11 +61,11 @@ const AddNote = ({ onClose }) => {
 
     const handleAddNote = async (e) => {
         if (e) e.preventDefault();
-        
+
         if (!title.trim() && !content.trim() && !imageFile) return;
     
         try {
-            await addDoc(collection(db, 'notes'), {
+            const newNoteRef = await addDoc(collection(db, 'notes'), {
                 title: title,
                 content: content,
                 imageUrl: imageFile,
@@ -78,6 +75,14 @@ const AddNote = ({ onClose }) => {
                 isPinned: isPinned,
                 createdAt: serverTimestamp()
             });
+
+            const message = isArchived ? "Note archived" : "Note created";
+
+            showSnackbar(message, async () => {
+                await deleteDoc(doc(db, 'notes', newNoteRef.id));
+                showSnackbar("Note deleted", null); 
+            });
+
             setTitle('');
             setContent('');
             setImageFile(null);

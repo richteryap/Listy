@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { db } from '../../firebase';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useClickOutside } from '../../hooks/useClickOutside';
+import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
+import { useSnackbar } from '../context/SnackbarContext.jsx';
 import './EditNote.css';
 
 const EditNote = ({ note, onClose }) => {
@@ -15,27 +17,22 @@ const EditNote = ({ note, onClose }) => {
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
 
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
-    };
+    const { showSnackbar } = useSnackbar();
 
     const handleImageSelect = async (e) => {
-        if (e.target.files[0]) {
-            const file = e.target.files[0];
-            
-            if (file.size > 500000) {
-                alert("File is too big! Please select an image under 500KB.");
-                e.target.value = null;
-                return;
-            }
+        const file = e.target.files[0];
+        
+        if (!validateImage(file)) {
+            e.target.value = null;
+            return; 
+        }
+
+        try {
             const base64 = await convertToBase64(file);
             setImageFile(base64);
-
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        } finally {
             e.target.value = null;
         }
     };
@@ -69,8 +66,9 @@ const EditNote = ({ note, onClose }) => {
     });
 
     const handleArchiveNow = async () => {
+        const newStatus = !isArchived;
+
         try {
-            const newStatus = !isArchived;
             const noteRef = doc(db, "notes", note.id);
             
             await updateDoc(noteRef, {
@@ -81,6 +79,16 @@ const EditNote = ({ note, onClose }) => {
                 isPinned: false,
                 updatedAt: serverTimestamp()
             });
+
+            const message = newStatus ? "Note archived" : "Note unarchived";
+
+            const undoAction = async () => {
+                await updateDoc(noteRef, {
+                    isArchived: !newStatus,
+                });
+            };
+
+            showSnackbar(message, undoAction);
             onClose();
         } catch (error) {
             console.error("Error archiving note:", error);
@@ -88,10 +96,9 @@ const EditNote = ({ note, onClose }) => {
     };
 
     const handleTrashNow = async () => {
+        const newStatus = !isTrashed;
         try {
-            const newStatus = !isTrashed;
             const noteRef = doc(db, "notes", note.id);
-
             await updateDoc(noteRef, {
                 title: title,
                 content: content,
@@ -101,6 +108,13 @@ const EditNote = ({ note, onClose }) => {
                 isArchived: isArchived,
                 updatedAt: serverTimestamp()
             });
+            const message = newStatus ? "Note moved to trash" : "Note untrashed";
+            const undoAction = async () => {
+                await updateDoc(noteRef, {
+                    isTrashed: !newStatus,
+                });
+            };
+            showSnackbar(message, undoAction);
             onClose();
         } catch (error) {
             console.error("Error trashing note:", error);

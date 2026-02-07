@@ -1,42 +1,10 @@
-import { useState, useEffect } from 'react';
-import { db, auth } from '../../firebase';
-import { collection, query, where, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNoteActions } from '../../hooks/useNoteActions';
+import { useNotes } from '../../hooks/useNotes';
 import './Trash.css';
 
 const Trash = ({ isGridView }) => {
-    const [user] = useAuthState(auth);
-    const [notes, setNotes] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (!user) return;
-
-        const q = query(
-            collection(db, "notes"),
-            where("userId", "==", user.uid),
-            where("isTrashed", "==", true) 
-        );
-
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const notesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setNotes(notesData);
-            setLoading(false);
-        });
-        return () => unsubscribe();
-    }, [user]);
-
-    const handleRestore = async (noteId) => {
-        await updateDoc(doc(db, "notes", noteId), {
-            isTrashed: false
-        });
-    };
-
-    const handleDeleteForever = async (noteId) => {
-        if (window.confirm("Delete forever? This cannot be undone.")) {
-            await deleteDoc(doc(db, "notes", noteId));
-        }
-    };
+    const { notes, loading } = useNotes('trash');
+    const { restoreNote, deleteNoteForever } = useNoteActions();
 
     return (
         <div className='trash-body'>
@@ -49,14 +17,19 @@ const Trash = ({ isGridView }) => {
                     {notes.map(note => (
                         <div key={note.id} className="trash-note-card">
                             <div className="trash-note-content">
+                                {note.imageUrl && (
+                                    <div className="db-note-image">
+                                        <img src={note.imageUrl} alt="Note Attachment" />
+                                    </div>
+                                )}
                                 {note.title && <h1>{note.title}</h1>}
                                 <p>{note.content}</p>
                             </div>
                             <div className="trash-note-buttons">
-                                <button className='trash-restore-btn' onClick={() => handleRestore(note.id)} data-tooltip-text='Restore Note'>
+                                <button className='trash-restore-btn' onClick={() => restoreNote(note.id)} data-tooltip-text='Restore Note'>
                                     <i className="fa-solid fa-trash-arrow-up"></i>
                                 </button>
-                                <button className='trash-delete-btn' onClick={() => handleDeleteForever(note.id)} data-tooltip-text='Delete Forever'>
+                                <button className='trash-delete-btn' onClick={() => deleteNoteForever(note.id)} data-tooltip-text='Delete Forever'>
                                     <i className="fa-solid fa-ban"></i>
                                 </button>
                             </div>

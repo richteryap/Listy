@@ -71,3 +71,69 @@ html {
   font-size: 40px;
   color: var(--text-color);
 }
+
+.snackbar {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  min-width: 300px;
+  background-color: #202124;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  z-index: 3000;
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+}
+
+.snackbar.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.snackbar-text {
+  font-size: 0.9rem;
+  margin-right: auto;
+}
+
+.snackbar-undo-btn {
+  background: none;
+  border: none;
+  color: #8ab4f8;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-left: 20px;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.snackbar-undo-btn:hover {
+  background-color: rgba(138, 180, 248, 0.1);
+}
+
+.snackbar-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  margin-left: 10px;
+  cursor: pointer;
+  opacity: 0.7;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.snackbar-close-btn:hover {
+  opacity: 1;
+}
