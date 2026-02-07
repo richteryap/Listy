@@ -1,5 +1,5 @@
 .trash-body {
-  padding: 100px 30px 0 30px;
+  padding: 100px 30px 50px 30px;
   max-width: 1100px;
   margin: 0 auto;
 }
@@ -102,6 +102,22 @@
 
 .trash-note-card:hover .trash-delete-btn {
   opacity: 1;
+}
+
+.trash-note-image {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  border-radius: 8px 8px 0 0;
+}
+
+.trash-note-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .trash-note-content {
