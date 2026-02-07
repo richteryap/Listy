@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { auth } from '../firebase.js';
+import { auth } from '../../firebase.js';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, sendEmailVerification } from "firebase/auth";
-import { getFriendlyErrorMessage } from '../utils/authErrors.js';
-import useAuthRedirect from '../hooks/useAuthRedirect.js';
+import { getFriendlyErrorMessage } from '../../utils/authErrors.js';
+import useAuthRedirect from '../../hooks/useAuthRedirect.js';
 import './Login_Register.css';
 
 const Login_Register = () => {

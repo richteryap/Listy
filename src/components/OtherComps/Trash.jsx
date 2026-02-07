@@ -18,12 +18,28 @@ const Trash = ({ isGridView }) => {
                         <div key={note.id} className="trash-note-card">
                             <div className="trash-note-content">
                                 {note.imageUrl && (
-                                    <div className="db-note-image">
+                                    <div className="trash-note-image">
                                         <img src={note.imageUrl} alt="Note Attachment" />
                                     </div>
                                 )}
                                 {note.title && <h1>{note.title}</h1>}
-                                <p>{note.content}</p>
+                                {note.isList ? (
+                                    <div className="trash-note-list-preview">
+                                        {note.listItems && note.listItems.slice(0, 4).map(item => (
+                                            <div key={item.id} className="trash-list-item-preview">
+                                                <i className={`fa-regular ${item.isChecked ? 'fa-square-check' : 'fa-square'}`}></i>
+                                                <span className={item.isChecked ? 'checked' : ''}>{item.text}</span>
+                                            </div>
+                                        ))}
+                                        {note.listItems && note.listItems.length > 4 && (
+                                            <div className="trash-list-more">
+                                                + {note.listItems.length - 4} more items
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p>{note.content}</p>
+                                )}
                             </div>
                             <div className="trash-note-buttons">
                                 <button className='trash-restore-btn' onClick={() => restoreNote(note.id)} data-tooltip-text='Restore Note'>

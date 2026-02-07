@@ -5,17 +5,23 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
 import { useSnackbar } from '../context/SnackbarContext.jsx';
+import { useNoteContent } from '../../hooks/useNoteContent.js';
+import { useAutoResizeTextArea } from '../../hooks/useAutoResizeTextArea.js';
 import './AddNote.css';
 
 const AddNote = ({ onClose }) => {
     const [user] = useAuthState(auth);
     const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
     const [isPinned, setIsPinned] = useState(false);
     const [isArchived, setIsArchived] = useState(false);
     const [imageFile, setImageFile] = useState(null);
 
-    const textareaRef = useRef(null);
+    const { 
+        isList, setIsList, content, setContent, listItems, setListItems,
+        toggleMode, updateListItem, toggleCheckbox, addListItem, removeListItem, handleListKeyDown
+    } = useNoteContent();
+
+    const textareaRef = useAutoResizeTextArea(content, isList);
     const fileInputRef = useRef(null);
 
     const { showSnackbar } = useSnackbar();
@@ -38,14 +44,6 @@ const AddNote = ({ onClose }) => {
         }
     };
 
-    const handleInput = (e) => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = "auto";
-            textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
-        }
-        setContent(e.target.value);
-    };
-
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         
@@ -62,12 +60,16 @@ const AddNote = ({ onClose }) => {
     const handleAddNote = async (e) => {
         if (e) e.preventDefault();
 
-        if (!title.trim() && !content.trim() && !imageFile) return;
+        const isListEmpty = isList && listItems.every(i => i.text.trim() === '');
+        const isTextEmpty = !isList && !content.trim();
+        if (!title.trim() && isTextEmpty && isListEmpty && !imageFile) return;
     
         try {
             const newNoteRef = await addDoc(collection(db, 'notes'), {
                 title: title,
                 content: content,
+                isList: isList,
+                listItems: listItems,
                 imageUrl: imageFile,
                 userId: user.uid,
                 isTrashed: false,
@@ -85,6 +87,8 @@ const AddNote = ({ onClose }) => {
 
             setTitle('');
             setContent('');
+            setListItems([]);
+            setIsList(false);
             setImageFile(null);
             setIsPinned(false);
             setIsArchived(false);
@@ -110,29 +114,32 @@ const AddNote = ({ onClose }) => {
                     </div>
                 )}
                 <div className='an-text-area'>
-                    <input
-                        type='text'
-                        className='an-title'
-                        placeholder='Title'
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        autoFocus
-                    />
-                    <textarea
-                        className='an-content'
-                        placeholder='Take a note...'
-                        value={content}
-                        onChange={(e) => {setContent(e.target.value); handleInput();}}
-                        ref={textareaRef}
-                        rows={1}
-                    />
+                    <input type='text' className='an-title' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} autoFocus/>
+                    {isList ? (
+                        <div className="an-list-container">
+                            {listItems.map((item, index) => (
+                                <div key={item.id} className="an-list-item">
+                                    <input type="checkbox" checked={item.isChecked} onChange={() => toggleCheckbox(item.id)}/>
+                                    <input type="text" value={item.text} onChange={(e) => updateListItem(item.id, e.target.value)} onKeyDown={(e) => handleListKeyDown(e, index, item.id)} autoFocus/>
+                                    <button onClick={() => removeListItem(item.id)}>
+                                        <i className="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            ))}
+                            <div className="an-list-add" onClick={() => addListItem()}>
+                                <i className="fa-solid fa-plus"></i> List Item
+                            </div>
+                        </div>
+                    ) : (
+                        <textarea className='an-content' placeholder='Take a note...' value={content} onChange={(e) => {setContent(e.target.value)}} ref={textareaRef} rows={1}/>
+                    )}
                 </div>
                 <div className='an-footer'>
                     <div className='an-footer-buttons'>
                         <button className={`an-pin-btn ${isPinned ? 'active' : ''}`} onClick={() => setIsPinned(!isPinned)} data-tooltip-text={isPinned ? 'Unpin Note' : 'Pin Note'}>
                             <i className="fa-solid fa-thumbtack"></i>
                         </button>
-                        <button className='an-checkbox-btn' data-tooltip-text='Show Tick Boxes'>
+                        <button className={`an-checkbox-btn ${isList ? 'active' : ''}`} onClick={toggleMode} data-tooltip-text='Show Tick Boxes'>
                             <i className="fa-solid fa-check-square"></i>
                         </button>
                         <button className='an-image-btn' onClick={() => fileInputRef.current.click()} data-tooltip-text='Add Image'>

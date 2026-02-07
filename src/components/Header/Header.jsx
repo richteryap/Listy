@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useClickOutside } from '../hooks/useClickOutside';
-import { auth } from '../firebase';
+import { useClickOutside } from '../../hooks/useClickOutside.js';
+import { auth } from '../../firebase.js';
 import { signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import AddNote from './AddNote/AddNote.jsx';
+import AddNote from '../AddNote/AddNote.jsx';
 import './Header.css'
 
-const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode }) => {
+const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQuery, setSearchQuery }) => {
     const location = useLocation();
     const isAccountPage = location.pathname.startsWith('/account');
     const isTrashPage = location.pathname.startsWith('/trash');
@@ -15,7 +15,6 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode }) => {
 
     const [user] = useAuthState(auth);
 
-    const [query, setQuery] = useState('');
     const [isAddItemOpen, setIsAddItemOpen] = useState(false);
     const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
     const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -26,6 +25,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode }) => {
     const moreRef = useClickOutside(() => { setIsMoreOpen(false); });
     const settingsRef = useClickOutside(() => { setIsSettingsOpen(false); });
     const profileRef = useClickOutside(() => { setIsProfileOpen(false); });
+    const searchInputRef = useRef(null);
 
     const handleLogout = async () => {
         try {
@@ -47,11 +47,11 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode }) => {
                 </div>
                 {!isAccountPage && (
                     <div className='search-bar'>
-                        <input type='text' placeholder='Search' value={query} onChange={(e) => setQuery(e.target.value)}/>
-                        {query && (
-                            <i className="fa-solid fa-xmark" onClick={() => setQuery('')} aria-label="Clear search" role="button" data-tooltip-text='Clear search'></i>
+                        <input type='text' placeholder='Search' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} ref={searchInputRef}/>
+                        {searchQuery && (
+                            <i className="fa-solid fa-xmark" onClick={() => setSearchQuery('')} aria-label="Clear search" role="button" data-tooltip-text='Clear search'></i>
                         )}
-                        <i className="fa-solid fa-magnifying-glass" data-tooltip-text='Search'></i>
+                        <i className="fa-solid fa-magnifying-glass" onClick={() => searchInputRef.current.focus()} role='button' data-tooltip-text='Search'></i>
                     </div>
                 )}
             </div>

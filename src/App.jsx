@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { SnackbarProvider } from './components/context/SnackbarContext.jsx';
 import './App.css'
-import Header from './components/Header.jsx'
+import Header from './components/Header/Header.jsx'
 import Dashboard from './components/dashboard.jsx'
-import Login_Register from './components/Login_Register.jsx';
+import Login_Register from './components/Account/Login_Register.jsx';
 import ProtectedRoute from './hooks/ProtectedRoute.jsx'
-import WaitingRoom from './components/WaitingRoom.jsx';
+import WaitingRoom from './components/Account/WaitingRoom.jsx';
 import Archive from './components/OtherComps/Archive.jsx';
 import Trash from './components/OtherComps/Trash.jsx';
+import SearchResults from './components/Header/SearchResults.jsx';
 
 function App() {
   const location = useLocation();
@@ -51,28 +52,37 @@ function App() {
             setSearchQuery={setSearchQuery}
           />
         )}
-        <Routes>
-          <Route path='/' element={
-            <ProtectedRoute>
-              <div className='app-body'>
-                <Dashboard isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
-              </div>
-            </ProtectedRoute>
-          }/>
-          <Route path='/archive' element={
-            <ProtectedRoute>
-              <Archive isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
-            </ProtectedRoute>
-          }/>
-          <Route path='/trash' element={
-            <ProtectedRoute>
-              <Trash isGridView={isGridView} isDarkMode={isDarkMode}/>
-            </ProtectedRoute>
-          }/>
-          <Route path='/verify-email' element={<WaitingRoom isDarkMode={isDarkMode} />}/>
-          <Route path='/account' element={<Login_Register  isDarkMode={isDarkMode}/>}/>
-          <Route path='*' element={<Navigate to='/' replace />}/>
-        </Routes>
+        {searchQuery.trim().length > 0 ? (
+          <div className='app-body'>
+            <SearchResults
+              searchQuery={searchQuery}
+              isGridView={isGridView}
+            />
+          </div>
+        ) : (
+          <Routes>
+            <Route path='/' element={
+              <ProtectedRoute>
+                <div className='app-body'>
+                  <Dashboard isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
+                </div>
+              </ProtectedRoute>
+            }/>
+            <Route path='/archive' element={
+              <ProtectedRoute>
+                <Archive isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
+              </ProtectedRoute>
+            }/>
+            <Route path='/trash' element={
+              <ProtectedRoute>
+                <Trash isGridView={isGridView} isDarkMode={isDarkMode}/>
+              </ProtectedRoute>
+            }/>
+            <Route path='/verify-email' element={<WaitingRoom isDarkMode={isDarkMode} />}/>
+            <Route path='/account' element={<Login_Register  isDarkMode={isDarkMode}/>}/>
+            <Route path='*' element={<Navigate to='/' replace />}/>
+          </Routes>
+        )}
       </SnackbarProvider>
     </>
   )

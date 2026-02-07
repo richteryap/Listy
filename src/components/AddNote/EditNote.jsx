@@ -4,17 +4,23 @@ import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
 import { useSnackbar } from '../context/SnackbarContext.jsx';
+import { useNoteContent } from '../../hooks/useNoteContent.js';
+import { useAutoResizeTextArea } from '../../hooks/useAutoResizeTextArea.js';
 import './EditNote.css';
 
 const EditNote = ({ note, onClose }) => {
     const [title, setTitle] = useState(note.title);
-    const [content, setContent] = useState(note.content);
     const [isPinned, setIsPinned] = useState(note.isPinned || false); 
     const [isTrashed, setIsTrashed] = useState(note.isTrashed || false);
     const [isArchived, setIsArchived] = useState(note.isArchived || false);
     const [imageFile, setImageFile] = useState(note.imageUrl || null);
     
-    const textareaRef = useRef(null);
+    const { 
+        isList, setIsList, content, setContent, listItems, setListItems,
+        toggleMode, updateListItem, toggleCheckbox, addListItem, removeListItem, handleListKeyDown
+    } = useNoteContent(note);
+
+    const textareaRef = useAutoResizeTextArea(content, isList);
     const fileInputRef = useRef(null);
 
     const { showSnackbar } = useSnackbar();
@@ -37,14 +43,6 @@ const EditNote = ({ note, onClose }) => {
         }
     };
 
-    const handleInput = (e) => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-        }
-        setContent(e.target.value);
-    };
-
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         
@@ -52,13 +50,6 @@ const EditNote = ({ note, onClose }) => {
             document.body.style.overflow = 'unset';
         };
     }, []);
-
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-        }
-    }, [note])
 
     const editNoteRef = useClickOutside(async () => {
         await handleSave();
@@ -74,6 +65,8 @@ const EditNote = ({ note, onClose }) => {
             await updateDoc(noteRef, {
                 title: title,
                 content: content,
+                isList: isList,
+                listItems: listItems,
                 imageUrl: imageFile,
                 isArchived: newStatus,
                 isPinned: false,
@@ -102,6 +95,8 @@ const EditNote = ({ note, onClose }) => {
             await updateDoc(noteRef, {
                 title: title,
                 content: content,
+                isList: isList,
+                listItems: listItems,
                 imageUrl: imageFile,
                 isTrashed: newStatus,
                 isPinned: isPinned,
@@ -125,6 +120,8 @@ const EditNote = ({ note, onClose }) => {
         if (
             title === note.title &&
             content === note.content &&
+            JSON.stringify(listItems) === JSON.stringify(note.listItems) && 
+            isList === note.isList &&
             imageFile === note.imageUrl &&
             isPinned === note.isPinned &&
             isTrashed === note.isTrashed &&
@@ -136,6 +133,8 @@ const EditNote = ({ note, onClose }) => {
             await updateDoc(noteRef, {
                 title: title,
                 content: content,
+                isList: isList,
+                listItems: listItems,
                 imageUrl: imageFile,
                 isPinned: isPinned,
                 isTrashed: isTrashed,
@@ -155,38 +154,41 @@ const EditNote = ({ note, onClose }) => {
     return (
         <div className="edit-note-overlay">
             <div className="edit-note-container" ref={editNoteRef}>
+                {imageFile && (
+                    <div className="en-image-preview">
+                        <img src={imageFile} alt="Preview" />
+                        <button onClick={() => setImageFile(null)}>
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                )}
                 <div className='en-text-area'>
-                    {imageFile && (
-                        <div className="en-image-preview">
-                            <img src={imageFile} alt="Preview" />
-                            <button onClick={() => setImageFile(null)}>
-                                <i className="fa-solid fa-xmark"></i>
-                            </button>
+                    <input type="text" className="en-title" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} autoFocus/>
+                    {isList ? (
+                        <div className="en-list-container">
+                            {listItems.map((item, index) => (
+                                <div key={item.id} className="en-list-item">
+                                    <input type="checkbox" checked={item.isChecked} onChange={() => toggleCheckbox(item.id)}/>
+                                    <input type="text" value={item.text} onChange={(e) => updateListItem(item.id, e.target.value)} onKeyDown={(e) => handleListKeyDown(e, index, item.id)} autoFocus/>
+                                    <button onClick={() => removeListItem(item.id)}>
+                                        <i className="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            ))}
+                            <div className="en-list-add" onClick={() => addListItem()}>
+                                <i className="fa-solid fa-plus"></i> List Item
+                            </div>
                         </div>
+                    ) : (
+                        <textarea className="en-content" placeholder="Take a note..." value={content} onChange={(e) => {setContent(e.target.value)}} ref={textareaRef} rows={1}/>
                     )}
-                    <input 
-                        type="text"
-                        className="en-title" 
-                        placeholder="Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        autoFocus
-                    />
-                    <textarea 
-                        className="en-content"
-                        placeholder="Take a note..."
-                        value={content}
-                        onChange={(e) => {setContent(e.target.value); handleInput();}}
-                        ref={textareaRef}
-                        rows={1}
-                    />
                 </div>
                 <div className="en-footer">
                     <div className='en-footer-buttons'>
                         <button className={`en-pin-btn ${isPinned ? 'active' : ''}`} onClick={() => setIsPinned(!isPinned)} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
                             <i className="fa-solid fa-thumbtack"></i>
                         </button>
-                        <button className='en-checkbox-btn' data-tooltip-text='Show Tick Boxes'>
+                        <button className={`en-checkbox-btn ${isList ? 'active' : ''} `} onClick={toggleMode} data-tooltip-text='Show Tick Boxes'>
                             <i className="fa-solid fa-check-square"></i>
                         </button>
                         <button className='en-image-btn' onClick={() => fileInputRef.current.click()} data-tooltip-text='Add Image'>

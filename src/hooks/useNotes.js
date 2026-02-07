@@ -28,8 +28,10 @@ export const useNotes = (filterType) => {
             q = query(q, where("isTrashed", "==", true), where("isArchived", "==", false));
         } else if (filterType === 'archive') {
             q = query(q, where("isArchived", "==", true), where("isTrashed", "==", false));
-        } else {
+        } else if (filterType === 'dashboard') {
             q = query(q, where("isTrashed", "==", false), where("isArchived", "==", false));
+        } else if (filterType === 'search') {
+            q = query(q, where("isTrashed", "==", false));
         }
 
         const unsubscribe = onSnapshot(q, (snapshot) => {

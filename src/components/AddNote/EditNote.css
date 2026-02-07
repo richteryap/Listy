@@ -129,6 +129,75 @@
     height: auto;
 }
 
+.en-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 10px 0 45px 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.en-list-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 15px;
+    border-bottom: 1px solid transparent;
+}
+
+/* Checkbox Style */
+.en-list-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: var(--bg-color);
+}
+
+/* Text Input Style */
+.en-list-item input[type="text"] {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-family: inherit;
+    background: transparent;
+    color: inherit;
+}
+
+/* Delete Button (X) */
+.en-list-item button {
+    background: none;
+    border: none;
+    color: #5f6368;
+    cursor: pointer;
+    padding: 5px;
+    opacity: 0; /* Hide by default */
+    transition: opacity 0.2s;
+}
+
+.en-list-item:hover button {
+    opacity: 1; /* Show on hover */
+}
+
+/* "Add Item" ghost button at bottom */
+.en-list-add {
+    display: flex;
+    align-items: center;
+    padding: 10px 21px;
+    color: #5f6368;
+    cursor: text;
+    font-size: 1rem;
+}
+
+.en-list-add i {
+    margin-right: 15px;
+}
+
+.en-list-add:hover {
+    color: #202124;
+}
+
 .en-footer {
     display: flex;
     justify-content: space-between;

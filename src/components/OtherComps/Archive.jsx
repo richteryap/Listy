@@ -7,7 +7,7 @@ import { useNotes } from '../../hooks/useNotes.js';
 import EditNote from '../AddNote/EditNote.jsx';
 import './Archive.css';
 
-const Archive = ({ isGridView }) => {
+const Archive = ({ isGridView, searchQuery }) => {
     const [selectedNote, setSelectedNote] = useState(null);
     const [animate, setAnimate] = useState(null);
     const [activeNoteId, setActiveNoteId] = useState(null);
@@ -16,6 +16,12 @@ const Archive = ({ isGridView }) => {
 
     const { notes, loading } = useNotes('archive');
     const { archiveTogglePin, unarchiveNote, archiveTrashNote } = useNoteActions();
+
+    const filteredNotes = notes.filter(note => 
+        note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.isList && note.listItems?.some(item => item.text.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
 
     const triggerImageUpload = (e, noteId) => {
         e.stopPropagation();
@@ -77,16 +83,32 @@ const Archive = ({ isGridView }) => {
                 </div>
             ) : (
                 <div className={`archive-grid ${isGridView ? '' : 'list-view'}`}>
-                    {notes.map(note => (
+                    {filteredNotes.map(note => (
                         <div key={note.id} className={`archive-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
                             <div className="archive-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
                                 {note.imageUrl && (
-                                    <div className="db-note-image">
+                                    <div className="archive-note-image">
                                         <img src={note.imageUrl} alt="Note Attachment" />
                                     </div>
                                 )}
                                 {note.title && <h1>{note.title}</h1>}
-                                <p>{note.content}</p>
+                                {note.isList ? (
+                                    <div className="archive-note-list-preview">
+                                        {note.listItems && note.listItems.slice(0, 4).map(item => (
+                                            <div key={item.id} className="archive-list-item-preview">
+                                                <i className={`fa-regular ${item.isChecked ? 'fa-square-check' : 'fa-square'}`}></i>
+                                                <span className={item.isChecked ? 'checked' : ''}>{item.text}</span>
+                                            </div>
+                                        ))}
+                                        {note.listItems && note.listItems.length > 4 && (
+                                            <div className="archive-list-more">
+                                                + {note.listItems.length - 4} more items
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p>{note.content}</p>
+                                )}
                             </div>
                             <div className="archive-note-buttons">
                                 <button className={`archive-pin-btn ${note.isPinned ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); archiveTogglePin(note.id, note.isPinned);}} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
