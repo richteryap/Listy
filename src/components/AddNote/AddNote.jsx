@@ -155,12 +155,6 @@ const AddNote = ({ onClose }) => {
                         <button className={`an-archive-btn ${isArchived ? 'active' : ''}`} onClick={() => setIsArchived(!isArchived)} data-tooltip-text='Archive Note'>
                             <i className="fa-solid fa-box-archive"></i>
                         </button>
-                        <button className='an-undo-btn' data-tooltip-text='Undo'>
-                            <i className="fa-solid fa-rotate-left"></i>
-                        </button>
-                        <button className='an-redo-btn' data-tooltip-text='Redo'>
-                            <i className="fa-solid fa-rotate-right"></i>
-                        </button>
                     </div>
                     <button className='an-close-btn' onClick={handleClose}>
                         Close

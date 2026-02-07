@@ -15,7 +15,7 @@ const Archive = ({ isGridView, searchQuery }) => {
     const fileInputRef = useRef(null);
 
     const { notes, loading } = useNotes('archive');
-    const { archiveTogglePin, unarchiveNote, archiveTrashNote } = useNoteActions();
+    const { toggleNoteListMode, archiveTogglePin, unarchiveNote, archiveTrashNote } = useNoteActions();
 
     const filteredNotes = notes.filter(note => 
         note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -114,7 +114,7 @@ const Archive = ({ isGridView, searchQuery }) => {
                                 <button className={`archive-pin-btn ${note.isPinned ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); archiveTogglePin(note.id, note.isPinned);}} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
                                     <i className="fa-solid fa-thumbtack"></i>
                                 </button>
-                                <button className='archive-checkbox-btn' onClick={(e) => {e.stopPropagation();}} data-tooltip-text='Show Tick Boxes'>
+                                <button className='archive-checkbox-btn' onClick={(e) => {e.stopPropagation(); toggleNoteListMode(note);}} data-tooltip-text='Show Tick Boxes'>
                                     <i className="fa-solid fa-check-square"></i>
                                 </button>
                                 <button className='archive-image-btn' onClick={(e) => triggerImageUpload(e, note.id)} data-tooltip-text='Add Image'>

@@ -15,7 +15,7 @@ const Dashboard = ({ isGridView, searchQuery }) => {
     const fileInputRef = useRef(null);
 
     const { notes, loading } = useNotes('dashboard');
-    const { dbTogglePin, archiveNote, dbTrashNote } = useNoteActions();
+    const { toggleNoteListMode, dbTogglePin, archiveNote, dbTrashNote } = useNoteActions();
 
     const filteredNotes = notes.filter(note => {
         const query = searchQuery.toLowerCase();
@@ -104,7 +104,7 @@ const Dashboard = ({ isGridView, searchQuery }) => {
                 <button className={`db-pin-btn ${note.isPinned ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); dbTogglePin(note.id, note.isPinned);}} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
                     <i className="fa-solid fa-thumbtack"></i>
                 </button>
-                <button className='db-checkbox-btn' onClick={(e) => {e.stopPropagation();}} data-tooltip-text='Show Tick Boxes'>
+                <button className='db-checkbox-btn' onClick={(e) => {e.stopPropagation(); toggleNoteListMode(note);}} data-tooltip-text={note.isList ? 'Show Text' : 'Show Tick Boxes'}>
                     <i className="fa-solid fa-check-square"></i>
                 </button>
                 <button className='db-image-btn' onClick={(e) => triggerImageUpload(e, note.id)} data-tooltip-text='Add Image'>

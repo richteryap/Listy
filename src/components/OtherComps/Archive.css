@@ -85,10 +85,21 @@
 }
 
 .archive-note-card h1 {
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: break-word;
+
   margin: 0;
   font-weight: 400;
   font-size: 1.1rem;
   padding: 10px 15px 0 15px;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .archive-note-card p {
@@ -370,11 +381,6 @@
   z-index: 2;
 
   position: relative;
-}
-
-.archive-unarchive-btn.active {
-  color: var(--card-btn-active);
-  opacity: 1;
 }
 
 .archive-unarchive-btn::after {

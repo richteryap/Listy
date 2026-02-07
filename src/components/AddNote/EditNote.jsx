@@ -207,12 +207,6 @@ const EditNote = ({ note, onClose }) => {
                         <button className={`en-delete-btn ${isTrashed ? 'active' : ''}`} onClick={handleTrashNow} data-tooltip-text='Move to Trash'>
                             <i className="fa-solid fa-trash"></i>
                         </button>
-                        <button className='en-undo-btn' data-tooltip-text='Undo'>
-                            <i className="fa-solid fa-rotate-left"></i>
-                        </button>
-                        <button className='en-redo-btn' data-tooltip-text='Redo'>
-                            <i className="fa-solid fa-rotate-right"></i>
-                        </button>
                     </div>
                     <button className="en-close-btn" onClick={handleClose}>
                         Close

@@ -5,6 +5,40 @@ import { useSnackbar } from '../components/context/SnackbarContext';
 export const useNoteActions = () => {
     const { showSnackbar } = useSnackbar();
 
+    const toggleNoteListMode = async (note) => {
+        const noteRef = doc(db, "notes", note.id);
+
+        if (note.isList) {
+            const textContent = note.listItems 
+                ? note.listItems.map(item => item.text).join('\n') 
+                : '';
+            
+            await updateDoc(noteRef, {
+                isList: false,
+                content: textContent
+            });
+        } else {
+            const currentContent = note.content || '';
+            const items = currentContent.split('\n')
+                .filter(line => line.trim() !== '')
+                .map(text => ({
+                    id: Date.now() + Math.random(),
+                    text: text,
+                    isChecked: false
+                }));
+            
+            if (items.length === 0) {
+                items.push({ id: Date.now(), text: '', isChecked: false });
+            }
+
+            await updateDoc(noteRef, {
+                isList: true,
+                listItems: items,
+                content: ''
+            });
+        }
+    };
+
     const dbTogglePin = async (noteId, currentStatus) => {
         await updateDoc(doc(db, "notes", noteId), { 
             isPinned: !currentStatus,
@@ -110,5 +144,5 @@ export const useNoteActions = () => {
         }
     };
 
-    return { dbTogglePin, archiveTogglePin, archiveNote, unarchiveNote, dbTrashNote, archiveTrashNote, restoreNote, deleteNoteForever };
+    return { toggleNoteListMode, dbTogglePin, archiveTogglePin, archiveNote, unarchiveNote, dbTrashNote, archiveTrashNote, restoreNote, deleteNoteForever };
 };

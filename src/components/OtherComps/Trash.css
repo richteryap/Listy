@@ -67,10 +67,21 @@
 }
 
 .trash-note-card h1 {
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: break-word;
+
   margin: 0;
   font-weight: 400;
   font-size: 1.1rem;
   padding: 10px 15px 0 15px;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .trash-note-card p {

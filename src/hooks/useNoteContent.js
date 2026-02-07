@@ -1,19 +1,15 @@
 import { useState } from 'react';
 
 export const useNoteContent = (initialData = {}) => {
-    // Initialize state based on passed data (for EditNote) or defaults (for AddNote)
     const [isList, setIsList] = useState(initialData.isList || false);
     const [content, setContent] = useState(initialData.content || '');
     const [listItems, setListItems] = useState(initialData.listItems || []);
 
-    // 1. Toggle between Text and List modes
     const toggleMode = () => {
         if (isList) {
-            // Convert List -> Text (Join items with newlines)
             const text = listItems.map(item => item.text).join('\n');
             setContent(text);
         } else {
-            // Convert Text -> List (Split by newlines)
             const items = content.split('\n')
                 .filter(line => line.trim() !== '')
                 .map(text => ({
@@ -30,7 +26,6 @@ export const useNoteContent = (initialData = {}) => {
         setIsList(!isList);
     };
 
-    // 2. Checklist Handlers
     const updateListItem = (id, text) => {
         setListItems(prev => prev.map(item => item.id === id ? { ...item, text } : item));
     };
@@ -42,12 +37,10 @@ export const useNoteContent = (initialData = {}) => {
     const addListItem = (index) => {
         const newItem = { id: Date.now() + Math.random(), text: '', isChecked: false };
         if (index !== undefined) {
-            // Insert after specific index (when pressing Enter)
             const newItems = [...listItems];
             newItems.splice(index + 1, 0, newItem);
             setListItems(newItems);
         } else {
-            // Add to end
             setListItems(prev => [...prev, newItem]);
         }
     };
