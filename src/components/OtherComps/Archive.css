@@ -125,22 +125,10 @@
   box-shadow: 0 4px 8px var(--box-shadow);
 }
 
-.archive-note-card:hover .archive-pin-btn {
-  opacity: 1;
-}
-
-.archive-note-card:hover .archive-checkbox-btn {
-  opacity: 1;
-}
-
-.archive-note-card:hover .archive-image-btn {
-  opacity: 1;
-}
-
-.archive-note-card:hover .archive-unarchive-btn {
-  opacity: 1;
-}
-
+.archive-note-card:hover .archive-pin-btn,
+.archive-note-card:hover .archive-checkbox-btn,
+.archive-note-card:hover .archive-image-btn,
+.archive-note-card:hover .archive-unarchive-btn,
 .archive-note-card:hover .archive-delete-btn {
   opacity: 1;
 }
@@ -219,7 +207,11 @@
   border-radius: 0 0 8px 8px;
 }
 
-.archive-pin-btn {
+.archive-pin-btn,
+.archive-checkbox-btn,
+.archive-image-btn,
+.archive-unarchive-btn,
+.archive-delete-btn {
   opacity: 0;
   background: transparent;
   border: none;
@@ -239,198 +231,10 @@
   opacity: 1;
 }
 
-.archive-pin-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.archive-pin-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
-.archive-checkbox-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
-.archive-checkbox-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.archive-checkbox-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
-.archive-image-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
-.archive-image-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.archive-image-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
-.archive-unarchive-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
-.archive-unarchive-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.archive-unarchive-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
-.archive-delete-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
+.archive-pin-btn::after,
+.archive-checkbox-btn::after,
+.archive-image-btn::after,
+.archive-unarchive-btn::after,
 .archive-delete-btn::after {
   content: attr(data-tooltip-text);
     
@@ -457,10 +261,13 @@
   transition: opacity 0.2s 0s, visibility 0s 0.2s; 
 }
 
+.archive-pin-btn:hover::after,
+.archive-checkbox-btn:hover::after,
+.archive-image-btn:hover::after,
+.archive-unarchive-btn:hover::after,
 .archive-delete-btn:hover::after {
   opacity: 1;
   visibility: visible;
-  
   transition-delay: 0.4s; 
 }
 
@@ -479,4 +286,47 @@
   font-size: 5rem;
   margin-bottom: 20px;
   opacity: 0.2;
+}
+
+@media (max-width: 1024px) {
+  .archive-grid {
+    column-count: 3;
+  }
+}
+
+/* Tablet Portrait */
+@media (max-width: 800px) {
+  .archive-body {
+    padding: 100px 15px 50px 15px; /* Reduce side padding */
+  }
+  .archive-grid {
+    column-count: 2;
+  }
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+  .archive-grid {
+    column-count: 1;
+  }
+}
+
+@media (hover: none) {
+  .archive-pin-btn, 
+  .archive-checkbox-btn, 
+  .archive-image-btn, 
+  .archive-unarchive-btn, 
+  .archive-delete-btn {
+    opacity: 1 !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .archive-pin-btn::after, 
+  .archive-checkbox-btn::after, 
+  .archive-image-btn::after, 
+  .archive-unarchive-btn::after, 
+  .archive-delete-btn::after {
+      display: none;
+  }
 }

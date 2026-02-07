@@ -60,9 +60,14 @@ const AddNote = ({ onClose }) => {
     const handleAddNote = async (e) => {
         if (e) e.preventDefault();
 
-        const isListEmpty = isList && listItems.every(i => i.text.trim() === '');
-        const isTextEmpty = !isList && !content.trim();
-        if (!title.trim() && isTextEmpty && isListEmpty && !imageFile) return;
+        const hasTitle = title.trim().length > 0;
+        const hasImage = imageFile !== null;
+
+        const hasContent = isList 
+            ? listItems.some(item => item.text.trim().length > 0)
+            : content.trim().length > 0;
+
+        if (!hasTitle && !hasContent && !hasImage) return;
     
         try {
             const newNoteRef = await addDoc(collection(db, 'notes'), {

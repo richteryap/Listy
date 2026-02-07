@@ -66,7 +66,8 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                     {!isTrashPage && !isArchivePage && (
                         <div className='add-item' ref={addItemRef}>
                             <button className="add-btn" onClick={() => setIsAddItemOpen(!isAddItemOpen)} aria-label="Add Item" data-tooltip-text='Add Item'>
-                                <span><i className="fa-solid fa-plus"></i>Add Item</span>
+                                <i className="fa-solid fa-plus"></i>
+                                <span>Add Item</span>
                             </button>
                             {isAddItemOpen && (
                                 <div className='add-item-content'>

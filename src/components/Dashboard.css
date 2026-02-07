@@ -134,22 +134,10 @@
   box-shadow: 0 4px 8px var(--box-shadow);
 }
 
-.db-note-card:hover .db-pin-btn {
-  opacity: 1;
-}
-
-.db-note-card:hover .db-checkbox-btn {
-  opacity: 1;
-}
-
-.db-note-card:hover .db-image-btn {
-  opacity: 1;
-}
-
-.db-note-card:hover .db-archive-btn {
-  opacity: 1;
-}
-
+.db-note-card:hover .db-pin-btn,
+.db-note-card:hover .db-checkbox-btn,
+.db-note-card:hover .db-image-btn,
+.db-note-card:hover .db-archive-btn,
 .db-note-card:hover .db-delete-btn {
   opacity: 1;
 }
@@ -228,208 +216,10 @@
   border-radius: 0 0 8px 8px;
 }
 
-.db-pin-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
-.db-pin-btn.active {
-  color: var(--card-btn-active);
-  opacity: 1;
-}
-
-.db-pin-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.db-pin-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
-.db-checkbox-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
-.db-checkbox-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.db-checkbox-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
-.db-image-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
-.db-image-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.db-image-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
-.db-archive-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
-.db-archive-btn.active {
-  color: var(--card-btn-active);
-  opacity: 1;
-}
-
-.db-archive-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.db-archive-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
+.db-pin-btn,
+.db-checkbox-btn,
+.db-image-btn,
+.db-archive-btn,
 .db-delete-btn {
   opacity: 0;
   background: transparent;
@@ -445,6 +235,16 @@
   position: relative;
 }
 
+.db-pin-btn.active,
+.db-archive-btn.active {
+  color: var(--card-btn-active);
+  opacity: 1;
+}
+
+.db-pin-btn::after, 
+.db-checkbox-btn::after, 
+.db-image-btn::after, 
+.db-archive-btn::after, 
 .db-delete-btn::after {
   content: attr(data-tooltip-text);
     
@@ -471,11 +271,14 @@
   transition: opacity 0.2s 0s, visibility 0s 0.2s; 
 }
 
+.db-pin-btn:hover::after, 
+.db-checkbox-btn:hover::after, 
+.db-image-btn:hover::after, 
+.db-archive-btn:hover::after, 
 .db-delete-btn:hover::after {
   opacity: 1;
   visibility: visible;
-  
-  transition-delay: 0.4s; 
+  transition-delay: 0.5s; 
 }
 
 .db-note-card button:hover {
@@ -500,4 +303,40 @@
   font-size: 5rem;
   margin-bottom: 20px;
   opacity: 0.2;
+}
+
+/* Tablet / Small Laptop */
+@media (max-width: 1024px) {
+  .db-grid {
+    column-count: 3;
+  }
+}
+
+/* Tablet Portrait */
+@media (max-width: 800px) {
+  .dashboard-body {
+    padding: 15px;
+  }
+  .db-grid {
+    column-count: 2;
+  }
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+  .db-grid {
+    column-count: 1;
+  }
+}
+
+@media (hover: none) {
+  .db-pin-btn, .db-checkbox-btn, .db-image-btn, .db-archive-btn, .db-delete-btn {
+    opacity: 1 !important;
+  }
+}
+
+@media (max-width: 800px) {
+    .db-pin-btn::after, .db-checkbox-btn::after, .db-image-btn::after, .db-archive-btn::after, .db-delete-btn::after {
+        display: none;
+    }
 }

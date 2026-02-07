@@ -107,10 +107,7 @@
   box-shadow: 0 4px 8px var(--box-shadow);
 }
 
-.trash-note-card:hover .trash-restore-btn {
-  opacity: 1;
-}
-
+.trash-note-card:hover .trash-restore-btn,
 .trash-note-card:hover .trash-delete-btn {
   opacity: 1;
 }
@@ -187,54 +184,7 @@
   position: relative;
 }
 
-.trash-restore-btn {
-  opacity: 0;
-  background: transparent;
-  border: none;
-  color: var(--card-btn);
-  cursor: pointer;
-  padding: 8px 10px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-
-  z-index: 2;
-
-  position: relative;
-}
-
-.trash-restore-btn::after {
-  content: attr(data-tooltip-text);
-    
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  
-  font-size: 12px;
-  font-weight: 400;
-  font-family: sans-serif;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 2000;
-
-  opacity: 0;
-  visibility: hidden;
-    
-  transition: opacity 0.2s 0s, visibility 0s 0.2s; 
-}
-
-.trash-restore-btn:hover::after {
-  opacity: 1;
-  visibility: visible;
-  
-  transition-delay: 0.4s; 
-}
-
+.trash-restore-btn,
 .trash-delete-btn {
   opacity: 0;
   background: transparent;
@@ -250,6 +200,7 @@
   position: relative;
 }
 
+.trash-restore-btn::after,
 .trash-delete-btn::after {
   content: attr(data-tooltip-text);
     
@@ -276,10 +227,10 @@
   transition: opacity 0.2s 0s, visibility 0s 0.2s; 
 }
 
+.trash-restore-btn:hover::after,
 .trash-delete-btn:hover::after {
   opacity: 1;
   visibility: visible;
-  
   transition-delay: 0.4s; 
 }
 
@@ -298,4 +249,42 @@
   font-size: 5rem;
   margin-bottom: 20px;
   opacity: 0.2;
+}
+
+@media (max-width: 1024px) {
+  .trash-grid {
+    column-count: 3;
+  }
+}
+
+/* Tablet Portrait */
+@media (max-width: 800px) {
+  .trash-body {
+    padding: 100px 15px 50px 15px; /* Reduce side padding */
+  }
+  .trash-grid {
+    column-count: 2;
+  }
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+  .trash-grid {
+    column-count: 1;
+  }
+}
+
+/* TOUCH DEVICE SUPPORT: Always show buttons on mobile */
+@media (hover: none) {
+  .trash-restore-btn, .trash-delete-btn {
+    opacity: 1 !important;
+  }
+}
+
+/* Hide tooltips on mobile */
+@media (max-width: 800px) {
+  .trash-restore-btn::after, 
+  .trash-delete-btn::after {
+      display: none;
+  }
 }
