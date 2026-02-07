@@ -1,16 +1,30 @@
-# React + Vite
+# 📝 Listy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Listy** is a modern, responsive note-taking application inspired by Google Keep. It allows users to capture ideas, create checklists, and manage tasks efficiently with a clean and intuitive interface. Built with **React** and **Firebase**.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Live Demo
 
-## React Compiler
+Check out the live application here: **[https://listy-delta.vercel.app/]**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Features
 
-## Expanding the ESLint configuration
+* **Create & Edit Notes:** Seamlessly create text notes or switch to **checklist mode** for tasks.
+* **Rich Media:** Upload and attach images to your notes.
+* **Organization:**
+    * 📌 **Pin** important notes to the top.
+    * 📦 **Archive** notes you're done with but want to keep.
+    * 🗑️ **Trash** notes (with restore and permanent delete).
+* **Search:** Real-time search filtering by title, content, or checklist items.
+* **View Options:** Toggle between **Grid View** (Masonry layout) and **List View**.
+* **Authentication:** Secure Email/Password login and registration with a smooth **sliding animation**.
+* **Responsive Design:** Fully optimized layout that adapts from Desktop to Mobile.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack
+
+* **Frontend:** React (Vite)
+* **Styling:** CSS3 (Variables, Flexbox, CSS Columns, Media Queries)
+* **Backend / BaaS:** Firebase (Firestore, Authentication)
+* **Routing:** React Router DOM
+* **State Management:** React Context API & Custom Hooks
+* **Deployment:** Vercel
