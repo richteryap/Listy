@@ -297,17 +297,38 @@
 /* Tablet Portrait */
 @media (max-width: 800px) {
   .archive-body {
-    padding: 100px 15px 50px 15px; /* Reduce side padding */
+    padding: 80px 50px 25px 50px;
   }
   .archive-grid {
     column-count: 2;
+  }
+  .archive-pin-btn::after, 
+  .archive-checkbox-btn::after, 
+  .archive-image-btn::after, 
+  .archive-unarchive-btn::after, 
+  .archive-delete-btn::after {
+    display: none;
   }
 }
 
 /* Mobile */
 @media (max-width: 500px) {
+  .archive-body {
+    padding: 80px 12px 25px 12px;
+  }
   .archive-grid {
-    column-count: 1;
+    column-gap: 10px;
+    column-count: 2;
+  }
+  .archive-note-card {
+    margin-bottom: 7px;
+  }
+  .archive-note-card p {
+    max-height: 250px;
+    -webkit-line-clamp: 11;
+  }
+  .archive-note-buttons {
+    display: none;
   }
 }
 
@@ -318,15 +339,5 @@
   .archive-unarchive-btn, 
   .archive-delete-btn {
     opacity: 1 !important;
-  }
-}
-
-@media (max-width: 800px) {
-  .archive-pin-btn::after, 
-  .archive-checkbox-btn::after, 
-  .archive-image-btn::after, 
-  .archive-unarchive-btn::after, 
-  .archive-delete-btn::after {
-      display: none;
   }
 }

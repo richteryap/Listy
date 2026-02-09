@@ -99,8 +99,8 @@ const EditNote = ({ note, onClose }) => {
                 listItems: listItems,
                 imageUrl: imageFile,
                 isTrashed: newStatus,
-                isPinned: isPinned,
-                isArchived: isArchived,
+                isPinned: false,
+                isArchived: false,
                 updatedAt: serverTimestamp()
             });
             const message = newStatus ? "Note moved to trash" : "Note untrashed";
