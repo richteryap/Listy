@@ -1,4 +1,4 @@
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useSnackbar } from '../components/context/SnackbarContext';
 
@@ -95,7 +95,9 @@ export const useNoteActions = () => {
     const dbTrashNote = async (noteId) => {
         await updateDoc(doc(db, "notes", noteId), {
             isTrashed: true,
-            isPinned: false
+            isArchived: false,
+            isPinned: false,
+            trashedAt: serverTimestamp()
         });
 
         showSnackbar("Note moved to trash", async () => {
@@ -108,7 +110,8 @@ export const useNoteActions = () => {
     const archiveTrashNote = async (noteId) => {
         await updateDoc(doc(db, "notes", noteId), {
             isTrashed: true,
-            isArchived: false
+            isArchived: false,
+            trashedAt: serverTimestamp()
         });
 
         showSnackbar("Note moved to trash", async () => {

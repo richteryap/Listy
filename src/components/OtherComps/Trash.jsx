@@ -6,6 +6,17 @@ const Trash = ({ isGridView }) => {
     const { notes, loading } = useNotes('trash');
     const { restoreNote, deleteNoteForever } = useNoteActions();
 
+    const getDaysLeft = (trashedAt) => {
+        if (!trashedAt) return 30;
+        
+        const trashedDate = trashedAt.toDate();
+        const now = new Date();
+        const diffTime = Math.abs(now - trashedDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        
+        return Math.max(0, 30 - diffDays);
+    };
+
     return (
         <div className='trash-body'>
             {loading ? (
@@ -48,6 +59,9 @@ const Trash = ({ isGridView }) => {
                                 <button className='trash-delete-btn' onClick={() => deleteNoteForever(note.id)} data-tooltip-text='Delete Forever'>
                                     <i className="fa-solid fa-ban"></i>
                                 </button>
+                                <div className="trash-warning">
+                                    {getDaysLeft(note.trashedAt)} days left
+                                </div>
                             </div>
                         </div>
                     ))}

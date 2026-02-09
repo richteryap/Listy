@@ -101,7 +101,8 @@ const EditNote = ({ note, onClose }) => {
                 isTrashed: newStatus,
                 isPinned: false,
                 isArchived: false,
-                updatedAt: serverTimestamp()
+                updatedAt: serverTimestamp(),
+                trashedAt: serverTimestamp()
             });
             const message = newStatus ? "Note moved to trash" : "Note untrashed";
             const undoAction = async () => {

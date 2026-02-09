@@ -238,6 +238,16 @@
   background-color: var(--button-hover-color);
 }
 
+.trash-warning {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: #ff4d4d;
+}
+
 .trash-empty-state {
   text-align: center;
   color: var(--text-color);
@@ -285,6 +295,9 @@
   .trash-note-card p {
     max-height: 250px;
     -webkit-line-clamp: 11;
+  }
+  .trash-warning {
+    font-size: 10px;
   }
 }
 

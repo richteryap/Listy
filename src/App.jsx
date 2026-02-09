@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { SnackbarProvider } from './components/context/SnackbarContext.jsx';
+import { useTrashCleanup } from './hooks/useTrashCleanup.js';
 import './App.css'
 import Header from './components/Header/Header.jsx'
 import Dashboard from './components/Dashboard.jsx'
@@ -38,6 +39,8 @@ function App() {
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
+
+  useTrashCleanup();
 
   return (
     <>
