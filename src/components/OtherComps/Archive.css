@@ -318,7 +318,6 @@
   }
   .archive-grid {
     column-gap: 10px;
-    column-count: 2;
   }
   .archive-note-card {
     margin-bottom: 7px;

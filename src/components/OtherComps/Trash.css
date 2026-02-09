@@ -278,7 +278,6 @@
   }
   .trash-grid {
     column-gap: 10px;
-    column-count: 2;
   }
   .trash-note-card {
     margin-bottom: 7px;
