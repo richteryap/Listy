@@ -110,7 +110,7 @@ const Dashboard = ({ isGridView, searchQuery }) => {
                 <button className='db-image-btn' onClick={(e) => triggerImageUpload(e, note.id)} data-tooltip-text='Add Image'>
                     <i className="fa-regular fa-image"></i>
                 </button>
-                <button className='db-archive-btn' onClick={(e) => {e.stopPropagation(); archiveNote(note.id);}} data-tooltip-text='Archive Note'>
+                <button className={`db-archive-btn ${note.isArchived ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); archiveNote(note.id);}} data-tooltip-text={note.isArchived ? 'Unarchive' : 'Archive'}>
                     <i className="fa-solid fa-box-archive"></i>
                 </button>
                 <button className="db-delete-btn" onClick={(e) => {e.stopPropagation(); dbTrashNote(note.id);}} data-tooltip-text='Moved to Trash'>
