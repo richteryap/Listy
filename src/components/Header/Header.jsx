@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useClickOutside } from '../../hooks/useClickOutside.js';
 import { auth } from '../../firebase.js';
 import { signOut } from 'firebase/auth';
@@ -9,6 +9,7 @@ import './Header.css'
 
 const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQuery, setSearchQuery }) => {
     const location = useLocation();
+    const navigate = useNavigate();
     const isAccountPage = location.pathname.startsWith('/account');
     const isTrashPage = location.pathname.startsWith('/trash');
     const isArchivePage = location.pathname.startsWith('/archive');
@@ -36,6 +37,19 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
         }
     };
 
+    const handleSearchChange = (e) => {
+        const text = e.target.value;
+        setSearchQuery(text);
+
+        if (text.trim().length > 0) {
+            navigate(`/search?q=${encodeURIComponent(text)}`);
+        } else {
+            if (location.pathname === '/search') {
+               navigate('/dashboard');
+            }
+        }
+    };
+
     return (
         <div className='header-body'>
             <div className='header-left-content'>
@@ -47,7 +61,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                 </div>
                 {!isAccountPage && (
                     <div className='search-bar'>
-                        <input type='text' placeholder='Search' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} ref={searchInputRef}/>
+                        <input type='text' placeholder='Search' value={searchQuery} onChange={(e) => {setSearchQuery(e.target.value); handleSearchChange(e);}} ref={searchInputRef}/>
                         {searchQuery && (
                             <i className="fa-solid fa-xmark" onClick={() => setSearchQuery('')} aria-label="Clear search" role="button" data-tooltip-text='Clear search'></i>
                         )}

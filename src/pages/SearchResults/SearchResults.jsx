@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { db } from '../../firebase.js';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useNotes } from '../../hooks/useNotes';
@@ -8,6 +9,9 @@ import EditNote from '../../components/EditNote/EditNote';
 import './SearchResults.css';
 
 const SearchResults = ({ searchQuery, isGridView }) => {
+    const [searchParams] = useSearchParams();
+    const query = searchParams.get('q') || '';
+
     const [selectedNote, setSelectedNote] = useState(null);
     const [animate, setAnimate] = useState(null);
     const [activeNoteId, setActiveNoteId] = useState(null);
@@ -62,11 +66,20 @@ const SearchResults = ({ searchQuery, isGridView }) => {
         }, 100);
     }
 
+    const safeQuery = query.toLowerCase();
+
     const filteredNotes = notes.filter(note => {
-        const query = searchQuery.toLowerCase();
-        const titleMatch = note.title?.toLowerCase().includes(query);
-        const contentMatch = note.content?.toLowerCase().includes(query);
-        const listMatch = note.isList && note.listItems?.some(item => item.text.toLowerCase().includes(query));
+        const titleMatch = note.title
+            ? note.title.toLowerCase().includes(safeQuery)
+            : false;
+
+        const contentMatch = note.content
+            ? note.content.toLowerCase().includes(safeQuery)
+            : false;
+
+        const listMatch = note.isList && note.listItems
+            ? note.listItems.some(item => (item.text || '').toLowerCase().includes(safeQuery))
+            : false;
         
         return titleMatch || contentMatch || listMatch;
     });

@@ -2,12 +2,17 @@ import { useEffect } from 'react';
 import { db } from '../firebase';
 import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
-export const useTrashCleanup = () => {
+export const useTrashCleanup = (userId) => {
     useEffect(() => {
+        if (!userId) return;
+        
         const cleanupTrash = async () => {
             try {
                 const notesRef = collection(db, 'notes');
-                const q = query(notesRef, where("isTrashed", "==", true));
+                const q = query(notesRef,
+                    where("isTrashed", "==", true),
+                    where("userId", "==", userId)
+                );
                 const snapshot = await getDocs(q);
 
                 const now = new Date();

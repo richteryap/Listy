@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { auth } from './firebase.js'; 
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { SnackbarProvider } from './components/SnackbarContext.jsx';
 import { useTrashCleanup } from './hooks/useTrashCleanup.js';
 import './App.css'
@@ -13,6 +15,7 @@ import Trash from './pages/Trash/Trash.jsx';
 import SearchResults from './pages/SearchResults/SearchResults.jsx';
 
 function App() {
+  const [user] = useAuthState(auth);
   const location = useLocation();
   const noHeaderPaths = ['/verify-email'];
 
@@ -40,7 +43,7 @@ function App() {
     }
   }, [isDarkMode]);
 
-  useTrashCleanup();
+  useTrashCleanup(user?.uid);
 
   return (
     <>
@@ -55,37 +58,35 @@ function App() {
             setSearchQuery={setSearchQuery}
           />
         )}
-        {searchQuery.trim().length > 0 ? (
-          <div className='app-body'>
-            <SearchResults
-              searchQuery={searchQuery}
-              isGridView={isGridView}
-            />
-          </div>
-        ) : (
-          <Routes>
-            <Route path='/dashboard' element={
-              <ProtectedRoute>
-                <div className='app-body'>
-                  <Dashboard isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
-                </div>
-              </ProtectedRoute>
-            }/>
-            <Route path='/archive' element={
-              <ProtectedRoute>
-                <Archive isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
-              </ProtectedRoute>
-            }/>
-            <Route path='/trash' element={
-              <ProtectedRoute>
-                <Trash isGridView={isGridView} isDarkMode={isDarkMode}/>
-              </ProtectedRoute>
-            }/>
-            <Route path='/verify-email' element={<WaitingRoom isDarkMode={isDarkMode} />}/>
-            <Route path='/account' element={<Login_Register  isDarkMode={isDarkMode}/>}/>
-            <Route path='*' element={<Navigate to='/dashboard' replace />}/>
-          </Routes>
-        )}
+        <Routes>
+          <Route path='/dashboard' element={
+            <ProtectedRoute>
+              <div className='app-body'>
+                <Dashboard isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
+              </div>
+            </ProtectedRoute>
+          }/>
+          <Route path='/search' element={
+            <ProtectedRoute>
+              <div className='app-body'>
+                <SearchResults isGridView={isGridView} isDarkMode={isDarkMode}/>
+              </div>
+            </ProtectedRoute>
+          }/>
+          <Route path='/archive' element={
+            <ProtectedRoute>
+              <Archive isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
+            </ProtectedRoute>
+          }/>
+          <Route path='/trash' element={
+            <ProtectedRoute>
+              <Trash isGridView={isGridView} isDarkMode={isDarkMode}/>
+            </ProtectedRoute>
+          }/>
+          <Route path='/verify-email' element={<WaitingRoom isDarkMode={isDarkMode} />}/>
+          <Route path='/account' element={<Login_Register  isDarkMode={isDarkMode}/>}/>
+          <Route path='*' element={<Navigate to='/dashboard' replace />}/>
+        </Routes>
       </SnackbarProvider>
     </>
   )
