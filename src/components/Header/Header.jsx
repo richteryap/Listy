@@ -50,6 +50,15 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
         }
     };
 
+    const handleClearSearch = () => {
+        setSearchQuery('');
+        searchInputRef.current.focus();
+        
+        if (location.pathname === '/search') {
+            navigate('/dashboard');
+        }
+    };
+
     return (
         <div className='header-body'>
             <div className='header-left-content'>
@@ -63,7 +72,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                     <div className='search-bar'>
                         <input type='text' placeholder='Search' value={searchQuery} onChange={(e) => {setSearchQuery(e.target.value); handleSearchChange(e);}} ref={searchInputRef}/>
                         {searchQuery && (
-                            <i className="fa-solid fa-xmark" onClick={() => setSearchQuery('')} aria-label="Clear search" role="button" data-tooltip-text='Clear search'></i>
+                            <i className="fa-solid fa-xmark" onClick={handleClearSearch} aria-label="Clear search" role="button" data-tooltip-text='Clear search'></i>
                         )}
                         <i className="fa-solid fa-magnifying-glass" onClick={() => searchInputRef.current.focus()} role='button' data-tooltip-text='Search'></i>
                     </div>
