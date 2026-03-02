@@ -1,11 +1,11 @@
 import { useState, useRef } from 'react';
-import { db } from '../../firebase';
+import { sr } from '../../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useNotes } from '../../hooks/useNotes';
 import { useNoteActions } from '../../hooks/useNoteActions';
 import { convertToBase64, validateImage } from '../../utils/fileUtils';
 import EditNote from '../../components/EditNote/EditNote';
-import '../Dashboard/Dashboard.css';
+import './SearchResults.css';
 
 const SearchResults = ({ searchQuery, isGridView }) => {
     const [selectedNote, setSelectedNote] = useState(null);
@@ -40,7 +40,7 @@ const SearchResults = ({ searchQuery, isGridView }) => {
         try {
             const base64 = await convertToBase64(file);
             
-            const noteRef = doc(db, "notes", activeNoteId);
+            const noteRef = doc(sr, "notes", activeNoteId);
             await updateDoc(noteRef, {
                 imageUrl: base64
             });
@@ -71,67 +71,9 @@ const SearchResults = ({ searchQuery, isGridView }) => {
         return titleMatch || contentMatch || listMatch;
     });
 
-    const renderNoteCard = (note) => (
-        <div key={note.id} className={`db-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
-            <div className="db-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
-                {note.imageUrl && (
-                    <div className="db-note-image">
-                        <img src={note.imageUrl} alt="Note Attachment" />
-                    </div>
-                )}
-                {note.title && <h1>{note.title}</h1>}
-                {note.isList ? (
-                    <div className="db-note-list-preview">
-                        {note.listItems && note.listItems.slice(0, 4).map(item => (
-                            <div key={item.id} className="db-list-item-preview">
-                                <i className={`fa-regular ${item.isChecked ? 'fa-square-check' : 'fa-square'}`}></i>
-                                <span className={item.isChecked ? 'checked' : ''}>{item.text}</span>
-                            </div>
-                        ))}
-                        {note.listItems && note.listItems.length > 4 && (
-                            <div className="db-list-more">
-                                + {note.listItems.length - 4} more items
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    <p>{note.content}</p>
-                )}
-            </div>
-            <div className="db-note-buttons">
-                <button className={`db-pin-btn ${note.isPinned ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); dbTogglePin(note.id, note.isPinned);}} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
-                    <i className="fa-solid fa-thumbtack"></i>
-                </button>
-                <button className='db-checkbox-btn' onClick={(e) => {e.stopPropagation(); toggleNoteListMode(note);}} data-tooltip-text={note.isList ? 'Show Text' : 'Show Tick Boxes'}>
-                    <i className="fa-solid fa-check-square"></i>
-                </button>
-                <button className='db-image-btn' onClick={(e) => triggerImageUpload(e, note.id)} data-tooltip-text='Add Image'>
-                    <i className="fa-regular fa-image"></i>
-                </button>
-                <button 
-                    className='db-archive-btn'
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        if (note.isArchived) {
-                            unarchiveNote(note.id);
-                        } else {
-                            archiveNote(note.id);
-                        }
-                    }}
-                    data-tooltip-text={note.isArchived ? 'Unarchive' : 'Archive Note'}
-                >
-                    <i className={`fa-solid ${note.isArchived ? 'fa-box-open' : 'fa-box-archive'}`}></i>
-                </button>
-                <button className="db-delete-btn" onClick={(e) => {e.stopPropagation(); dbTrashNote(note.id);}} data-tooltip-text='Moved to Trash'>
-                    <i className="fa-solid fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    );
-
     return (
-        <div className="dashboard-body">
-            <div className="db-section-label">SEARCH RESULTS</div>
+        <div className="search-results-body">
+            <div className="sr-section-label">SEARCH RESULTS</div>
             <input 
                 type="file" 
                 ref={fileInputRef} 
@@ -140,19 +82,74 @@ const SearchResults = ({ searchQuery, isGridView }) => {
                 onChange={handleImageSelect}
             />
             {loading ? (
-                <div className="db-loading-screen">
+                <div className="sr-loading-screen">
                     <i className="fa-solid fa-spinner fa-spin"></i>
                 </div>
             ) : (
-                <div className={`db-grid ${isGridView ? '' : 'list-view'}`}>
-                    {filteredNotes.length > 0 ? (
-                        filteredNotes.map(note => renderNoteCard(note))
-                    ) : (
-                        <div className="db-empty-state">
+                <div className={`sr-grid ${isGridView ? '' : 'list-view'}`}>
+                    {filteredNotes.map(note => (
+                        <div key={note.id} className={`sr-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
+                            <div className="sr-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
+                                {note.imageUrl && (
+                                    <div className="sr-note-image">
+                                        <img src={note.imageUrl} alt="Note Attachment" />
+                                    </div>
+                                )}
+                                {note.title && <h1>{note.title}</h1>}
+                                {note.isList ? (
+                                    <div className="sr-note-list-preview">
+                                        {note.listItems && note.listItems.slice(0, 4).map(item => (
+                                            <div key={item.id} className="sr-list-item-preview">
+                                                <i className={`fa-regular ${item.isChecked ? 'fa-square-check' : 'fa-square'}`}></i>
+                                                <span className={item.isChecked ? 'checked' : ''}>{item.text}</span>
+                                            </div>
+                                        ))}
+                                        {note.listItems && note.listItems.length > 4 && (
+                                            <div className="sr-list-more">
+                                                + {note.listItems.length - 4} more items
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p>{note.content}</p>
+                                )}
+                            </div>
+                            <div className="sr-note-buttons">
+                                <button className={`sr-pin-btn ${note.isPinned ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); dbTogglePin(note.id, note.isPinned);}} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
+                                    <i className="fa-solid fa-thumbtack"></i>
+                                </button>
+                                <button className='sr-checkbox-btn' onClick={(e) => {e.stopPropagation(); toggleNoteListMode(note);}} data-tooltip-text={note.isList ? 'Show Text' : 'Show Tick Boxes'}>
+                                    <i className="fa-solid fa-check-square"></i>
+                                </button>
+                                <button className='sr-image-btn' onClick={(e) => triggerImageUpload(e, note.id)} data-tooltip-text='Add Image'>
+                                    <i className="fa-regular fa-image"></i>
+                                </button>
+                                <button 
+                                    className='sr-archive-btn'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (note.isArchived) {
+                                            unarchiveNote(note.id);
+                                        } else {
+                                            archiveNote(note.id);
+                                        }
+                                    }}
+                                    data-tooltip-text={note.isArchived ? 'Unarchive' : 'Archive Note'}
+                                >
+                                    <i className={`fa-solid ${note.isArchived ? 'fa-box-open' : 'fa-box-archive'}`}></i>
+                                </button>
+                                <button className="sr-delete-btn" onClick={(e) => {e.stopPropagation(); dbTrashNote(note.id);}} data-tooltip-text='Moved to Trash'>
+                                    <i className="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                    {!loading && notes.length === 0 &&
+                        <div className="sr-empty-state">
                             <i className="fa-regular fa-lightbulb"></i>
                             <p>No matching results</p>
                         </div>
-                    )}
+                    }
                 </div>
             )}
             {selectedNote && (
