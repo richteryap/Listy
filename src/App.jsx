@@ -7,10 +7,10 @@ import Header from './components/Header/Header.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import Login_Register from './pages/Login_Register/Login_Register.jsx';
 import ProtectedRoute from './hooks/ProtectedRoute.jsx'
-import WaitingRoom from './components/WaitingRoom/WaitingRoom.jsx';
+import WaitingRoom from './pages/WaitingRoom/WaitingRoom.jsx';
 import Archive from './pages/Archive/Archive.jsx';
 import Trash from './pages/Trash/Trash.jsx';
-import SearchResults from './components/SearchResults.jsx';
+import SearchResults from './pages/SearchResults/SearchResults.jsx';
 
 function App() {
   const location = useLocation();
@@ -64,7 +64,7 @@ function App() {
           </div>
         ) : (
           <Routes>
-            <Route path='/' element={
+            <Route path='/dashboard' element={
               <ProtectedRoute>
                 <div className='app-body'>
                   <Dashboard isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
@@ -83,7 +83,7 @@ function App() {
             }/>
             <Route path='/verify-email' element={<WaitingRoom isDarkMode={isDarkMode} />}/>
             <Route path='/account' element={<Login_Register  isDarkMode={isDarkMode}/>}/>
-            <Route path='*' element={<Navigate to='/' replace />}/>
+            <Route path='*' element={<Navigate to='/dashboard' replace />}/>
           </Routes>
         )}
       </SnackbarProvider>

@@ -40,7 +40,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
         <div className='header-body'>
             <div className='header-left-content'>
                 <div className='web-title' data-tooltip-text='Listy'>
-                    <Link to='/' className='title-link'>
+                    <Link to='/dashboard' className='title-link'>
                         <img src="logo.png" alt="Logo" className="logo-img"/>
                         <span className='listy'>Listy</span>
                     </Link>

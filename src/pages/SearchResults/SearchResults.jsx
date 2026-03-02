@@ -1,11 +1,11 @@
 import { useState, useRef } from 'react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
-import { useNotes } from '../hooks/useNotes';
-import { useNoteActions } from '../hooks/useNoteActions';
-import { convertToBase64, validateImage } from '../utils/fileUtils';
-import EditNote from './EditNote/EditNote';
-import '../pages/Dashboard/Dashboard.css';
+import { useNotes } from '../../hooks/useNotes';
+import { useNoteActions } from '../../hooks/useNoteActions';
+import { convertToBase64, validateImage } from '../../utils/fileUtils';
+import EditNote from '../../components/EditNote/EditNote';
+import '../Dashboard/Dashboard.css';
 
 const SearchResults = ({ searchQuery, isGridView }) => {
     const [selectedNote, setSelectedNote] = useState(null);
