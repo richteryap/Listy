@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { SnackbarProvider } from './components/context/SnackbarContext.jsx';
+import { SnackbarProvider } from './components/SnackbarContext.jsx';
 import { useTrashCleanup } from './hooks/useTrashCleanup.js';
 import './App.css'
 import Header from './components/Header/Header.jsx'
-import Dashboard from './components/Dashboard.jsx'
-import Login_Register from './components/Account/Login_Register.jsx';
+import Dashboard from './pages/Dashboard/Dashboard.jsx'
+import Login_Register from './pages/Login_Register/Login_Register.jsx';
 import ProtectedRoute from './hooks/ProtectedRoute.jsx'
-import WaitingRoom from './components/Account/WaitingRoom.jsx';
-import Archive from './components/OtherComps/Archive.jsx';
-import Trash from './components/OtherComps/Trash.jsx';
-import SearchResults from './components/Header/SearchResults.jsx';
+import WaitingRoom from './components/WaitingRoom/WaitingRoom.jsx';
+import Archive from './pages/Archive/Archive.jsx';
+import Trash from './pages/Trash/Trash.jsx';
+import SearchResults from './components/SearchResults.jsx';
 
 function App() {
   const location = useLocation();

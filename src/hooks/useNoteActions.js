@@ -1,6 +1,6 @@
 import { doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
-import { useSnackbar } from '../components/context/SnackbarContext';
+import { useSnackbar } from '../components/SnackbarContext';
 
 export const useNoteActions = () => {
     const { showSnackbar } = useSnackbar();

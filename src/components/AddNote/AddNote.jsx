@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp, doc, deleteDoc } from 'firebase/fi
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
-import { useSnackbar } from '../context/SnackbarContext.jsx';
+import { useSnackbar } from '../SnackbarContext.jsx';
 import { useNoteContent } from '../../hooks/useNoteContent.js';
 import { useAutoResizeTextArea } from '../../hooks/useAutoResizeTextArea.js';
 import './AddNote.css';

@@ -1,10 +1,10 @@
 import { useState, useRef } from 'react';
-import { db } from '../../firebase';
+import { db } from '../../firebase.js';
 import { doc, updateDoc } from 'firebase/firestore';
 import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
 import { useNoteActions } from '../../hooks/useNoteActions.js';
 import { useNotes } from '../../hooks/useNotes.js';
-import EditNote from '../AddNote/EditNote.jsx';
+import EditNote from '../../components/EditNote/EditNote.jsx';
 import './Archive.css';
 
 const Archive = ({ isGridView, searchQuery }) => {

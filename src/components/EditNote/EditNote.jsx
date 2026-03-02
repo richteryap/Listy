@@ -3,7 +3,7 @@ import { db } from '../../firebase';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
-import { useSnackbar } from '../context/SnackbarContext.jsx';
+import { useSnackbar } from '../SnackbarContext.jsx';
 import { useNoteContent } from '../../hooks/useNoteContent.js';
 import { useAutoResizeTextArea } from '../../hooks/useAutoResizeTextArea.js';
 import './EditNote.css';
