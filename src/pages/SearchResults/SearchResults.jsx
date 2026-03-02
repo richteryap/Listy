@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { sr } from '../../firebase';
+import { db } from '../../firebase.js';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useNotes } from '../../hooks/useNotes';
 import { useNoteActions } from '../../hooks/useNoteActions';
