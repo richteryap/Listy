@@ -2,7 +2,6 @@ import { useState, useRef } from 'react';
 import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
 import { useNoteActions } from '../../hooks/useNoteActions.js';
 import { useNotes } from '../../hooks/useNotes.js';
-import { useAuth } from '../../context/AuthContext.jsx';
 import NoteEditor from '../../components/NoteEditor/NoteEditor.jsx';
 import NoteCard from '../../components/NoteCard/NoteCard.jsx';
 import './Dashboard.css';   
