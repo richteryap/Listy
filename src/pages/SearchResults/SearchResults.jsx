@@ -83,6 +83,9 @@ const SearchResults = ({ searchQuery, isGridView }) => {
         return titleMatch || contentMatch || listMatch;
     });
 
+    const dashboardNotes = filteredNotes.filter(note => !note.isArchived);
+    const archivedNotes = filteredNotes.filter(note => note.isArchived);
+
     return (
         <div className="search-results-body">
             <div className="sr-section-label">SEARCH RESULTS</div>
@@ -98,26 +101,55 @@ const SearchResults = ({ searchQuery, isGridView }) => {
                     <i className="fa-solid fa-spinner fa-spin"></i>
                 </div>
             ) : (
-                <div className={`sr-grid ${isGridView ? '' : 'list-view'}`}>
-                    {filteredNotes.map(note => (
-                        <NoteCard
-                            note={note}
-                            onEdit={handleAnimate}
-                            onPin={() => dbTogglePin(note.id, note.isPinned)}
-                            onArchive={() => archiveNote(note.id)}
-                            onUnarchive={() => unarchiveNote(note.id)}
-                            onTrash={() => dbTrashNote(note.id)}
-                            onToggleMode={toggleNoteListMode}
-                            onImageUpload={triggerImageUpload}
-                        />
-                    ))}
-                    {!loading && notes.length === 0 &&
+                <>
+                    {dashboardNotes.length > 0 && (
+                        <>
+                            <div className={`sr-grid ${isGridView ? '' : 'list-view'}`}>
+                                {dashboardNotes.map(note => (
+                                    <div key={note.id} className={selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}>
+                                        <NoteCard
+                                            note={note}
+                                            onEdit={handleAnimate}
+                                            onPin={() => dbTogglePin(note.id, note.isPinned)}
+                                            onArchive={() => archiveNote(note.id)}
+                                            onUnarchive={() => unarchiveNote(note.id)}
+                                            onTrash={() => dbTrashNote(note.id)}
+                                            onToggleMode={toggleNoteListMode}
+                                            onImageUpload={triggerImageUpload}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                    {archivedNotes.length > 0 && (
+                        <div className="sr-section-label">ARCHIVED</div>
+                    )}
+                    {archivedNotes.length > 0 && (
+                        <div className={`sr-grid ${isGridView ? '' : 'list-view'}`}>
+                            {archivedNotes.map(note => (
+                                <div key={note.id} className={selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}>
+                                    <NoteCard
+                                        note={note}
+                                        onEdit={handleAnimate}
+                                        onPin={() => dbTogglePin(note.id, note.isPinned)}
+                                        onArchive={() => archiveNote(note.id)}
+                                        onUnarchive={() => unarchiveNote(note.id)}
+                                        onTrash={() => dbTrashNote(note.id)}
+                                        onToggleMode={toggleNoteListMode}
+                                        onImageUpload={triggerImageUpload}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {!loading && filteredNotes.length === 0 &&
                         <div className="sr-empty-state">
                             <i className="fa-regular fa-lightbulb"></i>
                             <p>No matching results</p>
                         </div>
                     }
-                </div>
+                </>
             )}
             {selectedNote && (
                 <NoteEditor
