@@ -1,20 +1,18 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 
-const useAuthRedirect = (redirectPath = '/') => {
+const useAuthRedirect = () => {
+    const { user, loading } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                navigate(redirectPath);
-            }
-        });
+        if (loading) return;
 
-        return () => unsubscribe();
-    }, [navigate, redirectPath]);
+        if (user) {
+            navigate('/dashboard', { replace: true });
+        }
+    }, [user, loading, navigate]);
 };
 
 export default useAuthRedirect;

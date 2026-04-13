@@ -1,58 +1,65 @@
 import { useState } from 'react';
-import { auth } from '../../firebase.js';
-import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, sendEmailVerification } from "firebase/auth";
+import { supabase } from '../../supabase.js';
 import { getFriendlyErrorMessage } from '../../utils/authErrors.js';
 import useAuthRedirect from '../../hooks/useAuthRedirect.js';
 import './Login_Register.css';
 
 const Login_Register = () => {
-    useAuthRedirect('/');
+    useAuthRedirect();
 
     const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const navigate = useNavigate();
     const [siShowPassword, setsiShowPassword] = useState(false);
     const [suShowPassword, setsuShowPassword] = useState(false);
 
     const handleSignUp = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            const { error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        display_name: username,
+                    },
+                },
+            });
 
-            await updateProfile(user, { displayName: username });
-
-            await sendEmailVerification(user);
-
-            alert("Account created! We sent you a verification email. Please check your inbox.");
-            
-            console.log("Success!");
-            navigate('/');
+            if (error) throw error;
+            alert("Account created! Check your inbox for a verification email.");
+            setIsSignUp(false);
+            setPassword('');
         } catch (error) {
-            console.log("Full Error:", error.code);
-            setError(getFriendlyErrorMessage(error.code));
+            setError(getFriendlyErrorMessage(error.message || error.code));
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleSignIn = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log("Login Successful!");
-            navigate('/');
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
 
+            if (error) throw error;
         } catch (error) {
-            console.log("Full Error:", error.code);
-            setError(getFriendlyErrorMessage(error.code));
+            setError(getFriendlyErrorMessage(error.message || error.code));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -61,19 +68,15 @@ const Login_Register = () => {
             alert("Please enter your email address first!");
             return;
         }
-        
-        try {
-            await sendPasswordResetEmail(auth, email);
-            alert("Password reset email sent! Check your inbox.");
-        } catch (error) {
-            console.error("Reset Error:", error.code);
-            alert(error.message); 
-        }
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        if (error) alert(error.message);
+        else alert("Password reset email sent!");
     };
 
     return (
         <div className='l-r-body'>
             <div className={`l-r-container ${isSignUp ? 'right-panel-active' : ''}`}>
+                {/* SIGN UP FORM */}
                 <div className='form-container sign-up'>
                     <form onSubmit={handleSignUp}>
                         <h1>Create Account</h1>
@@ -90,9 +93,13 @@ const Login_Register = () => {
                                 <i className="fa-solid fa-circle-exclamation"></i> {error}
                             </div>
                         )}
-                        <button type='submit' className='sign-up-btn'>Sign Up</button>
+                        <button type='submit' className='sign-up-btn' disabled={loading}>
+                            {loading ? 'Creating Account...' : 'Sign Up'}
+                        </button>
                     </form>
                 </div>
+
+                {/* SIGN IN FORM */}
                 <div className='form-container sign-in'>
                     <form onSubmit={handleSignIn}>
                         <h1>Sign In</h1>
@@ -109,9 +116,13 @@ const Login_Register = () => {
                             </div>
                         )}
                         <button type="button" className="forgot-pass-btn" onClick={handleResetPassword}>Forgot Password?</button>
-                        <button className='sign-in-btn'>Sign In</button>
+                        <button className='sign-in-btn' disabled={loading}>
+                            {loading ? 'Signing In...' : 'Sign In'}
+                        </button>
                     </form>
                 </div>
+
+                {/* OVERLAY PANEL */}
                 <div className='overlay-container'>
                     <div className='overlay'>
                         <div className='overlay-panel overlay-left'>

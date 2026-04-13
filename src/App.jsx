@@ -1,26 +1,22 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { auth } from './firebase.js'; 
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { SnackbarProvider } from './components/SnackbarContext.jsx';
-import { useTrashCleanup } from './hooks/useTrashCleanup.js';
-import './App.css'
+import { AuthProvider } from './context/AuthContext.jsx';
+// import { useTrashCleanup } from './hooks/useTrashCleanup.js';
 import Header from './components/Header/Header.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import Login_Register from './pages/Login_Register/Login_Register.jsx';
 import ProtectedRoute from './hooks/ProtectedRoute.jsx'
-import WaitingRoom from './pages/WaitingRoom/WaitingRoom.jsx';
 import Archive from './pages/Archive/Archive.jsx';
 import Trash from './pages/Trash/Trash.jsx';
 import SearchResults from './pages/SearchResults/SearchResults.jsx';
+import './App.css'
 
 function App() {
-  const [user] = useAuthState(auth);
   const location = useLocation();
-  const noHeaderPaths = ['/verify-email'];
-
   const [searchQuery, setSearchQuery] = useState('');
 
+  // View Mode Persistance
   const [isGridView, setIsGridView] = useState(() => {
     return localStorage.getItem('viewMode') === 'grid';
   });
@@ -29,6 +25,7 @@ function App() {
     localStorage.setItem('viewMode', isGridView ? 'grid' : 'list');
   }, [isGridView]);
 
+  // Dark Mode Persistance
   const [isDarkMode, setIsDarkMode] = useState(() => {
       return localStorage.getItem('theme') === 'dark';
   });
@@ -43,21 +40,19 @@ function App() {
     }
   }, [isDarkMode]);
 
-  useTrashCleanup(user?.uid);
+  // useTrashCleanup(user?.uid);
 
   return (
-    <>
+    <AuthProvider>
       <SnackbarProvider>
-        {!noHeaderPaths.includes(location.pathname) && (
-          <Header 
-            isGridView={isGridView} 
-            setIsGridView={setIsGridView}
-            isDarkMode={isDarkMode}
-            setIsDarkMode={setIsDarkMode}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-        )}
+        <Header 
+          isGridView={isGridView} 
+          setIsGridView={setIsGridView}
+          isDarkMode={isDarkMode}
+          setIsDarkMode={setIsDarkMode}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
         <Routes>
           <Route path='/dashboard' element={
             <ProtectedRoute>
@@ -83,12 +78,11 @@ function App() {
               <Trash isGridView={isGridView} isDarkMode={isDarkMode}/>
             </ProtectedRoute>
           }/>
-          <Route path='/verify-email' element={<WaitingRoom isDarkMode={isDarkMode} />}/>
           <Route path='/account' element={<Login_Register  isDarkMode={isDarkMode}/>}/>
           <Route path='*' element={<Navigate to='/dashboard' replace />}/>
         </Routes>
       </SnackbarProvider>
-    </>
+    </AuthProvider>
   )
 }
 

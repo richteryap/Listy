@@ -1,9 +1,8 @@
 import { Navigate } from 'react-router-dom';
-import { auth } from '../firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useAuth } from './../context/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
-    const [user, loading] = useAuthState(auth); 
+    const { user, loading } = useAuth();
 
     if (loading) {
         return (
@@ -15,10 +14,6 @@ const ProtectedRoute = ({ children }) => {
 
     if (!user) {
         return <Navigate to="/account" replace />;
-    }
-
-    if (!user.emailVerified) {
-        return <Navigate to="/verify-email" replace />;
     }
 
     return children;

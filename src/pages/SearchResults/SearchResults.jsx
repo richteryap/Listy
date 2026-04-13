@@ -1,11 +1,9 @@
 import { useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { db } from '../../firebase.js';
-import { doc, updateDoc } from 'firebase/firestore';
 import { useNotes } from '../../hooks/useNotes';
 import { useNoteActions } from '../../hooks/useNoteActions';
 import { convertToBase64, validateImage } from '../../utils/fileUtils';
-import EditNote from '../../components/EditNote/EditNote';
+import NoteEditor from '../../components/NoteEditor/NoteEditor.jsx';
 import './SearchResults.css';
 
 const SearchResults = ({ searchQuery, isGridView }) => {
@@ -166,7 +164,7 @@ const SearchResults = ({ searchQuery, isGridView }) => {
                 </div>
             )}
             {selectedNote && (
-                <EditNote
+                <NoteEditor
                     note={selectedNote} 
                     onClose={() => setSelectedNote(null)} 
                 />

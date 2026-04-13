@@ -1,6 +1,4 @@
 import { useEffect } from 'react';
-import { db } from '../firebase';
-import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 export const useTrashCleanup = (userId) => {
     useEffect(() => {

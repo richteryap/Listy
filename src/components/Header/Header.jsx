@@ -1,23 +1,24 @@
 import { useState, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useClickOutside } from '../../hooks/useClickOutside.js';
-import { auth } from '../../firebase.js';
-import { signOut } from 'firebase/auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import AddNote from '../AddNote/AddNote.jsx';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { supabase } from '../../supabase.js';
+import { db } from '../../db.js';
+import NoteEditor from '../NoteEditor/NoteEditor.jsx';
 import './Header.css'
 
 const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQuery, setSearchQuery }) => {
+    const { user, profile } = useAuth();
+    const displayName = user?.user_metadata?.display_name || user?.email;
+
     const location = useLocation();
     const navigate = useNavigate();
     const isAccountPage = location.pathname.startsWith('/account');
     const isTrashPage = location.pathname.startsWith('/trash');
     const isArchivePage = location.pathname.startsWith('/archive');
 
-    const [user] = useAuthState(auth);
-
     const [isAddItemOpen, setIsAddItemOpen] = useState(false);
-    const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
+    const [isNoteEditorOpen, setIsNoteEditorOpen] = useState(false);
     const [isMoreOpen, setIsMoreOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -30,10 +31,12 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
 
     const handleLogout = async () => {
         try {
-            await signOut(auth);
+            await supabase.auth.signOut();
+            await db.notes.clear();
             setIsProfileOpen(false);
+            navigate('/account');
         } catch (error) {
-            console.error("Error logging out: ", error);
+            console.error('Error during logout:', error);
         }
     };
 
@@ -95,7 +98,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                             {isAddItemOpen && (
                                 <div className='add-item-content'>
                                     <ul className='add-item-dropdown'>
-                                        <li onClick={() => {setIsAddItemOpen(false); setIsAddNoteOpen(true);}}>
+                                        <li onClick={() => {setIsAddItemOpen(false); setIsNoteEditorOpen(true);}}>
                                             <i className="fa-solid fa-sticky-note"></i>
                                             Add Note
                                         </li>
@@ -151,14 +154,14 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                     </div>
                     <div className='profile' ref={profileRef}>
                         <button className='profile-button' onClick={() => setIsProfileOpen(!isProfileOpen)} aria-label='Profile' data-tooltip-text='Profile'>
-                            {user?.photoURL ? <img src={user.photoURL} alt="Profile" /> : <i className='fa-solid fa-user'></i>}
+                            {/*user?.photoURL ? <img src={user.photoURL} alt="Profile" /> : <i className='fa-solid fa-user'></i>*/}
                         </button>
                         {isProfileOpen && user && (
                             <div className='profile-content'>
                                 <ul className='profile-dropdown'>
                                     <li>
                                         <i className='fa-solid fa-user'></i>
-                                        {user.displayName || 'User'}
+                                        {profile?.username || 'User'}
                                     </li>
                                     <li onClick={handleLogout}>
                                         <i className='fa-solid fa-right-from-bracket'></i>
@@ -171,8 +174,8 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                 </div>
             )}
 
-            {isAddNoteOpen && (
-                <AddNote onClose={() => setIsAddNoteOpen(false)} />
+            {isNoteEditorOpen && (
+                <NoteEditor onClose={() => setIsNoteEditorOpen(false)} />
             )}
         </div>
     )

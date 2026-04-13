@@ -1,10 +1,9 @@
 import { useState, useRef } from 'react';
-import { db } from '../../firebase.js';
-import { doc, updateDoc } from 'firebase/firestore';
 import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
 import { useNoteActions } from '../../hooks/useNoteActions.js';
 import { useNotes } from '../../hooks/useNotes.js';
-import EditNote from '../../components/EditNote/EditNote.jsx';
+import NoteEditor from '../../components/NoteEditor/NoteEditor.jsx';
+import NoteCard from '../../components/NoteCard/NoteCard.jsx';
 import './Archive.css';
 
 const Archive = ({ isGridView, searchQuery }) => {
@@ -84,50 +83,16 @@ const Archive = ({ isGridView, searchQuery }) => {
             ) : (
                 <div className={`archive-grid ${isGridView ? '' : 'list-view'}`}>
                     {filteredNotes.map(note => (
-                        <div key={note.id} className={`archive-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
-                            <div className="archive-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
-                                {note.imageUrl && (
-                                    <div className="archive-note-image">
-                                        <img src={note.imageUrl} alt="Note Attachment" />
-                                    </div>
-                                )}
-                                {note.title && <h1>{note.title}</h1>}
-                                {note.isList ? (
-                                    <div className="archive-note-list-preview">
-                                        {note.listItems && note.listItems.slice(0, 4).map(item => (
-                                            <div key={item.id} className="archive-list-item-preview">
-                                                <i className={`fa-regular ${item.isChecked ? 'fa-square-check' : 'fa-square'}`}></i>
-                                                <span className={item.isChecked ? 'checked' : ''}>{item.text}</span>
-                                            </div>
-                                        ))}
-                                        {note.listItems && note.listItems.length > 4 && (
-                                            <div className="archive-list-more">
-                                                + {note.listItems.length - 4} more items
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <p>{note.content}</p>
-                                )}
-                            </div>
-                            <div className="archive-note-buttons">
-                                <button className={`archive-pin-btn ${note.isPinned ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); archiveTogglePin(note.id, note.isPinned);}} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
-                                    <i className="fa-solid fa-thumbtack"></i>
-                                </button>
-                                <button className='archive-checkbox-btn' onClick={(e) => {e.stopPropagation(); toggleNoteListMode(note);}} data-tooltip-text='Show Tick Boxes'>
-                                    <i className="fa-solid fa-check-square"></i>
-                                </button>
-                                <button className='archive-image-btn' onClick={(e) => triggerImageUpload(e, note.id)} data-tooltip-text='Add Image'>
-                                    <i className="fa-regular fa-image"></i>
-                                </button>
-                                <button className='archive-unarchive-btn' onClick={(e) => {e.stopPropagation(); unarchiveNote(note.id);}} data-tooltip-text='Unarchive Note'>
-                                    <i className="fa-solid fa-box-open"></i>
-                                </button>
-                                <button className='archive-delete-btn' onClick={(e) => {e.stopPropagation(); archiveTrashNote(note.id);}} data-tooltip-text='Move to Trash'>
-                                    <i className="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
+                        <NoteCard
+                            key={note.id} 
+                            note={note} 
+                            onEdit={handleAnimate}
+                            onPin={() => archiveTogglePin(note.id, note.isPinned)}
+                            onUnarchive={() => unarchiveNote(note.id)}
+                            onTrash={() => archiveTrashNote(note.id)}
+                            onToggleMode={toggleNoteListMode}
+                            onImageUpload={triggerImageUpload}
+                        />
                     ))}
 
                     {!loading && notes.length === 0 &&
@@ -140,7 +105,7 @@ const Archive = ({ isGridView, searchQuery }) => {
             )}
 
             {selectedNote && (
-                <EditNote 
+                <NoteEditor 
                     note={selectedNote}
                     onClose={() => setSelectedNote(null)}
                 />

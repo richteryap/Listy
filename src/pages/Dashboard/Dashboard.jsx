@@ -1,10 +1,10 @@
 import { useState, useRef } from 'react';
-import { db } from '../../firebase.js';
-import { doc, updateDoc } from 'firebase/firestore';
 import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
 import { useNoteActions } from '../../hooks/useNoteActions.js';
 import { useNotes } from '../../hooks/useNotes.js';
-import EditNote from '../../components/EditNote/EditNote.jsx';
+import { useAuth } from '../../context/AuthContext.jsx';
+import NoteEditor from '../../components/NoteEditor/NoteEditor.jsx';
+import NoteCard from '../../components/NoteCard/NoteCard.jsx';
 import './Dashboard.css';   
 
 const Dashboard = ({ isGridView, searchQuery }) => {
@@ -15,7 +15,7 @@ const Dashboard = ({ isGridView, searchQuery }) => {
     const fileInputRef = useRef(null);
 
     const { notes, loading } = useNotes('dashboard');
-    const { toggleNoteListMode, dbTogglePin, archiveNote, dbTrashNote } = useNoteActions();
+    const { toggleNoteListMode, dbTogglePin, archiveNote, dbTrashNote, updateNoteImage } = useNoteActions();
 
     const filteredNotes = notes.filter(note => {
         const query = searchQuery.toLowerCase();
@@ -50,11 +50,7 @@ const Dashboard = ({ isGridView, searchQuery }) => {
 
         try {
             const base64 = await convertToBase64(file);
-            
-            const noteRef = doc(db, "notes", activeNoteId);
-            await updateDoc(noteRef, {
-                imageUrl: base64
-            });
+            await updateNoteImage(activeNoteId, base64);
 
         } catch (error) {
             console.error("Error uploading image:", error);
@@ -72,53 +68,6 @@ const Dashboard = ({ isGridView, searchQuery }) => {
             setAnimate(null);
         }, 100);
     }
-
-    const renderNoteCard = (note) => (
-        <div key={note.id} className={`db-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
-            <div className="db-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
-                {note.imageUrl && (
-                    <div className="db-note-image">
-                        <img src={note.imageUrl} alt="Note Attachment" />
-                    </div>
-                )}
-                {note.title && <h1>{note.title}</h1>}
-                {note.isList ? (
-                    <div className="db-note-list-preview">
-                        {note.listItems && note.listItems.slice(0, 4).map(item => (
-                            <div key={item.id} className="db-list-item-preview">
-                                <i className={`fa-regular ${item.isChecked ? 'fa-square-check' : 'fa-square'}`}></i>
-                                <span className={item.isChecked ? 'checked' : ''}>{item.text}</span>
-                            </div>
-                        ))}
-                        {note.listItems && note.listItems.length > 4 && (
-                            <div className="db-list-more">
-                                + {note.listItems.length - 4} more items
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    <p>{note.content}</p>
-                )}
-            </div>
-            <div className="db-note-buttons">
-                <button className={`db-pin-btn ${note.isPinned ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); dbTogglePin(note.id, note.isPinned);}} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
-                    <i className="fa-solid fa-thumbtack"></i>
-                </button>
-                <button className='db-checkbox-btn' onClick={(e) => {e.stopPropagation(); toggleNoteListMode(note);}} data-tooltip-text={note.isList ? 'Show Text' : 'Show Tick Boxes'}>
-                    <i className="fa-solid fa-check-square"></i>
-                </button>
-                <button className='db-image-btn' onClick={(e) => triggerImageUpload(e, note.id)} data-tooltip-text='Add Image'>
-                    <i className="fa-regular fa-image"></i>
-                </button>
-                <button className={`db-archive-btn ${note.isArchived ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); archiveNote(note.id);}} data-tooltip-text={note.isArchived ? 'Unarchive' : 'Archive'}>
-                    <i className="fa-solid fa-box-archive"></i>
-                </button>
-                <button className="db-delete-btn" onClick={(e) => {e.stopPropagation(); dbTrashNote(note.id);}} data-tooltip-text='Moved to Trash'>
-                    <i className="fa-solid fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    );
 
     return (
         <div className ='dashboard-body'>
@@ -139,7 +88,18 @@ const Dashboard = ({ isGridView, searchQuery }) => {
                         <>
                             <div className="db-section-label">PINNED</div>
                             <div className={`db-grid ${isGridView ? '' : 'list-view'}`}>
-                                {pinnedNotes.map(note => renderNoteCard(note))}
+                                {pinnedNotes.map(note => (
+                                    <NoteCard
+                                        key={note.id} 
+                                        note={note} 
+                                        onEdit={handleAnimate}
+                                        onPin={() => dbTogglePin(note.id, note.isPinned)}
+                                        onArchive={() => archiveNote(note.id)}
+                                        onTrash={() => dbTrashNote(note.id)}
+                                        onToggleMode={toggleNoteListMode}
+                                        onImageUpload={triggerImageUpload}
+                                    />
+                                ))}
                             </div>
                         </>
                     )}
@@ -147,7 +107,18 @@ const Dashboard = ({ isGridView, searchQuery }) => {
                         <div className="db-section-label">OTHERS</div>
                     )}
                     <div className={`db-grid ${isGridView ? '' : 'list-view'}`}>
-                        {otherNotes.map(note => renderNoteCard(note))}
+                        {otherNotes.map(note => (
+                            <NoteCard
+                                key={note.id}
+                                note={note}
+                                onEdit={handleAnimate}
+                                onPin={() => dbTogglePin(note.id, note.isPinned)}
+                                onArchive={() => archiveNote(note.id)}
+                                onTrash={() => dbTrashNote(note.id)}
+                                onToggleMode={toggleNoteListMode}
+                                onImageUpload={triggerImageUpload}
+                            />
+                        ))}
                     </div>
                     {!loading && notes.length === 0 && (
                         <div className="db-empty-state">
@@ -158,7 +129,7 @@ const Dashboard = ({ isGridView, searchQuery }) => {
                 </>
             )}
             {selectedNote && (
-                <EditNote
+                <NoteEditor
                     note={selectedNote} 
                     onClose={() => setSelectedNote(null)} 
                 />
