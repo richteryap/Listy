@@ -4,6 +4,7 @@ import { useNotes } from '../../hooks/useNotes';
 import { useNoteActions } from '../../hooks/useNoteActions';
 import { convertToBase64, validateImage } from '../../utils/fileUtils';
 import NoteEditor from '../../components/NoteEditor/NoteEditor.jsx';
+import NoteCard from '../../components/NoteCard/NoteCard.jsx';
 import './SearchResults.css';
 
 const SearchResults = ({ searchQuery, isGridView }) => {
@@ -15,7 +16,11 @@ const SearchResults = ({ searchQuery, isGridView }) => {
     const [activeNoteId, setActiveNoteId] = useState(null);
 
     const { notes, loading } = useNotes('search');
-    const { dbTogglePin, archiveNote, unarchiveNote, dbTrashNote, toggleNoteListMode } = useNoteActions();
+
+    const { 
+        dbTogglePin, archiveNote, unarchiveNote, 
+        dbTrashNote, toggleNoteListMode, updateNoteImage 
+    } = useNoteActions();
 
     const fileInputRef = useRef(null);
 
@@ -42,11 +47,7 @@ const SearchResults = ({ searchQuery, isGridView }) => {
         try {
             const base64 = await convertToBase64(file);
             
-            const noteRef = doc(sr, "notes", activeNoteId);
-            await updateDoc(noteRef, {
-                imageUrl: base64
-            });
-
+            await updateNoteImage(activeNoteId, base64);
         } catch (error) {
             console.error("Error uploading image:", error);
         } finally {
@@ -99,61 +100,16 @@ const SearchResults = ({ searchQuery, isGridView }) => {
             ) : (
                 <div className={`sr-grid ${isGridView ? '' : 'list-view'}`}>
                     {filteredNotes.map(note => (
-                        <div key={note.id} className={`sr-note-card ${selectedNote?.id === note.id || animate === note.id ? 'selected' : ''}`}>
-                            <div className="sr-note-content" onClick={(e) => {e.stopPropagation(); handleAnimate(note);}}>
-                                {note.imageUrl && (
-                                    <div className="sr-note-image">
-                                        <img src={note.imageUrl} alt="Note Attachment" />
-                                    </div>
-                                )}
-                                {note.title && <h1>{note.title}</h1>}
-                                {note.isList ? (
-                                    <div className="sr-note-list-preview">
-                                        {note.listItems && note.listItems.slice(0, 4).map(item => (
-                                            <div key={item.id} className="sr-list-item-preview">
-                                                <i className={`fa-regular ${item.isChecked ? 'fa-square-check' : 'fa-square'}`}></i>
-                                                <span className={item.isChecked ? 'checked' : ''}>{item.text}</span>
-                                            </div>
-                                        ))}
-                                        {note.listItems && note.listItems.length > 4 && (
-                                            <div className="sr-list-more">
-                                                + {note.listItems.length - 4} more items
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <p>{note.content}</p>
-                                )}
-                            </div>
-                            <div className="sr-note-buttons">
-                                <button className={`sr-pin-btn ${note.isPinned ? 'active' : ''}`} onClick={(e) => {e.stopPropagation(); dbTogglePin(note.id, note.isPinned);}} data-tooltip-text={note.isPinned ? 'Unpin Note' : 'Pin Note'}>
-                                    <i className="fa-solid fa-thumbtack"></i>
-                                </button>
-                                <button className='sr-checkbox-btn' onClick={(e) => {e.stopPropagation(); toggleNoteListMode(note);}} data-tooltip-text={note.isList ? 'Show Text' : 'Show Tick Boxes'}>
-                                    <i className="fa-solid fa-check-square"></i>
-                                </button>
-                                <button className='sr-image-btn' onClick={(e) => triggerImageUpload(e, note.id)} data-tooltip-text='Add Image'>
-                                    <i className="fa-regular fa-image"></i>
-                                </button>
-                                <button 
-                                    className='sr-archive-btn'
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (note.isArchived) {
-                                            unarchiveNote(note.id);
-                                        } else {
-                                            archiveNote(note.id);
-                                        }
-                                    }}
-                                    data-tooltip-text={note.isArchived ? 'Unarchive' : 'Archive Note'}
-                                >
-                                    <i className={`fa-solid ${note.isArchived ? 'fa-box-open' : 'fa-box-archive'}`}></i>
-                                </button>
-                                <button className="sr-delete-btn" onClick={(e) => {e.stopPropagation(); dbTrashNote(note.id);}} data-tooltip-text='Moved to Trash'>
-                                    <i className="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
+                        <NoteCard
+                            note={note}
+                            onEdit={handleAnimate}
+                            onPin={() => dbTogglePin(note.id, note.isPinned)}
+                            onArchive={() => archiveNote(note.id)}
+                            onUnarchive={() => unarchiveNote(note.id)}
+                            onTrash={() => dbTrashNote(note.id)}
+                            onToggleMode={toggleNoteListMode}
+                            onImageUpload={triggerImageUpload}
+                        />
                     ))}
                     {!loading && notes.length === 0 &&
                         <div className="sr-empty-state">
