@@ -10,6 +10,7 @@ import ProtectedRoute from './hooks/ProtectedRoute.jsx'
 import Archive from './pages/Archive/Archive.jsx';
 import Trash from './pages/Trash/Trash.jsx';
 import SearchResults from './pages/SearchResults/SearchResults.jsx';
+import Profile from './pages/Profile/Profile.jsx';
 import './App.css'
 
 function App() {
@@ -78,7 +79,12 @@ function App() {
               <Trash isGridView={isGridView} isDarkMode={isDarkMode}/>
             </ProtectedRoute>
           }/>
-          <Route path='/account' element={<Login_Register  isDarkMode={isDarkMode}/>}/>
+          <Route path='/profile' element={
+            <ProtectedRoute>
+              <Profile isDarkMode={isDarkMode}/>
+            </ProtectedRoute>
+          }/>
+          <Route path='/account' element={<Login_Register isDarkMode={isDarkMode}/>}/>
           <Route path='*' element={<Navigate to='/dashboard' replace />}/>
         </Routes>
       </SnackbarProvider>

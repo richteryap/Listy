@@ -160,8 +160,10 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                             <div className='profile-content'>
                                 <ul className='profile-dropdown'>
                                     <li>
-                                        <i className='fa-solid fa-user'></i>
-                                        {profile?.username || 'User'}
+                                        <Link to='/profile' className="profile-link" onClick={()=> {setIsProfileOpen(false);}}>
+                                            <i className='fa-solid fa-user'></i>
+                                            {profile?.username || 'User'}
+                                        </Link>
                                     </li>
                                     <li onClick={handleLogout}>
                                         <i className='fa-solid fa-right-from-bracket'></i>

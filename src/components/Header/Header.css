@@ -198,6 +198,17 @@
     box-sizing: border-box;
 }
 
+.profile-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    
+    text-decoration: none;
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
 .h-r-center-content button {
     position: relative;
     background: none;

@@ -65,12 +65,26 @@ const Login_Register = () => {
 
     const handleResetPassword = async () => {
         if (!email) {
-            alert("Please enter your email address first!");
+            setError("Please enter your email address in the Sign In form first!");
             return;
         }
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
-        if (error) alert(error.message);
-        else alert("Password reset email sent!");
+
+        setLoading(true);
+        setError('');
+
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/account`,
+            });
+
+            if (error) throw error;
+            
+            alert("Password reset email sent! Please check your inbox.");
+        } catch (error) {
+            setError(getFriendlyErrorMessage(error.message || error.code));
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
