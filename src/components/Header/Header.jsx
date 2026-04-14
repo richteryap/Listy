@@ -96,14 +96,12 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                                 <span>Add Item</span>
                             </button>
                             {isAddItemOpen && (
-                                <div className='add-item-content'>
-                                    <ul className='add-item-dropdown'>
-                                        <li onClick={() => {setIsAddItemOpen(false); setIsNoteEditorOpen(true);}}>
-                                            <i className="fa-solid fa-sticky-note"></i>
-                                            Add Note
-                                        </li>
-                                    </ul>
-                                </div>
+                                <ul className='add-item-dropdown'>
+                                    <li onClick={() => {setIsAddItemOpen(false); setIsNoteEditorOpen(true);}}>
+                                        <i className="fa-solid fa-sticky-note"></i>
+                                        Add Note
+                                    </li>
+                                </ul>
                             )}
                         </div>
                     )}
@@ -113,22 +111,20 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                                 <i className="fa-solid fa-ellipsis"></i>
                             </button>
                             {isMoreOpen && (
-                                <div className='more-content'>
-                                    <ul className='more-dropdown'>
-                                        <li>
-                                            <Link to="/archive" className='archive-link' onClick={()=> {setIsMoreOpen(false);}}>
-                                                <i className="fa-solid fa-box-archive"></i>
-                                                Archive
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/trash" className='trash-link' onClick={()=> {setIsMoreOpen(false);}}>
-                                                <i className="fa-solid fa-trash"></i>
-                                                Trash
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <ul className='more-dropdown'>
+                                    <li>
+                                        <Link to="/archive" className='archive-link' onClick={()=> {setIsMoreOpen(false);}}>
+                                            <i className="fa-solid fa-box-archive"></i>
+                                            Archive
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/trash" className='trash-link' onClick={()=> {setIsMoreOpen(false);}}>
+                                            <i className="fa-solid fa-trash"></i>
+                                            Trash
+                                        </Link>
+                                    </li>
+                                </ul>
                             )}
                         </div>
                         <div className='view'>
@@ -141,14 +137,12 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                                 <i className="fa-solid fa-gear"></i>
                             </button>
                             {isSettingsOpen && (
-                                <div className='settings-content'>
-                                    <ul className='setting-dropdown'>
-                                        <li onClick={() => {setIsDarkMode(!isDarkMode); setIsSettingsOpen(false);}}>
-                                            <i className={`fa-solid ${isDarkMode ? 'fa-sun' : 'fa-moon'}`}></i>
-                                            {isDarkMode ? "Light Mode" : "Dark Mode"}
-                                        </li>
-                                    </ul>
-                                </div>
+                                <ul className='setting-dropdown'>
+                                    <li onClick={() => {setIsDarkMode(!isDarkMode); setIsSettingsOpen(false);}}>
+                                        <i className={`fa-solid ${isDarkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+                                        {isDarkMode ? "Light Mode" : "Dark Mode"}
+                                    </li>
+                                </ul>
                             )}
                         </div>
                     </div>
@@ -157,20 +151,18 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                             {user?.photoURL ? <img src={user.photoURL} alt="Profile" /> : <i className='fa-solid fa-user'></i>} {/* !!! Need Update !!! */}
                         </button>
                         {isProfileOpen && user && (
-                            <div className='profile-content'>
-                                <ul className='profile-dropdown'>
-                                    <li>
-                                        <Link to='/profile' className="profile-link" onClick={()=> {setIsProfileOpen(false);}}>
-                                            <i className='fa-solid fa-user'></i>
-                                            {profile?.username || 'User'}
-                                        </Link>
-                                    </li>
-                                    <li onClick={handleLogout}>
-                                        <i className='fa-solid fa-right-from-bracket'></i>
-                                        Logout
-                                    </li>
-                                </ul>
-                            </div>
+                            <ul className='profile-dropdown'>
+                                <li>
+                                    <Link to='/profile' className="profile-link" onClick={()=> {setIsProfileOpen(false);}}>
+                                        <i className='fa-solid fa-user'></i>
+                                        {profile?.username || 'User'}
+                                    </Link>
+                                </li>
+                                <li onClick={handleLogout}>
+                                    <i className='fa-solid fa-right-from-bracket'></i>
+                                    Logout
+                                </li>
+                            </ul>
                         )}
                     </div>
                 </div>
