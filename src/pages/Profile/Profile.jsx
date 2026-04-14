@@ -8,6 +8,7 @@ const Profile = () => {
     
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [passwordLoading, setPasswordLoading] = useState(false);
     const [editUsername, setEditUsername] = useState('');
     const [editBirthday, setEditBirthday] = useState('');
     const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -48,30 +49,13 @@ const Profile = () => {
         }
     };
 
-    const handleRequestPasswordReset = async () => {
-        if (!user?.email) return;
-        setLoading(true);
-
-        try {
-            const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-                redirectTo: `${window.location.origin}/account`,
-            });
-            if (error) throw error;
-            alert("A password reset link has been sent to your email!");
-        } catch (error) {
-            console.error("Error resetting password:", error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const saveNewPassword = async () => {
         if (newPassword.length < 6) {
             alert("Password must be at least 6 characters long.");
             return;
         }
         
-        setLoading(true);
+        setPasswordLoading(true);
         try {
             const { error } = await supabase.auth.updateUser({
                 password: newPassword
@@ -80,12 +64,13 @@ const Profile = () => {
             if (error) throw error;
             alert("Password updated successfully!");
             setIsChangingPassword(false);
+            window.location.reload();
             setNewPassword('');
         } catch (error) {
             console.error("Error updating password:", error.message);
             alert(error.message);
         } finally {
-            setLoading(false);
+            setPasswordLoading(false);
         }
     };
 
@@ -115,11 +100,37 @@ const Profile = () => {
                                 value={editBirthday} 
                                 onChange={(e) => setEditBirthday(e.target.value)} 
                             />
+                            {isChangingPassword ? (
+                                <div className="profile-edit-password">
+                                    <label>New Password</label>
+                                    <input 
+                                        type="password" 
+                                        placeholder="Enter new password" 
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                    />
+                                    <div className="profile-action-buttons">
+                                        <button className="profile-save-info" onClick={saveNewPassword} disabled={loading}>
+                                            {passwordLoading ? 'Saving...' : 'Save Password'}
+                                        </button>
+                                        <button className="profile-cancel-info" onClick={() => {
+                                            setIsChangingPassword(false);
+                                            setNewPassword('');
+                                        }}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <button className="profile-reset-pass-btn" onClick={() => setIsChangingPassword(true)}>
+                                    Change Password
+                                </button>
+                            )}
                             <div className="profile-action-buttons">
                                 <button className="profile-save-info" onClick={handleSaveProfile} disabled={loading}>
                                     {loading ? 'Saving...' : 'Save Changes'}
                                 </button>
-                                <button className="profile-cancel-info" onClick={() => setIsEditing(false)}>
+                                <button className="profile-cancel-info" onClick={() => {setIsEditing(false); setIsChangingPassword(false);}}>
                                     Cancel
                                 </button>
                             </div>
@@ -144,32 +155,6 @@ const Profile = () => {
                             <button className="profile-edit-info" onClick={() => setIsEditing(true)}> 
                                 Edit Profile
                             </button>
-                            {isChangingPassword ? (
-                                <div className="profile-edit-password">
-                                    <label>New Password</label>
-                                    <input 
-                                        type="password" 
-                                        placeholder="Enter new password" 
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                    />
-                                    <div className="profile-action-buttons">
-                                        <button className="profile-save-info" onClick={saveNewPassword} disabled={loading}>
-                                            {loading ? 'Saving...' : 'Save Password'}
-                                        </button>
-                                        <button className="profile-cancel-info" onClick={() => {
-                                            setIsChangingPassword(false);
-                                            setNewPassword('');
-                                        }}>
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <button className="profile-reset-pass-btn" onClick={handleRequestPasswordReset}>
-                                    Change Password
-                                </button>
-                            )}
                         </>
                     )}
                 </div>
