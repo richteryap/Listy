@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTrashCleanup } from '../../hooks/useTrashCleanup.js';
 import { useClickOutside } from '../../hooks/useClickOutside.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { supabase } from '../../supabase.js';
@@ -61,6 +62,8 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
             navigate('/dashboard');
         }
     };
+
+    useTrashCleanup();
 
     return (
         <div className='header-body'>

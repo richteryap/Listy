@@ -1,39 +1,31 @@
 import { useEffect } from 'react';
+import { supabase } from '../supabase';
+import { useAuth } from '../context/AuthContext';
 
-export const useTrashCleanup = (userId) => {
+export const useTrashCleanup = () => {
+    const { user } = useAuth();
+
     useEffect(() => {
-        if (!userId) return;
-        
+        if (!user) return;
+
         const cleanupTrash = async () => {
             try {
-                const notesRef = collection(db, 'notes');
-                const q = query(notesRef,
-                    where("isTrashed", "==", true),
-                    where("userId", "==", userId)
-                );
-                const snapshot = await getDocs(q);
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                
+                const { error } = await supabase
+                    .from('notes')
+                    .delete()
+                    .eq('isTrashed', true)
+                    .lt('trashedAt', thirtyDaysAgo.toISOString()); 
 
-                const now = new Date();
-                const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000;
-
-                snapshot.forEach(async (docSnapshot) => {
-                    const note = docSnapshot.data();
-                    
-                    if (note.trashedAt) {
-                        const trashedDate = note.trashedAt.toDate();
-                        const timeDiff = now - trashedDate;
-
-                        if (timeDiff > THIRTY_DAYS_IN_MS) {
-                            await deleteDoc(doc(db, 'notes', docSnapshot.id));
-                            console.log(`Auto-deleted expired note: ${docSnapshot.id}`);
-                        }
-                    }
-                });
+                if (error) throw error;
+                
             } catch (error) {
-                console.error("Error cleaning up trash:", error);
+                console.error("Error cleaning up trash:", error.message);
             }
         };
 
         cleanupTrash();
-    }, []);
+    }, [user]);
 };

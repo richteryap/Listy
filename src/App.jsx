@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { SnackbarProvider } from './components/SnackbarContext.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
-// import { useTrashCleanup } from './hooks/useTrashCleanup.js';
 import Header from './components/Header/Header.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import Login_Register from './pages/Login_Register/Login_Register.jsx';
@@ -38,8 +37,6 @@ function App() {
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
-
-  // useTrashCleanup(user?.uid);
 
   return (
     <AuthProvider>
