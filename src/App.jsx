@@ -17,7 +17,6 @@ function App() {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // View Mode Persistance
   const [isGridView, setIsGridView] = useState(() => {
     return localStorage.getItem('viewMode') === 'grid';
   });
@@ -26,7 +25,6 @@ function App() {
     localStorage.setItem('viewMode', isGridView ? 'grid' : 'list');
   }, [isGridView]);
 
-  // Dark Mode Persistance
   const [isDarkMode, setIsDarkMode] = useState(() => {
       return localStorage.getItem('theme') === 'dark';
   });

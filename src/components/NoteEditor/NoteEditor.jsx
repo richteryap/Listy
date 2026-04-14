@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useClickOutside } from '../../hooks/useClickOutside';
-import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
+import { validateImage } from '../../utils/fileUtils.js';
 import { useSnackbar } from '../SnackbarContext.jsx';
 import { useNoteContent } from '../../hooks/useNoteContent.js';
 import { useAutoResizeTextArea } from '../../hooks/useAutoResizeTextArea.js';
@@ -11,17 +11,18 @@ import './NoteEditor.css';
 
 const NoteEditor = ({ note, onClose }) => {
     const { user } = useAuth();
-    const { syncToCloud } = useNoteActions();
-    const isEditMode = !!note; // Editing a existing note or creating a new one
+    const isEditMode = !!note;
 
-    // Initialize state. If we have a note, use its data. Otherwise, start blank.
     const [title, setTitle] = useState(note?.title || '');
     const [isPinned, setIsPinned] = useState(note?.isPinned || false);
     const [isArchived, setIsArchived] = useState(note?.isArchived || false);
     const [isTrashed, setIsTrashed] = useState(note?.isTrashed || false);
     const [imageFile, setImageFile] = useState(note?.imageUrl || null);
 
-    // useNoteContent needs to handle being passed undefined if it's a new note!
+    const { 
+        uploadImageToCloud, syncToCloud, updateNoteImage 
+    } = useNoteActions();
+
     const { 
         isList, setIsList, content, setContent, listItems, setListItems,
         toggleMode, updateListItem, toggleCheckbox, addListItem, removeListItem, handleListKeyDown
@@ -31,7 +32,6 @@ const NoteEditor = ({ note, onClose }) => {
     const fileInputRef = useRef(null);
     const { showSnackbar } = useSnackbar();
 
-    // Prevent scrolling behind the modal
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => {
@@ -41,13 +41,22 @@ const NoteEditor = ({ note, onClose }) => {
 
     const handleImageSelect = async (e) => {
         const file = e.target.files[0];
-        if (!validateImage(file)) return;
+        
+        if (!validateImage(file)) { 
+            e.target.value = null;
+            return; 
+        }
 
         try {
-            const base64String = await convertToBase64(file); 
-            setImageFile(base64String);
+            const imageUrl = await uploadImageToCloud(file, activeNoteId);
+            
+            await updateNoteImage(activeNoteId, imageUrl);
+            
         } catch (error) {
-            console.error("Error converting image:", error);
+            console.error("Error uploading image:", error);
+        } finally {
+            e.target.value = null;
+            if (setActiveNoteId) setActiveNoteId(null);
         }
     };
 

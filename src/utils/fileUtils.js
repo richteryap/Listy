@@ -1,16 +1,8 @@
-export const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-    });
-};
-
 export const validateImage = (file) => {
     if (!file) return false;
-    if (file.size > 500000) {
-        alert("File is too big! Please select an image under 500KB.");
+    
+    if (file.size > 2000000) {
+        alert("File is too big! Please select an image under 2MB.");
         return false;
     }
     return true;

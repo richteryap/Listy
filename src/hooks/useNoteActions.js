@@ -70,6 +70,38 @@ export const useNoteActions = () => {
         }
     };
 
+    const uploadImageToCloud = async (file, noteId) => {
+        if (!user) throw new Error("Must be logged in to upload images");
+
+        // Create a safe, unique filename: "user-id/note-id-timestamp.jpg"
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${noteId}-${Date.now()}.${fileExt}`;
+        const filePath = `${user.id}/${fileName}`; 
+
+        try {
+            // Upload the raw File object to the 'note_images' bucket
+            const { error: uploadError } = await supabase.storage
+                .from('note_images')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false 
+                });
+
+            if (uploadError) throw uploadError;
+
+            // Ask Supabase for the permanent public URL 
+            const { data } = supabase.storage
+                .from('note_images')
+                .getPublicUrl(filePath);
+
+            return data.publicUrl;
+
+        } catch (error) {
+            console.error("Storage upload error:", error.message);
+            throw error;
+        }
+    };
+
     // Helper for repetitive update logic
     const updateLocalNote = async (noteId, changes) => {
         try {
@@ -240,8 +272,8 @@ export const useNoteActions = () => {
     };
 
     return { 
-        pullFromCloud, syncToCloud, toggleNoteListMode, dbTogglePin,
-        archiveTogglePin, archiveNote, unarchiveNote, dbTrashNote,
+        uploadImageToCloud, pullFromCloud, syncToCloud, toggleNoteListMode,
+        dbTogglePin, archiveTogglePin, archiveNote, unarchiveNote, dbTrashNote,
         archiveTrashNote, restoreNote,  deleteNoteForever, updateNoteImage 
     };
 };

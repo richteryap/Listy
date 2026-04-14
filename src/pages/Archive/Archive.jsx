@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { convertToBase64, validateImage } from '../../utils/fileUtils.js';
+import { validateImage } from '../../utils/fileUtils.js';
 import { useNoteActions } from '../../hooks/useNoteActions.js';
 import { useNotes } from '../../hooks/useNotes.js';
 import NoteEditor from '../../components/NoteEditor/NoteEditor.jsx';
@@ -14,7 +14,11 @@ const Archive = ({ isGridView, searchQuery }) => {
     const fileInputRef = useRef(null);
 
     const { notes, loading } = useNotes('archive');
-    const { toggleNoteListMode, archiveTogglePin, unarchiveNote, archiveTrashNote } = useNoteActions();
+
+    const { 
+        uploadImageToCloud, toggleNoteListMode, archiveTogglePin,
+        unarchiveNote, archiveTrashNote, updateNoteImage 
+    } = useNoteActions();
 
     const filteredNotes = notes.filter(note => 
         note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -38,23 +42,19 @@ const Archive = ({ isGridView, searchQuery }) => {
         
         if (!validateImage(file)) { 
             e.target.value = null;
-            setActiveNoteId(null);
             return; 
         }
 
         try {
-            const base64 = await convertToBase64(file);
+            const imageUrl = await uploadImageToCloud(file, activeNoteId);
             
-            const noteRef = doc(db, "notes", activeNoteId);
-            await updateDoc(noteRef, {
-                imageUrl: base64
-            });
-
+            await updateNoteImage(activeNoteId, imageUrl);
+            
         } catch (error) {
             console.error("Error uploading image:", error);
         } finally {
             e.target.value = null;
-            setActiveNoteId(null);
+            if (setActiveNoteId) setActiveNoteId(null);
         }
     };
 

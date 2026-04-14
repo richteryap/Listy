@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useNotes } from '../../hooks/useNotes';
 import { useNoteActions } from '../../hooks/useNoteActions';
-import { convertToBase64, validateImage } from '../../utils/fileUtils';
+import { validateImage } from '../../utils/fileUtils';
 import NoteEditor from '../../components/NoteEditor/NoteEditor.jsx';
 import NoteCard from '../../components/NoteCard/NoteCard.jsx';
 import './SearchResults.css';
@@ -40,19 +40,20 @@ const SearchResults = ({ searchQuery, isGridView }) => {
         
         if (!validateImage(file)) { 
             e.target.value = null;
-            setActiveNoteId(null);
+            if (setActiveNoteId) setActiveNoteId(null);
             return; 
         }
 
         try {
-            const base64 = await convertToBase64(file);
+            const imageUrl = await uploadImageToCloud(file, activeNoteId);
             
-            await updateNoteImage(activeNoteId, base64);
+            await updateNoteImage(activeNoteId, imageUrl);
+            
         } catch (error) {
             console.error("Error uploading image:", error);
         } finally {
             e.target.value = null;
-            setActiveNoteId(null);
+            if (setActiveNoteId) setActiveNoteId(null);
         }
     };
 

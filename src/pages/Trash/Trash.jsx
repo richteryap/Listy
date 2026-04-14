@@ -5,7 +5,9 @@ import './Trash.css';
 
 const Trash = ({ isGridView }) => {
     const { notes, loading } = useNotes('trash');
-    const { restoreNote, deleteNoteForever } = useNoteActions();
+    const {
+        restoreNote, deleteNoteForever
+    } = useNoteActions();
 
     return (
         <div className='trash-body'>
