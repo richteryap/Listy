@@ -31,7 +31,7 @@ const Profile = () => {
                 .from('profiles')
                 .update({
                     username: editUsername,
-                    birthday: editBirthday,
+                    birthday: editBirthday ? editBirthday : null,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', user.id);
