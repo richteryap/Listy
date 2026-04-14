@@ -6,19 +6,18 @@ import './Profile.css';
 const Profile = () => {
     const { user, profile } = useAuth();
     
-    // UI States
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
-    
-    // Form States
     const [editUsername, setEditUsername] = useState('');
     const [editBirthday, setEditBirthday] = useState('');
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
 
     // Pre-fill the form when the profile loads
     useEffect(() => {
         if (profile) {
             setEditUsername(profile.username || '');
-            setEditBirthday(profile.birthday || ''); // Requires adding 'birthday' to DB
+            setEditBirthday(profile.birthday || '');
         }
     }, [profile]);
 
@@ -51,6 +50,8 @@ const Profile = () => {
 
     const handleRequestPasswordReset = async () => {
         if (!user?.email) return;
+        setLoading(true);
+
         try {
             const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
                 redirectTo: `${window.location.origin}/account`,
@@ -59,6 +60,32 @@ const Profile = () => {
             alert("A password reset link has been sent to your email!");
         } catch (error) {
             console.error("Error resetting password:", error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const saveNewPassword = async () => {
+        if (newPassword.length < 6) {
+            alert("Password must be at least 6 characters long.");
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            const { error } = await supabase.auth.updateUser({
+                password: newPassword
+            });
+            
+            if (error) throw error;
+            alert("Password updated successfully!");
+            setIsChangingPassword(false);
+            setNewPassword('');
+        } catch (error) {
+            console.error("Error updating password:", error.message);
+            alert(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -111,15 +138,38 @@ const Profile = () => {
                                 </p>
                             ) : (
                                 <p className="profile-birthday">
-                                    <strong>Birthday:</strong> Input Your Birthday
+                                    <strong>Birthday:</strong> No Birthday
                                 </p>
                             )}
                             <button className="profile-edit-info" onClick={() => setIsEditing(true)}> 
                                 Edit Profile
                             </button>
-                            <button className="profile-reset-pass-btn" onClick={handleRequestPasswordReset}>
-                                Change Password
-                            </button>
+                            {isChangingPassword ? (
+                                <div className="profile-edit-password">
+                                    <label>New Password</label>
+                                    <input 
+                                        type="password" 
+                                        placeholder="Enter new password" 
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                    />
+                                    <div className="profile-action-buttons">
+                                        <button className="profile-save-info" onClick={saveNewPassword} disabled={loading}>
+                                            {loading ? 'Saving...' : 'Save Password'}
+                                        </button>
+                                        <button className="profile-cancel-info" onClick={() => {
+                                            setIsChangingPassword(false);
+                                            setNewPassword('');
+                                        }}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <button className="profile-reset-pass-btn" onClick={handleRequestPasswordReset}>
+                                    Change Password
+                                </button>
+                            )}
                         </>
                     )}
                 </div>
