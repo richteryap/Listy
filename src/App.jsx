@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { SnackbarProvider } from './components/SnackbarContext.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import Header from './components/Header/Header.jsx'
@@ -13,7 +13,6 @@ import Profile from './pages/Profile/Profile.jsx';
 import './App.css'
 
 function App() {
-  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const [isGridView, setIsGridView] = useState(() => {
@@ -25,7 +24,7 @@ function App() {
   }, [isGridView]);
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
-      return localStorage.getItem('theme') === 'dark';
+    return localStorage.getItem('theme') === 'dark';
   });
 
   useEffect(() => {
@@ -41,8 +40,8 @@ function App() {
   return (
     <AuthProvider>
       <SnackbarProvider>
-        <Header 
-          isGridView={isGridView} 
+        <Header
+          isGridView={isGridView}
           setIsGridView={setIsGridView}
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}
@@ -53,34 +52,34 @@ function App() {
           <Route path='/dashboard' element={
             <ProtectedRoute>
               <div className='app-body'>
-                <Dashboard isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
+                <Dashboard isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery} />
               </div>
             </ProtectedRoute>
-          }/>
+          } />
           <Route path='/search' element={
             <ProtectedRoute>
               <div className='app-body'>
-                <SearchResults isGridView={isGridView} isDarkMode={isDarkMode}/>
+                <SearchResults isGridView={isGridView} isDarkMode={isDarkMode} />
               </div>
             </ProtectedRoute>
-          }/>
+          } />
           <Route path='/archive' element={
             <ProtectedRoute>
-              <Archive isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery}/>
+              <Archive isGridView={isGridView} isDarkMode={isDarkMode} searchQuery={searchQuery} />
             </ProtectedRoute>
-          }/>
+          } />
           <Route path='/trash' element={
             <ProtectedRoute>
-              <Trash isGridView={isGridView} isDarkMode={isDarkMode}/>
+              <Trash isGridView={isGridView} isDarkMode={isDarkMode} />
             </ProtectedRoute>
-          }/>
+          } />
           <Route path='/profile' element={
             <ProtectedRoute>
-              <Profile isDarkMode={isDarkMode}/>
+              <Profile isDarkMode={isDarkMode} />
             </ProtectedRoute>
-          }/>
-          <Route path='/account' element={<Login_Register isDarkMode={isDarkMode}/>}/>
-          <Route path='*' element={<Navigate to='/dashboard' replace />}/>
+          } />
+          <Route path='/account' element={<Login_Register isDarkMode={isDarkMode} />} />
+          <Route path='*' element={<Navigate to='/dashboard' replace />} />
         </Routes>
       </SnackbarProvider>
     </AuthProvider>

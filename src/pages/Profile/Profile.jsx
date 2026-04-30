@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { supabase } from '../../supabase';
+import api from '../../api/axios.js';
 import './Profile.css';
 
 const Profile = () => {
     const { user, profile } = useAuth();
-    
+
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [passwordLoading, setPasswordLoading] = useState(false);
@@ -27,22 +27,15 @@ const Profile = () => {
         setLoading(true);
 
         try {
-            const { error } = await supabase
-                .from('profiles')
-                .update({
-                    username: editUsername,
-                    birthday: editBirthday ? editBirthday : null,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', user.id);
+            await api.put('/auth/profile/', {
+                username: editUsername,
+                birthday: editBirthday ? editBirthday : null,
+            });
 
-            if (error) throw error;
-            
             setIsEditing(false);
-            // Refresh the page to allow AuthContext to fetch the new profile data
-            window.location.reload(); 
+            window.location.reload();
         } catch (error) {
-            console.error("Error updating profile:", error.message);
+            console.error("Error updating profile:", error);
             alert("Failed to update profile.");
         } finally {
             setLoading(false);
@@ -54,21 +47,20 @@ const Profile = () => {
             alert("Password must be at least 6 characters long.");
             return;
         }
-        
+
         setPasswordLoading(true);
         try {
-            const { error } = await supabase.auth.updateUser({
-                password: newPassword
+            await api.post('/auth/change-password/', {
+                new_password: newPassword
             });
-            
-            if (error) throw error;
+
             alert("Password updated successfully!");
             setIsChangingPassword(false);
             window.location.reload();
             setNewPassword('');
         } catch (error) {
-            console.error("Error updating password:", error.message);
-            alert(error.message);
+            console.error("Error updating password:", error.response?.data || error);
+            alert("Failed to update password");
         } finally {
             setPasswordLoading(false);
         }
@@ -84,28 +76,28 @@ const Profile = () => {
                         <i className='fa-solid fa-user'></i>
                     )}
                 </div>
-                
+
                 <div className="profile-personal-details">
                     {isEditing ? (
                         <div className="profile-edit-form">
                             <label>Username</label>
-                            <input 
-                                type="text" 
-                                value={editUsername} 
-                                onChange={(e) => setEditUsername(e.target.value)} 
+                            <input
+                                type="text"
+                                value={editUsername}
+                                onChange={(e) => setEditUsername(e.target.value)}
                             />
                             <label>Birthday</label>
-                            <input 
-                                type="date" 
-                                value={editBirthday} 
-                                onChange={(e) => setEditBirthday(e.target.value)} 
+                            <input
+                                type="date"
+                                value={editBirthday}
+                                onChange={(e) => setEditBirthday(e.target.value)}
                             />
                             {isChangingPassword ? (
                                 <div className="profile-edit-password">
                                     <label>New Password</label>
-                                    <input 
-                                        type="password" 
-                                        placeholder="Enter new password" 
+                                    <input
+                                        type="password"
+                                        placeholder="Enter new password"
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
                                     />
@@ -130,7 +122,7 @@ const Profile = () => {
                                 <button className="profile-save-info" onClick={handleSaveProfile} disabled={loading}>
                                     {loading ? 'Saving...' : 'Save Changes'}
                                 </button>
-                                <button className="profile-cancel-info" onClick={() => {setIsEditing(false); setIsChangingPassword(false);}}>
+                                <button className="profile-cancel-info" onClick={() => { setIsEditing(false); setIsChangingPassword(false); }}>
                                     Cancel
                                 </button>
                             </div>
@@ -152,7 +144,7 @@ const Profile = () => {
                                     <strong>Birthday:</strong> No Birthday
                                 </p>
                             )}
-                            <button className="profile-edit-info" onClick={() => setIsEditing(true)}> 
+                            <button className="profile-edit-info" onClick={() => setIsEditing(true)}>
                                 Edit Profile
                             </button>
                         </>

@@ -1,27 +1,22 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../supabase';
+import api from '../api/axios';
 import { db } from '../db';
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const hydrateLocalDatabase = async (userId) => {
+    const hydrateLocalDatabase = async () => {
         try {
-            const { data, error } = await supabase
-                .from('notes')
-                .select('*')
-                .eq('user_id', userId);
-
-            if (error) throw error;
+            const response = await api.get('/notes/');
+            const data = response.data;
 
             if (data) {
+                // Map
                 const notesForDexie = data.map(n => ({
                     id: n.id,
-                    user_id: n.user_id,
                     title: n.title,
                     content: n.content,
                     isList: n.is_list,
@@ -34,58 +29,50 @@ export const AuthProvider = ({ children }) => {
                     updatedAt: n.updated_at
                 }));
 
+                await db.notes.clear();
                 await db.notes.bulkPut(notesForDexie);
-                console.log("Local database hydrated with cloud notes.");
+                console.log("Local Dexie database hydrated with Render cloud notes.");
             }
         } catch (err) {
             console.error("Hydration Error:", err.message);
         }
     };
 
-    const fetchProfile = async (userId) => {
-        const { data } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', userId)
-            .single();
-        setProfile(data);
-    };
-
     useEffect(() => {
-        // Initial session check
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            const currentUser = session?.user ?? null;
-            setUser(currentUser);
-            
-            if (currentUser) {
-                fetchProfile(currentUser.id);
-                hydrateLocalDatabase(currentUser.id);
-            }
-            setLoading(false);
-        });
+        const initializeSession = async () => {
+            const token = localStorage.getItem('access_token');
 
-        // Listen for Auth events
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            const currentUser = session?.user ?? null;
-            setUser(currentUser);
-
-            if (currentUser) {
-                fetchProfile(currentUser.id);
-                
-                if (event === 'SIGNED_IN') {
-                    hydrateLocalDatabase(currentUser.id);
+            if (token) {
+                try {
+                    setUser({ isAuthenticated: true });
+                    const profileResponse = await api.get('/auth/profile/');
+                    setUser({
+                        isAuthenticated: true,
+                        profile: profileResponse.data
+                    });
+                    await hydrateLocalDatabase();
+                } catch (error) {
+                    console.error("Session expired or invalid:", error);
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('refresh_token');
+                    setUser(null);
                 }
-            } else {
-                setProfile(null);
             }
             setLoading(false);
-        });
+        };
 
-        return () => subscription.unsubscribe();
+        initializeSession();
     }, []);
 
+    const logout = () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        setUser(null);
+        db.notes.clear();
+    };
+
     return (
-        <AuthContext.Provider value={{ user, profile, loading }}>
+        <AuthContext.Provider value={{ user, setUser, loading, logout }}>
             {!loading && children}
         </AuthContext.Provider>
     );

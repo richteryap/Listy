@@ -18,14 +18,15 @@ const NoteEditor = ({ note, onClose }) => {
     const [isArchived, setIsArchived] = useState(note?.isArchived || false);
     const [isTrashed, setIsTrashed] = useState(note?.isTrashed || false);
     const [imageFile, setImageFile] = useState(note?.imageUrl || null);
+    const [activeNoteId, setActiveNoteId] = useState(note?.id || crypto.randomUUID());
 
-    const { 
-        uploadImageToCloud, syncToCloud, updateNoteImage 
+    const {
+        uploadImageToCloud, syncToCloud, updateNoteImage
     } = useNoteActions();
 
-    const { 
-        isList, setIsList, content, setContent, listItems, setListItems,
-        toggleMode, updateListItem, toggleCheckbox, addListItem, removeListItem, handleListKeyDown
+    const {
+        isList, content, setContent, listItems, toggleMode, updateListItem,
+        toggleCheckbox, addListItem, removeListItem, handleListKeyDown
     } = useNoteContent(note);
 
     const textareaRef = useAutoResizeTextArea(content, isList);
@@ -41,17 +42,17 @@ const NoteEditor = ({ note, onClose }) => {
 
     const handleImageSelect = async (e) => {
         const file = e.target.files[0];
-        
-        if (!validateImage(file)) { 
+
+        if (!validateImage(file)) {
             e.target.value = null;
-            return; 
+            return;
         }
 
         try {
             const imageUrl = await uploadImageToCloud(file, activeNoteId);
-            
+
             await updateNoteImage(activeNoteId, imageUrl);
-            
+
         } catch (error) {
             console.error("Error uploading image:", error);
         } finally {
@@ -93,10 +94,10 @@ const NoteEditor = ({ note, onClose }) => {
                 savedNote = await db.notes.get(note.id);
             } else {
                 const newId = crypto.randomUUID();
-                savedNote = { 
-                    ...noteData, 
-                    id: newId, 
-                    createdAt: new Date().toISOString() 
+                savedNote = {
+                    ...noteData,
+                    id: newId,
+                    createdAt: new Date().toISOString()
                 };
                 await db.notes.add(savedNote);
             }
@@ -119,9 +120,9 @@ const NoteEditor = ({ note, onClose }) => {
             listItems,
             imageUrl: imageFile,
             isArchived: newStatus,
-            isPinned: false, 
+            isPinned: false,
             updatedAt: new Date().toISOString(),
-            ...( !isEditMode && { createdAt: new Date().toISOString() })
+            ...(!isEditMode && { createdAt: new Date().toISOString() })
         };
 
         try {
@@ -157,9 +158,9 @@ const NoteEditor = ({ note, onClose }) => {
             isArchived: false,
             updatedAt: new Date().toISOString(),
             trashedAt: new Date().toISOString(),
-            ...( !isEditMode && { createdAt: new Date().toISOString() })
+            ...(!isEditMode && { createdAt: new Date().toISOString() })
         };
-        
+
         try {
             await db.notes.put(noteData);
             await syncToCloud(noteData);
@@ -196,13 +197,13 @@ const NoteEditor = ({ note, onClose }) => {
                     </div>
                 )}
                 <div className='ne-text-area'>
-                    <input type='text' className='ne-title' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} autoFocus={!isEditMode}/>
+                    <input type='text' className='ne-title' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} autoFocus={!isEditMode} />
                     {isList ? (
                         <div className="ne-list-container">
                             {listItems.map((item, index) => (
                                 <div key={item.id} className="ne-list-item">
-                                    <input type="checkbox" checked={item.isChecked} onChange={() => toggleCheckbox(item.id)}/>
-                                    <input type="text" value={item.text} onChange={(e) => updateListItem(item.id, e.target.value)} onKeyDown={(e) => handleListKeyDown(e, index, item.id)} autoFocus/>
+                                    <input type="checkbox" checked={item.isChecked} onChange={() => toggleCheckbox(item.id)} />
+                                    <input type="text" value={item.text} onChange={(e) => updateListItem(item.id, e.target.value)} onKeyDown={(e) => handleListKeyDown(e, index, item.id)} autoFocus />
                                     <button onClick={() => removeListItem(item.id)}>
                                         <i className="fa-solid fa-xmark"></i>
                                     </button>
@@ -213,7 +214,7 @@ const NoteEditor = ({ note, onClose }) => {
                             </div>
                         </div>
                     ) : (
-                        <textarea className="ne-content" placeholder="Take a note..." value={content} onChange={(e) => {setContent(e.target.value)}} ref={textareaRef} rows={1}/>
+                        <textarea className="ne-content" placeholder="Take a note..." value={content} onChange={(e) => { setContent(e.target.value) }} ref={textareaRef} rows={1} />
                     )}
                 </div>
 
@@ -228,10 +229,10 @@ const NoteEditor = ({ note, onClose }) => {
                         <button className='ne-image-btn' onClick={() => fileInputRef.current.click()} data-tooltip-text='Add Image'>
                             <i className="fa-regular fa-image"></i>
                         </button>
-                        <input 
-                            type="file" 
-                            ref={fileInputRef} 
-                            style={{ display: 'none' }} 
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
                             accept="image/*"
                             onChange={handleImageSelect}
                         />

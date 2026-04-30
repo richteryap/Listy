@@ -4,17 +4,14 @@ import { db } from '../db';
 
 export const useNotes = (filterType, searchQuery = '') => {
     const { user } = useAuth();
-    
+
     const notes = useLiveQuery(async () => {
         if (!user) return [];
 
-        const allNotes = await db.notes
-            .where('user_id')
-            .equals(user.id) 
-            .toArray();
-
-        let filtered = [];
+        const allNotes = await db.notes.toArray();
         
+        let filtered = [];
+
         // Page filtering
         if (filterType === 'trash') {
             filtered = allNotes.filter(n => n.isTrashed === true);
@@ -34,7 +31,7 @@ export const useNotes = (filterType, searchQuery = '') => {
             filtered = filtered.filter(n => {
                 const titleMatch = n.title?.toLowerCase().includes(query);
                 const contentMatch = n.content?.toLowerCase().includes(query);
-                const listMatch = n.isList && n.listItems?.some(item => 
+                const listMatch = n.isList && n.listItems?.some(item =>
                     item.text.toLowerCase().includes(query)
                 );
                 return titleMatch || contentMatch || listMatch;
@@ -50,8 +47,8 @@ export const useNotes = (filterType, searchQuery = '') => {
         });
     }, [filterType, searchQuery, user?.id]);
 
-    return { 
-        notes: notes || [], 
-        loading: notes === undefined 
+    return {
+        notes: notes || [],
+        loading: notes === undefined
     };
 };

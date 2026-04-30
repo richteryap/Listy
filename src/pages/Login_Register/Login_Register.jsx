@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { supabase } from '../../supabase.js';
-import { getFriendlyErrorMessage } from '../../utils/authErrors.js';
+import api from '../../api/axios.js'
+import { useAuth } from '../../context/AuthContext.jsx'
 import useAuthRedirect from '../../hooks/useAuthRedirect.js';
 import './Login_Register.css';
 
 const Login_Register = () => {
     useAuthRedirect();
+    const { setUser } = useAuth();
 
     const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState('');
@@ -23,22 +24,20 @@ const Login_Register = () => {
         setLoading(true);
 
         try {
-            const { error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        display_name: username,
-                    },
-                },
+            await api.post('/auth/register/', {
+                username: username,
+                email: email,
+                password: password
             });
 
-            if (error) throw error;
-            alert("Account created! Check your inbox for a verification email.");
+            alert("Account created! You can now sign in.");
             setIsSignUp(false);
             setPassword('');
+
         } catch (error) {
-            setError(getFriendlyErrorMessage(error.message || error.code));
+            console.error("Registration Error:", error.response?.data);
+            const errorMsg = error.response?.data?.username?.[0] || error.response?.data?.detail || "Registration failed. Username might be taken.";
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -50,41 +49,29 @@ const Login_Register = () => {
         setLoading(true);
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+            const response = await api.post('/auth/login/', {
+                email: email,
+                password: password,
             });
 
-            if (error) throw error;
+            const { access, refresh } = response.data;
+
+            localStorage.setItem('access_token', access);
+            localStorage.setItem('refresh_token', refresh);
+
+            setUser({ isAuthenticated: true });
+
         } catch (error) {
-            setError(getFriendlyErrorMessage(error.message || error.code));
+            console.error("Login Error:", error.response?.data);
+            const errorMsg = error.response?.data?.detail || "Invalid email or password.";
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }
     };
 
     const handleResetPassword = async () => {
-        if (!email) {
-            setError("Please enter your email address in the Sign In form first!");
-            return;
-        }
-
-        setLoading(true);
-        setError('');
-
-        try {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/account`,
-            });
-
-            if (error) throw error;
-            
-            alert("Password reset email sent! Please check your inbox.");
-        } catch (error) {
-            setError(getFriendlyErrorMessage(error.message || error.code));
-        } finally {
-            setLoading(false);
-        }
+        alert("Password reset feature requires backend SMTP configuration. Coming soon!");
     };
 
     return (

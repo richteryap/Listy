@@ -3,14 +3,11 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTrashCleanup } from '../../hooks/useTrashCleanup.js';
 import { useClickOutside } from '../../hooks/useClickOutside.js';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { supabase } from '../../supabase.js';
-import { db } from '../../db.js';
 import NoteEditor from '../NoteEditor/NoteEditor.jsx';
 import './Header.css'
 
 const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQuery, setSearchQuery }) => {
-    const { user, profile } = useAuth();
-    const displayName = user?.user_metadata?.display_name || user?.email;
+    const { user, profile, logout } = useAuth();
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -32,8 +29,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
 
     const handleLogout = async () => {
         try {
-            await supabase.auth.signOut();
-            await db.notes.clear();
+            logout();
             setIsProfileOpen(false);
             navigate('/account');
         } catch (error) {
@@ -49,7 +45,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
             navigate(`/search?q=${encodeURIComponent(text)}`);
         } else {
             if (location.pathname === '/search') {
-               navigate('/dashboard');
+                navigate('/dashboard');
             }
         }
     };
@@ -57,7 +53,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
     const handleClearSearch = () => {
         setSearchQuery('');
         searchInputRef.current.focus();
-        
+
         if (location.pathname === '/search') {
             navigate('/dashboard');
         }
@@ -70,13 +66,13 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
             <div className='header-left-content'>
                 <div className='web-title' data-tooltip-text='Listy'>
                     <Link to='/dashboard' className='title-link'>
-                        <img src="logo.png" alt="Logo" className="logo-img"/>
+                        <img src="logo.png" alt="Logo" className="logo-img" />
                         <span className='listy'>Listy</span>
                     </Link>
                 </div>
                 {!isAccountPage && (
                     <div className='search-bar'>
-                        <input type='text' placeholder='Search' value={searchQuery} onChange={(e) => {setSearchQuery(e.target.value); handleSearchChange(e);}} ref={searchInputRef}/>
+                        <input type='text' placeholder='Search' value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); handleSearchChange(e); }} ref={searchInputRef} />
                         {searchQuery && (
                             <i className="fa-solid fa-xmark" onClick={handleClearSearch} aria-label="Clear search" role="button" data-tooltip-text='Clear search'></i>
                         )}
@@ -100,7 +96,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                             </button>
                             {isAddItemOpen && (
                                 <ul className='add-item-dropdown'>
-                                    <li onClick={() => {setIsAddItemOpen(false); setIsNoteEditorOpen(true);}}>
+                                    <li onClick={() => { setIsAddItemOpen(false); setIsNoteEditorOpen(true); }}>
                                         <i className="fa-solid fa-sticky-note"></i>
                                         Add Note
                                     </li>
@@ -116,13 +112,13 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                             {isMoreOpen && (
                                 <ul className='more-dropdown'>
                                     <li>
-                                        <Link to="/archive" className='archive-link' onClick={()=> {setIsMoreOpen(false);}}>
+                                        <Link to="/archive" className='archive-link' onClick={() => { setIsMoreOpen(false); }}>
                                             <i className="fa-solid fa-box-archive"></i>
                                             Archive
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="/trash" className='trash-link' onClick={()=> {setIsMoreOpen(false);}}>
+                                        <Link to="/trash" className='trash-link' onClick={() => { setIsMoreOpen(false); }}>
                                             <i className="fa-solid fa-trash"></i>
                                             Trash
                                         </Link>
@@ -132,16 +128,16 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                         </div>
                         <div className='view'>
                             <button className="view-btn" onClick={() => setIsGridView(!isGridView)} aria-label="View" data-tooltip-text={isGridView ? 'List View' : 'Grid View'}>
-                                <i className={`fa-solid ${isGridView ? 'fa-list' : 'fa-th-large'}`}></i> 
+                                <i className={`fa-solid ${isGridView ? 'fa-list' : 'fa-th-large'}`}></i>
                             </button>
                         </div>
                         <div className='settings' ref={settingsRef}>
-                            <button className="setting-btn" onClick={() => setIsSettingsOpen(!isSettingsOpen)}  aria-label="Settings" data-tooltip-text='Settings'>
+                            <button className="setting-btn" onClick={() => setIsSettingsOpen(!isSettingsOpen)} aria-label="Settings" data-tooltip-text='Settings'>
                                 <i className="fa-solid fa-gear"></i>
                             </button>
                             {isSettingsOpen && (
                                 <ul className='setting-dropdown'>
-                                    <li onClick={() => {setIsDarkMode(!isDarkMode); setIsSettingsOpen(false);}}>
+                                    <li onClick={() => { setIsDarkMode(!isDarkMode); setIsSettingsOpen(false); }}>
                                         <i className={`fa-solid ${isDarkMode ? 'fa-sun' : 'fa-moon'}`}></i>
                                         {isDarkMode ? "Light Mode" : "Dark Mode"}
                                     </li>
@@ -156,7 +152,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                         {isProfileOpen && user && (
                             <ul className='profile-dropdown'>
                                 <li>
-                                    <Link to='/profile' className="profile-link" onClick={()=> {setIsProfileOpen(false);}}>
+                                    <Link to='/profile' className="profile-link" onClick={() => { setIsProfileOpen(false); }}>
                                         <i className='fa-solid fa-user'></i>
                                         {profile?.username || 'User'}
                                     </Link>

@@ -1,57 +1,47 @@
-import { supabase } from '../supabase.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { db } from '../db';
 import { useSnackbar } from '../components/SnackbarContext';
+import api from '../api/axios.js';
 
 export const useNoteActions = () => {
     const { user } = useAuth();
     const { showSnackbar } = useSnackbar();
 
-    const pullFromCloud = async () => {
-        if (!user) return;
+    const addNote = async (noteData) => {
+        try {
+            const response = await api.post('/notes/', noteData);
+            const newNote = response.data;
 
-        console.log("Fetching notes from cloud...");
-        const { data, error } = await supabase
-            .from('notes')
-            .select('*')
-            .eq('user_id', user.id);
+            // Map 
+            const noteForDexie = {
+                id: newNote.id,
+                title: newNote.title,
+                content: newNote.content,
+                isList: newNote.is_list,
+                listItems: newNote.list_items,
+                isTrashed: newNote.is_trashed,
+                isArchived: newNote.is_archived,
+                isPinned: newNote.is_pinned,
+                imageUrl: newNote.image_url,
+                createdAt: newNote.created_at,
+                updatedAt: newNote.updated_at
+            };
 
-        if (error) {
-            console.error("Error pulling from cloud:", error.message);
-            return;
-        }
-
-        if (data) {
-            // Transform snake_case from DB back to camelCase for Dexie
-            const notesForDexie = data.map(n => ({
-                id: n.id,
-                user_id: n.user_id,
-                title: n.title,
-                content: n.content,
-                isList: n.is_list,
-                listItems: n.list_items,
-                isTrashed: n.is_trashed,
-                isArchived: n.is_archived,
-                isPinned: n.is_pinned,
-                imageUrl: n.image_url,
-                createdAt: n.created_at,
-                updatedAt: n.updated_at
-            }));
-
-            // bulkPut adds new notes and updates existing ones in one go
-            await db.notes.bulkPut(notesForDexie);
-            console.log("Local database hydrated!");
+            // Save to Dexie
+            await db.notes.add(noteForDexie);
+            return { success: true, data: noteForDexie };
+        } catch (error) {
+            console.error("Error creating note on server:", error);
+            showSnackbar("Failed to save note");
+            return { success: false, error };
         }
     };
 
     const syncToCloud = async (note) => {
         if (!user) return;
 
-        const { error } = await supabase
-            .from('notes')
-            .upsert({
-                id: note.id,
-                user_id: user.id,
+        try {
+            await api.put(`/notes/${note.id}/`, {
                 title: note.title,
                 content: note.content,
                 is_list: note.isList,
@@ -59,45 +49,30 @@ export const useNoteActions = () => {
                 is_trashed: note.isTrashed,
                 is_archived: note.isArchived,
                 is_pinned: note.isPinned,
-                image_url: note.imageUrl, 
-                updated_at: new Date().toISOString()
+                image_url: note.imageUrl,
             });
-
-        if (error) {
-            console.error("Cloud Sync Error:", error.message);
-        } else {
             console.log("Sync successful for note:", note.id);
+        } catch (error) {
+            console.error("Cloud Sync Error:", error);
+            showSnackbar("Sync failed. Changes saved locally.");
         }
     };
 
     const uploadImageToCloud = async (file, noteId) => {
         if (!user) throw new Error("Must be logged in to upload images");
 
-        // Create a safe, unique filename: "user-id/note-id-timestamp.jpg"
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${noteId}-${Date.now()}.${fileExt}`;
-        const filePath = `${user.id}/${fileName}`; 
+        const formData = new FormData();
+        formData.append('image', file);
 
         try {
-            // Upload the raw File object to the 'note_images' bucket
-            const { error: uploadError } = await supabase.storage
-                .from('note_images')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false 
-                });
-
-            if (uploadError) throw uploadError;
-
-            // Ask Supabase for the permanent public URL 
-            const { data } = supabase.storage
-                .from('note_images')
-                .getPublicUrl(filePath);
-
-            return data.publicUrl;
-
+            const response = await api.post(`/notes/${noteId}/upload-image/`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data.image_url;
         } catch (error) {
-            console.error("Storage upload error:", error.message);
+            console.error("Image upload error:", error);
             throw error;
         }
     };
@@ -122,10 +97,10 @@ export const useNoteActions = () => {
 
     const toggleNoteListMode = async (note) => {
         if (note.isList) {
-            const textContent = note.listItems 
-                ? note.listItems.map(item => item.text).join('\n') 
+            const textContent = note.listItems
+                ? note.listItems.map(item => item.text).join('\n')
                 : '';
-            
+
             await updateLocalNote(note.id, {
                 isList: false,
                 content: textContent,
@@ -139,7 +114,7 @@ export const useNoteActions = () => {
                     text: text,
                     isChecked: false
                 }));
-            
+
             if (items.length === 0) {
                 items.push({
                     id: crypto.randomUUID(),
@@ -157,7 +132,7 @@ export const useNoteActions = () => {
     };
 
     const dbTogglePin = async (noteId, currentStatus) => {
-        await updateLocalNote(noteId, { 
+        await updateLocalNote(noteId, {
             isPinned: !currentStatus,
             isArchived: false,
             isTrashed: false
@@ -165,7 +140,7 @@ export const useNoteActions = () => {
     };
 
     const archiveTogglePin = async (noteId, currentStatus) => {
-        await updateLocalNote(noteId, { 
+        await updateLocalNote(noteId, {
             isPinned: !currentStatus,
             isArchived: false,
             isTrashed: false
@@ -187,7 +162,7 @@ export const useNoteActions = () => {
         });
 
         showSnackbar("Note archived", async () => {
-            await updateLocalNote(noteId, { 
+            await updateLocalNote(noteId, {
                 isArchived: false
             });
         });
@@ -252,15 +227,18 @@ export const useNoteActions = () => {
     const deleteNoteForever = async (noteId) => {
         if (window.confirm("Delete forever? This cannot be undone.")) {
             try {
+                // Delete locally
                 await db.notes.delete(noteId);
 
+                // Delete from Django
                 if (user) {
-                    await supabase.from('notes').delete().eq('id', noteId);
+                    await api.delete(`/notes/${noteId}/`);
                 }
-                
+
                 showSnackbar("Note deleted", null);
             } catch (error) {
-                console.error("Error deleting locally:", error);
+                console.error("Error deleting note:", error);
+                showSnackbar("Failed to delete note from cloud");
             }
         }
     };
@@ -271,9 +249,9 @@ export const useNoteActions = () => {
         });
     };
 
-    return { 
-        uploadImageToCloud, pullFromCloud, syncToCloud, toggleNoteListMode,
+    return {
+        addNote, uploadImageToCloud, syncToCloud, toggleNoteListMode,
         dbTogglePin, archiveTogglePin, archiveNote, unarchiveNote, dbTrashNote,
-        archiveTrashNote, restoreNote,  deleteNoteForever, updateNoteImage 
+        archiveTrashNote, restoreNote, deleteNoteForever, updateNoteImage
     };
 };

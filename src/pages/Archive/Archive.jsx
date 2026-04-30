@@ -15,12 +15,12 @@ const Archive = ({ isGridView, searchQuery }) => {
 
     const { notes, loading } = useNotes('archive');
 
-    const { 
+    const {
         uploadImageToCloud, toggleNoteListMode, archiveTogglePin,
-        unarchiveNote, archiveTrashNote, updateNoteImage 
+        unarchiveNote, archiveTrashNote, updateNoteImage
     } = useNoteActions();
 
-    const filteredNotes = notes.filter(note => 
+    const filteredNotes = notes.filter(note =>
         note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         note.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         note.isList && note.listItems?.some(item => item.text.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -29,7 +29,7 @@ const Archive = ({ isGridView, searchQuery }) => {
     const triggerImageUpload = (e, noteId) => {
         e.stopPropagation();
         setActiveNoteId(noteId);
-        
+
         setTimeout(() => {
             if (fileInputRef.current) {
                 fileInputRef.current.click();
@@ -39,17 +39,17 @@ const Archive = ({ isGridView, searchQuery }) => {
 
     const handleImageSelect = async (e) => {
         const file = e.target.files[0];
-        
-        if (!validateImage(file)) { 
+
+        if (!validateImage(file)) {
             e.target.value = null;
-            return; 
+            return;
         }
 
         try {
             const imageUrl = await uploadImageToCloud(file, activeNoteId);
-            
+
             await updateNoteImage(activeNoteId, imageUrl);
-            
+
         } catch (error) {
             console.error("Error uploading image:", error);
         } finally {
@@ -69,10 +69,10 @@ const Archive = ({ isGridView, searchQuery }) => {
 
     return (
         <div className='archive-body'>
-            <input 
-                type="file" 
-                ref={fileInputRef} 
-                style={{ display: 'none' }} 
+            <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
                 accept="image/*"
                 onChange={handleImageSelect}
             />
@@ -84,8 +84,8 @@ const Archive = ({ isGridView, searchQuery }) => {
                 <div className={`archive-grid ${isGridView ? '' : 'list-view'}`}>
                     {filteredNotes.map(note => (
                         <NoteCard
-                            key={note.id} 
-                            note={note} 
+                            key={note.id}
+                            note={note}
                             onEdit={handleAnimate}
                             onPin={() => archiveTogglePin(note.id, note.isPinned)}
                             onUnarchive={() => unarchiveNote(note.id)}
@@ -105,7 +105,7 @@ const Archive = ({ isGridView, searchQuery }) => {
             )}
 
             {selectedNote && (
-                <NoteEditor 
+                <NoteEditor
                     note={selectedNote}
                     onClose={() => setSelectedNote(null)}
                 />

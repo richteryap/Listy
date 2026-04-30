@@ -7,7 +7,7 @@ import NoteEditor from '../../components/NoteEditor/NoteEditor.jsx';
 import NoteCard from '../../components/NoteCard/NoteCard.jsx';
 import './SearchResults.css';
 
-const SearchResults = ({ searchQuery, isGridView }) => {
+const SearchResults = ({ isGridView }) => {
     const [searchParams] = useSearchParams();
     const query = searchParams.get('q') || '';
 
@@ -17,9 +17,9 @@ const SearchResults = ({ searchQuery, isGridView }) => {
 
     const { notes, loading } = useNotes('search');
 
-    const { 
-        dbTogglePin, archiveNote, unarchiveNote, 
-        dbTrashNote, toggleNoteListMode, updateNoteImage 
+    const {
+        uploadImageToCloud, dbTogglePin, archiveNote, unarchiveNote,
+        dbTrashNote, toggleNoteListMode, updateNoteImage
     } = useNoteActions();
 
     const fileInputRef = useRef(null);
@@ -27,7 +27,7 @@ const SearchResults = ({ searchQuery, isGridView }) => {
     const triggerImageUpload = (e, noteId) => {
         e.stopPropagation();
         setActiveNoteId(noteId);
-        
+
         setTimeout(() => {
             if (fileInputRef.current) {
                 fileInputRef.current.click();
@@ -37,18 +37,18 @@ const SearchResults = ({ searchQuery, isGridView }) => {
 
     const handleImageSelect = async (e) => {
         const file = e.target.files[0];
-        
-        if (!validateImage(file)) { 
+
+        if (!validateImage(file)) {
             e.target.value = null;
             if (setActiveNoteId) setActiveNoteId(null);
-            return; 
+            return;
         }
 
         try {
             const imageUrl = await uploadImageToCloud(file, activeNoteId);
-            
+
             await updateNoteImage(activeNoteId, imageUrl);
-            
+
         } catch (error) {
             console.error("Error uploading image:", error);
         } finally {
@@ -80,7 +80,7 @@ const SearchResults = ({ searchQuery, isGridView }) => {
         const listMatch = note.isList && note.listItems
             ? note.listItems.some(item => (item.text || '').toLowerCase().includes(safeQuery))
             : false;
-        
+
         return titleMatch || contentMatch || listMatch;
     });
 
@@ -90,10 +90,10 @@ const SearchResults = ({ searchQuery, isGridView }) => {
     return (
         <div className="search-results-body">
             <div className="sr-section-label">SEARCH RESULTS</div>
-            <input 
-                type="file" 
-                ref={fileInputRef} 
-                style={{ display: 'none' }} 
+            <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
                 accept="image/*"
                 onChange={handleImageSelect}
             />
@@ -154,8 +154,8 @@ const SearchResults = ({ searchQuery, isGridView }) => {
             )}
             {selectedNote && (
                 <NoteEditor
-                    note={selectedNote} 
-                    onClose={() => setSelectedNote(null)} 
+                    note={selectedNote}
+                    onClose={() => setSelectedNote(null)}
                 />
             )}
         </div>
