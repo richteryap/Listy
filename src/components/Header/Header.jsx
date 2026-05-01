@@ -147,7 +147,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
                     </div>
                     <div className='profile' ref={profileRef}>
                         <button className='profile-button' onClick={() => setIsProfileOpen(!isProfileOpen)} aria-label='Profile' data-tooltip-text='Profile'>
-                            {user?.photoURL ? <img src={user.photoURL} alt="Profile" /> : <i className='fa-solid fa-user'></i>} {/* !!! Need Update !!! */}
+                            {profile?.avatar_url ? <img src={profile.avatar_url} alt="Profile Avatar" /> : <i className='fa-solid fa-user'></i>}
                         </button>
                         {isProfileOpen && user && (
                             <ul className='profile-dropdown'>
