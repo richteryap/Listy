@@ -17,7 +17,7 @@ export const useNotes = (filterType, searchQuery = '') => {
         try {
             setLoading(true);
 
-            const token = localStorage.getItem('access');
+            const token = localStorage.getItem('access_token');
 
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/notes/`, {
                 headers: {
