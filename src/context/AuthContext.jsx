@@ -6,6 +6,7 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const hydrateLocalDatabase = async () => {
@@ -44,12 +45,17 @@ export const AuthProvider = ({ children }) => {
 
             if (token) {
                 try {
-                    setUser({ isAuthenticated: true });
                     const profileResponse = await api.get('/auth/profile/');
-                    setUser({
-                        isAuthenticated: true,
-                        profile: profileResponse.data
+                    const userData = profileResponse.data;
+
+                    setUser({ 
+                        isAuthenticated: true, 
+                        id: userData.id,
+                        email: userData.email 
                     });
+
+                    setProfile(userData);
+
                     await hydrateLocalDatabase();
                 } catch (error) {
                     console.error("Session expired or invalid:", error);
@@ -68,11 +74,12 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         setUser(null);
+        setProfile(null);
         db.notes.clear();
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, loading, logout }}>
+        <AuthContext.Provider value={{ user, setUser, profile, setProfile, loading, logout }}>
             {!loading && children}
         </AuthContext.Provider>
     );
