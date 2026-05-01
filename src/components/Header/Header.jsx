@@ -14,6 +14,7 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
     const isAccountPage = location.pathname.startsWith('/account');
     const isTrashPage = location.pathname.startsWith('/trash');
     const isArchivePage = location.pathname.startsWith('/archive');
+    const isProfilePage = location.pathname.startsWith('/profile');
 
     const [isAddItemOpen, setIsAddItemOpen] = useState(false);
     const [isNoteEditorOpen, setIsNoteEditorOpen] = useState(false);
@@ -82,13 +83,13 @@ const Header = ({ isGridView, setIsGridView, isDarkMode, setIsDarkMode, searchQu
             </div>
             {!isAccountPage && (
                 <div className='header-right-content'>
-                    {(isTrashPage || isArchivePage) && (
-                        <div className='page-title' data-tooltip-text={isTrashPage ? 'Trash' : 'Archive'}>
-                            <i className={`fa-solid ${isTrashPage ? 'fa-trash-can' : 'fa-box-archive'}`}></i>
-                            <h1>{isTrashPage ? 'Trash' : 'Archive'}</h1>
+                    {(isTrashPage || isArchivePage || isProfilePage) && (
+                        <div className='page-title' data-tooltip-text={isTrashPage ? 'Trash' : isArchivePage ? 'Archive' : 'Profile'}>
+                            <i className={`fa-solid ${isTrashPage ? 'fa-trash-can' : isArchivePage ? 'fa-box-archive' : 'fa-user'}`}></i>
+                            <h1>{isTrashPage ? 'Trash' : isArchivePage ? 'Archive' : 'Profile'}</h1>
                         </div>
                     )}
-                    {!isTrashPage && !isArchivePage && (
+                    {!(isTrashPage || isArchivePage || isProfilePage) && (
                         <div className='add-item' ref={addItemRef}>
                             <button className="add-btn" onClick={() => setIsAddItemOpen(!isAddItemOpen)} aria-label="Add Item" data-tooltip-text='Add Item'>
                                 <i className="fa-solid fa-plus"></i>
