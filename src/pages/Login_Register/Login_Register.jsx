@@ -6,7 +6,7 @@ import './Login_Register.css';
 
 const Login_Register = () => {
     useAuthRedirect();
-    const { setUser } = useAuth();
+    const { login } = useAuth();
 
     const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState('');
@@ -56,10 +56,7 @@ const Login_Register = () => {
 
             const { access, refresh } = response.data;
 
-            localStorage.setItem('access_token', access);
-            localStorage.setItem('refresh_token', refresh);
-
-            setUser({ isAuthenticated: true });
+            await login(access, refresh);
 
         } catch (error) {
             console.error("Login Error:", error.response?.data);

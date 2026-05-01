@@ -39,36 +39,43 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        const initializeSession = async () => {
-            const token = localStorage.getItem('access_token');
+    const initializeSession = async () => {
+        const token = localStorage.getItem('access_token');
 
-            if (token) {
-                try {
-                    const profileResponse = await api.get('/auth/profile/');
-                    const userData = profileResponse.data;
+        if (token) {
+            try {
+                const profileResponse = await api.get('/auth/profile/');
+                const userData = profileResponse.data;
 
-                    setUser({ 
-                        isAuthenticated: true, 
-                        id: userData.id,
-                        email: userData.email 
-                    });
+                setUser({
+                    isAuthenticated: true,
+                    id: userData.id,
+                    email: userData.email
+                });
 
-                    setProfile(userData);
+                setProfile(userData);
 
-                    await hydrateLocalDatabase();
-                } catch (error) {
-                    console.error("Session expired or invalid:", error);
-                    localStorage.removeItem('access_token');
-                    localStorage.removeItem('refresh_token');
-                    setUser(null);
-                }
+                await hydrateLocalDatabase();
+            } catch (error) {
+                console.error("Session expired or invalid:", error);
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                setUser(null);
             }
-            setLoading(false);
-        };
+        }
+        setLoading(false);
+    };
 
+    useEffect(() => {
         initializeSession();
     }, []);
+
+    const login = async (access, refresh) => {
+        localStorage.setItem('access_token', access);
+        localStorage.setItem('refresh_token', refresh);
+        setLoading(true);
+        await initializeSession();
+    };
 
     const logout = () => {
         localStorage.removeItem('access_token');
@@ -79,7 +86,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, profile, setProfile, loading, logout }}>
+        <AuthContext.Provider value={{ user, setUser, profile, setProfile, loading, login, logout }}>
             {!loading && children}
         </AuthContext.Provider>
     );
