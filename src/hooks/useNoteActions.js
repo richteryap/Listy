@@ -7,57 +7,6 @@ export const useNoteActions = () => {
     const { user } = useAuth();
     const { showSnackbar } = useSnackbar();
 
-    const addNote = async (noteData) => {
-        try {
-            const response = await api.post('/notes/', noteData);
-            const newNote = response.data;
-
-            // Map 
-            const noteForDexie = {
-                id: newNote.id,
-                title: newNote.title,
-                content: newNote.content,
-                isList: newNote.is_list,
-                listItems: newNote.list_items,
-                isTrashed: newNote.is_trashed,
-                isArchived: newNote.is_archived,
-                isPinned: newNote.is_pinned,
-                imageUrl: newNote.image_url,
-                createdAt: newNote.created_at,
-                updatedAt: newNote.updated_at
-            };
-
-            // Save to Dexie
-            await db.notes.add(noteForDexie);
-            return { success: true, data: noteForDexie };
-        } catch (error) {
-            console.error("Error creating note on server:", error);
-            showSnackbar("Failed to save note");
-            return { success: false, error };
-        }
-    };
-
-    const syncToCloud = async (note) => {
-        if (!user) return;
-
-        try {
-            await api.put(`/notes/${note.id}/`, {
-                title: note.title,
-                content: note.content,
-                is_list: note.isList,
-                list_items: note.listItems,
-                is_trashed: note.isTrashed,
-                is_archived: note.isArchived,
-                is_pinned: note.isPinned,
-                image_url: note.imageUrl,
-            });
-            console.log("Sync successful for note:", note.id);
-        } catch (error) {
-            console.error("Cloud Sync Error:", error);
-            showSnackbar("Sync failed. Changes saved locally.");
-        }
-    };
-
     const uploadImageToCloud = async (file, noteId) => {
         if (!user) throw new Error("Must be logged in to upload images");
 
@@ -82,13 +31,12 @@ export const useNoteActions = () => {
         try {
             await db.notes.update(noteId, {
                 ...changes,
+                sync_status: 'pending',
                 updatedAt: new Date().toISOString()
             });
 
-            const updatedNote = await db.notes.get(noteId);
-
-            if (updatedNote) {
-                await syncToCloud(updatedNote);
+            if (user) {
+                import('../utils/syncService.js').then(({ autoSync }) => autoSync(user));
             }
         } catch (error) {
             console.error("Local Update Error:", error);
@@ -250,7 +198,7 @@ export const useNoteActions = () => {
     };
 
     return {
-        addNote, uploadImageToCloud, syncToCloud, toggleNoteListMode,
+        uploadImageToCloud, toggleNoteListMode,
         dbTogglePin, archiveTogglePin, archiveNote, unarchiveNote, dbTrashNote,
         archiveTrashNote, restoreNote, deleteNoteForever, updateNoteImage
     };

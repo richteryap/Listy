@@ -21,7 +21,7 @@ const NoteEditor = ({ note, onClose }) => {
     const [activeNoteId, setActiveNoteId] = useState(note?.id || crypto.randomUUID());
 
     const {
-        uploadImageToCloud, syncToCloud, updateNoteImage
+        uploadImageToCloud, updateNoteImage
     } = useNoteActions();
 
     const {
@@ -88,20 +88,21 @@ const NoteEditor = ({ note, onClose }) => {
         };
 
         try {
-            let savedNote;
             if (isEditMode) {
-                await db.notes.update(note.id, noteData);
-                savedNote = await db.notes.get(note.id);
+                await db.notes.update(note.id, { ...noteData, sync_status: 'pending' });
             } else {
                 const newId = crypto.randomUUID();
-                savedNote = {
+                const savedNote = {
                     ...noteData,
                     id: newId,
+                    sync_status: 'pending',
                     createdAt: new Date().toISOString()
                 };
                 await db.notes.add(savedNote);
             }
-            await syncToCloud(savedNote);
+            if (user) {
+                import('../../utils/syncService.js').then(({ autoSync }) => autoSync(user));
+            }
         } catch (error) {
             console.error("Error saving note:", error);
         }
@@ -121,19 +122,19 @@ const NoteEditor = ({ note, onClose }) => {
             imageUrl: imageFile,
             isArchived: newStatus,
             isPinned: false,
+            sync_status: 'pending',
             updatedAt: new Date().toISOString(),
             ...(!isEditMode && { createdAt: new Date().toISOString() })
         };
 
         try {
             await db.notes.put(noteData);
-            await syncToCloud(noteData);
+            if (user) import('../../utils/syncService.js').then(({ autoSync }) => autoSync(user));
 
             const message = newStatus ? "Note archived" : "Note unarchived";
             showSnackbar(message, async () => {
-                await db.notes.update(activeId, { isArchived: !newStatus });
-                const reverted = await db.notes.get(activeId);
-                syncToCloud(reverted);
+                await db.notes.update(activeId, { isArchived: !newStatus, sync_status: 'pending' });
+                if (user) import('../../utils/syncService.js').then(({ autoSync }) => autoSync(user));
             });
 
             onClose();
@@ -156,6 +157,7 @@ const NoteEditor = ({ note, onClose }) => {
             isTrashed: true,
             isPinned: false,
             isArchived: false,
+            sync_status: 'pending',
             updatedAt: new Date().toISOString(),
             trashedAt: new Date().toISOString(),
             ...(!isEditMode && { createdAt: new Date().toISOString() })
@@ -163,12 +165,11 @@ const NoteEditor = ({ note, onClose }) => {
 
         try {
             await db.notes.put(noteData);
-            await syncToCloud(noteData);
+            if (user) import('../../utils/syncService.js').then(({ autoSync }) => autoSync(user));
 
             showSnackbar("Note moved to trash", async () => {
-                await db.notes.update(activeId, { isTrashed: false });
-                const reverted = await db.notes.get(activeId);
-                syncToCloud(reverted);
+                await db.notes.update(activeId, { isTrashed: false, sync_status: 'pending' });
+                if (user) import('../../utils/syncService.js').then(({ autoSync }) => autoSync(user));
             });
 
             onClose();
